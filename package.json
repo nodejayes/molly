@@ -36,6 +36,7 @@
     "dependencies": {
         "acts": "^2.3.2",
         "joi": "^13.1.2",
+        "lodash": "^4.17.5",
         "mongodb": "^3.0.2"
     }
 }
