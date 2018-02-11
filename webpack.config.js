@@ -1,4 +1,9 @@
+var TypedocWebpackPlugin = require('typedoc-webpack-plugin');
+
 module.exports = {
+    plugins: [
+        new TypedocWebpackPlugin({})
+    ],
     devtool: 'inline-source-map',
     entry: './src/index.ts',
     output: {
