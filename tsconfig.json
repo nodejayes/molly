@@ -1,0 +1,18 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+        "charset": "utf8",
+        "module": "commonjs",
+        "removeComments": true,
+        "typeRoots" : ["./typings"],
+        "types" : ["node", "lodash", "mongodb", "express"],
+        "sourceMap": true
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "**/*.spec.ts"
+    ]
+}
