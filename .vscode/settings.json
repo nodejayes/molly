@@ -1,0 +1,12 @@
+
+{
+    "nodeTdd.activateOnStartup": true,
+    "nodeTdd.coverageThreshold": 85,
+    "nodeTdd.reporter": "tap",
+    "nodeTdd.showCoverage": true,
+    "eslint.autoFixOnSave": true,
+    "path-autocomplete.pathMappings": {
+        "~": "${workspace}/src"
+    }
+}
+    
