@@ -7,7 +7,10 @@ module.exports = {
     devtool: 'inline-source-map',
     entry: './src/index.ts',
     output: {
-        filename: './dist/bundle.js'
+        filename: './dist/bundle.js',
+        library: 'Molly',
+        libraryTarget: 'umd',
+        umdNamedDefine: true
     },
     resolve: {
         // Add `.ts` and `.tsx` as a resolvable extension.

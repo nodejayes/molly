@@ -7,8 +7,8 @@ import {ObjectSchema} from 'joi';
  * @class ValidationInformation
  */
 export class ValidationInformation {
-    createSchema: ObjectSchema
-    readSchema: ObjectSchema
-    updateSchema: ObjectSchema
-    deleteSchema: ObjectSchema
+    createSchema: ObjectSchema;
+    readSchema: ObjectSchema;
+    updateSchema: ObjectSchema;
+    deleteSchema: ObjectSchema;
 }
