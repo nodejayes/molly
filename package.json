@@ -1,7 +1,7 @@
 {
     "name": "molly",
     "version": "1.0.0",
-    "main": "./dist/index.js",
+    "main": "./dist/bundle.js",
     "repository": "git@gitlab.sw-gis.de:root/molly.git",
     "author": {
         "name": "Markus Gilg",
