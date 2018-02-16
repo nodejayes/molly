@@ -1,5 +1,5 @@
-import {Server as S} from './server';
+import {ExpressServer as S} from './server';
 
-export namespace Server {
+export namespace Serve {
     export let ExpressServer = S;
 }

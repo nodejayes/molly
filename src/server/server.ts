@@ -10,9 +10,9 @@ import {promisify} from 'util';
  * implement a small Express Server
  * 
  * @export
- * @class Server
+ * @class ExpressServer
  */
-export class Server {
+export class ExpressServer {
     /**
      * a Array of all Route Names
      * 
