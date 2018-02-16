@@ -11,9 +11,9 @@
     "scripts": {
         "build": "yarn doc && tsc",
         "doc": "./node_modules/.bin/typedoc --mode file --module commonjs --target ES6 --readme ./README.md --ignoreCompilerErrors --out ./docs ./src",
-        "test": "mocha -r ts-node/register ./spec/**/*.spec.ts",
-        "test:integration": "mocha -r ts-node/register ./spec/integration/**/*.spec.ts",
-        "test:unit": "mocha -r ts-node/register ./spec/unit/**/*.spec.ts"
+        "test": "nyc mocha -r ts-node/register ./spec/**/*.spec.ts",
+        "test:integration": "nyc mocha -r ts-node/register ./spec/integration/**/*.spec.ts",
+        "test:unit": "nyc mocha -r ts-node/register ./spec/unit/**/*.spec.ts"
     },
     "dependencies": {
         "@types/helmet": "^0.0.37",
@@ -35,6 +35,7 @@
         "@types/node": "^9.4.5",
         "chai": "^4.1.2",
         "mocha": "^5.0.1",
+        "nyc": "^11.4.1",
         "ts-node": "^4.1.0",
         "tslint-config-airbnb": "^5.6.0",
         "typedoc": "^0.5.0"

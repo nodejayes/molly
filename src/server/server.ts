@@ -31,7 +31,7 @@ export class ExpressServer {
     App: express.Application;
 
     /**
-     * Creates an instance of Server.
+     * Creates an instance of Server. 
      * @memberof Server
      */
     constructor() {
