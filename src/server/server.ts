@@ -5,6 +5,7 @@ import {RequestModel} from './models/request.model';
 import {ResponseModel} from './models/response.model';
 import {keys} from 'lodash';
 import {promisify} from 'util';
+import { Server } from 'http';
 
 /**
  * implement a small Express Server
@@ -23,6 +24,15 @@ export class ExpressServer {
     private _routeNames: Array<string>;
 
     /**
+     * running Node Server Instance
+     * 
+     * @private
+     * @type {Server}
+     * @memberof ExpressServer
+     */
+    private _server: Server;
+
+    /**
      * the Express Server Instance
      * 
      * @type {express.Application}
@@ -35,6 +45,7 @@ export class ExpressServer {
      * @memberof Server
      */
     constructor() {
+        this._server = null;
         this._routeNames = keys(Routes);
         this.App = express();
         this._registerRoutes();
@@ -87,8 +98,26 @@ export class ExpressServer {
      * @memberof Server
      */
     async start(binding: string, port: number): Promise<string> {
-        let startServer = promisify(this.App.listen);
-        await startServer.call(port, binding);
-        return `server listen on http://${binding}:${port}/`;
+        return new Promise<string>((resolve, reject) => {
+            try {
+                this._server = this.App.listen(port, binding, () => {
+                    resolve(`server listen on http://${binding}:${port}/`);
+                });
+            } catch (err) {
+                reject(err.message);
+            }
+        });
+    }
+
+    /**
+     * stop a running Server
+     * 
+     * @memberof ExpressServer
+     */
+    stop() {
+        if (this._server !== null) {
+            this._server.close();
+            this._server = null;
+        }
     }
 }
