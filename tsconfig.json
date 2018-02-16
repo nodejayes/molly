@@ -6,7 +6,10 @@
         "target": "es6",
         "removeComments": true,
         "sourceMap": true,
-        "outDir": "dist"
+        "outDir": "dist",
+        "typeRoots": [
+            "node_modules/@types/**"
+        ]
     },
     "include": [
         "src/**/*"
