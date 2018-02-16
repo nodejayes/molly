@@ -13,7 +13,9 @@
         "doc": "./node_modules/.bin/typedoc --mode file --module commonjs --target ES6 --readme ./README.md --ignoreCompilerErrors --out ./docs ./src"
     },
     "dependencies": {
+        "@types/helmet": "^0.0.37",
         "express": "^4.16.2",
+        "helmet": "^3.11.0",
         "joi": "^13.1.2",
         "lodash": "^4.17.5",
         "moment": "^2.20.1",
