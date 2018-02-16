@@ -4,6 +4,7 @@ import {Routes} from './routes';
 import {RequestModel} from './models/request.model';
 import {ResponseModel} from './models/response.model';
 import {keys} from 'lodash';
+import {promisify} from 'util';
 
 /**
  * implement a small Express Server
@@ -75,5 +76,19 @@ export class Server {
             res.status(500);
             res.send(new ResponseModel(err.message, true).toString());
         }
+    }
+
+    /**
+     * start the Express Server
+     * 
+     * @param {string} binding 
+     * @param {number} port 
+     * @returns {Promise<string>} 
+     * @memberof Server
+     */
+    async start(binding: string, port: number): Promise<string> {
+        let startServer = promisify(this.App.listen);
+        await startServer.call(port, binding);
+        return `server listen on http://${binding}:${port}/`;
     }
 }
