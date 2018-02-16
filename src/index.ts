@@ -1,6 +1,9 @@
+import {Share as SH} from './share/index';
+
 /**
  * Molly Modul
- * @class Molly
+ * @module Molly
  */
-export class Molly {
+export namespace Molly {
+    export let Share = SH;
 }

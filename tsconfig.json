@@ -3,10 +3,10 @@
     "compilerOptions": {
         "charset": "utf8",
         "module": "commonjs",
+        "target": "es6",
         "removeComments": true,
-        "typeRoots" : ["./typings"],
-        "types" : ["node", "lodash", "mongodb", "express"],
-        "sourceMap": true
+        "sourceMap": true,
+        "outDir": "dist"
     },
     "include": [
         "src/**/*"
