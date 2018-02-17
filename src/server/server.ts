@@ -75,7 +75,9 @@ export class ExpressServer {
     private _filterRequest(req: express.Request, res: express.Response, next: express.NextFunction): void {
         if (req.method !== 'POST') {
             res.status(405);
-            res.send(new ResponseModel(`not supported method ${req.method}`, true).toString());
+            res.send(new ResponseModel(
+                `not supported method ${req.method}`, 
+                true).toString());
             return;
         }
         try {
@@ -92,20 +94,17 @@ export class ExpressServer {
     /**
      * start the Express Server
      * 
-     * @param {string} binding 
-     * @param {number} port 
+     * @param {string} binding
+     * @param {number} port
      * @returns {Promise<string>} 
      * @memberof Server
      */
     async start(binding: string, port: number): Promise<string> {
         return new Promise<string>((resolve, reject) => {
-            try {
-                this._server = this.App.listen(port, binding, () => {
-                    resolve(`server listen on http://${binding}:${port}/`);
-                });
-            } catch (err) {
-                reject(err.message);
-            }
+            this._server = this.App.listen(port, binding, () => {
+                resolve(`server listen on http://${binding}:${port}/`);
+            });
+            this._server.on('error', reject);
         });
     }
 
