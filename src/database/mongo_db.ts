@@ -13,7 +13,7 @@ export class MongoDb {
         return this._collectionList;
     }
 
-    private static async _createCollection(info: CollectionInformation) {
+    private static async _createCollection(info: CollectionInformation, clear: boolean) {
         let names = this._existCollections.filter((col: Collection<any>) => {
             return col.collectionName === info.Name;
         });
@@ -27,16 +27,23 @@ export class MongoDb {
             }
             this._collectionList.push(new CollectionStore(newCollection, info.Joins));
         } else {
+            if (clear) {
+                await this._client.db(this._db).dropCollection(info.Name);
+            }
             this._collectionList.push(new CollectionStore(names[0], info.Joins));
         }
     }
 
-    static async createCollections() {
+    static async createCollections(clear: boolean) {
         this._collectionList = new Array<CollectionStore>();
-        this._existCollections = await this._client.db(this._db).collections();
+        if (!clear) {
+            this._existCollections = await this._client.db(this._db).collections();
+        } else {
+            this._existCollections = new Array<Collection<any>>();
+        }
         for (let i = 0; i < Logic.Configuration.collectionInfos.length; i++) {
             let ci = Logic.Configuration.collectionInfos[i];
-            await this._createCollection.bind(this)(ci);
+            await this._createCollection.bind(this)(ci, clear);
         }
     }
 

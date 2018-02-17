@@ -93,8 +93,8 @@ export class ExpressServer {
         }
     }
 
-    private async _buildSchema() {
-        await MongoDb.createCollections.bind(MongoDb)();
+    private async _buildSchema(clear: boolean) {
+        await MongoDb.createCollections.bind(MongoDb, clear)();
     }
 
     /**
@@ -105,9 +105,9 @@ export class ExpressServer {
      * @returns {Promise<string>} 
      * @memberof Server
      */
-    async start(binding: string, port: number, mongoUrl: string, mongoDatabase: string): Promise<string> {
+    async start(binding: string, port: number, mongoUrl: string, mongoDatabase: string, clear = false): Promise<string> {
         await MongoDb.connect(`${mongoUrl}${mongoDatabase}`, mongoDatabase);
-        await this._buildSchema();
+        await this._buildSchema(clear);
         return new Promise<string>((resolve, reject) => {
             this._server = this.App.listen(port, binding, () => {
                 resolve(`server listen on http://${binding}:${port}/`);
