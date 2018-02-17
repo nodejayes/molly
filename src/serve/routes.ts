@@ -1,5 +1,5 @@
-import {IRequestModel} from './models/request.model';
-import {ResponseModel} from './models/response.model';
+import {IRequestModel} from './../models/communicate/request';
+import {ResponseModel} from './../models/communicate/response';
 
 /**
  * holds all available Routes

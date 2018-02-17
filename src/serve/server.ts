@@ -1,11 +1,12 @@
 import * as express from 'express';
 import * as helmet from 'helmet';
-import {Routes} from './routes';
-import {RequestModel} from './models/request.model';
-import {ResponseModel} from './models/response.model';
 import {keys} from 'lodash';
 import {promisify} from 'util';
 import { Server } from 'http';
+
+import {Routes} from './routes';
+import {RequestModel} from './../models/communicate/request';
+import {ResponseModel} from './../models/communicate/response';
 
 /**
  * implement a small Express Server

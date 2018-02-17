@@ -1,5 +1,5 @@
-import {CollectionInformation} from './collection.information.model';
-import {ValidationInformation} from './validation.information.model';
+import {CollectionInformation} from './collection_information';
+import {ValidationInformation} from './validation_information';
 
 /**
  * Configuration Object
