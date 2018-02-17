@@ -3,6 +3,7 @@ import {ResponseModel as RESMO} from './communicate/response';
 import {CollectionInformation as CI} from './configuration/collection_information';
 import {MollyConfiguration as MC} from './configuration/molly_configuration';
 import {ValidationInformation as VI} from './configuration/validation_information';
+import {MongoLookup as LOOK, MongoLookup} from './configuration/lookup';
 
 export namespace Models {
     export namespace Communicate {
@@ -13,5 +14,6 @@ export namespace Models {
         export let CollectionInformation = CI;
         export let MollyConfiguration = MC;
         export let ValidationInformation = VI;
+        export let MongoLookup = LOOK;
     }
 }

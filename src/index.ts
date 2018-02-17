@@ -4,6 +4,7 @@ import {Models as MOD} from './models/index';
 import {Serve as S} from './serve/index';
 
 import {Logic as LOGI} from './logic';
+import {JoinType as JT} from './models/configuration/lookup';
 
 /**
  * Molly Modul
@@ -16,4 +17,5 @@ export namespace Molly {
     export let Serve = S;
 
     export let Logic = LOGI;
+    export let JoinType = JT;
 }

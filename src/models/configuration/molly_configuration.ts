@@ -14,4 +14,9 @@ import {ValidationInformation} from './validation_information';
 export class MollyConfiguration {
     collectionInfos: Array<CollectionInformation>;
     validationInfos: Array<ValidationInformation>;
+
+    constructor() {
+        this.collectionInfos = new Array<CollectionInformation>();
+        this.validationInfos = new Array<ValidationInformation>();
+    }
 }
