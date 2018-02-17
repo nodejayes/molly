@@ -58,7 +58,7 @@ describe('Molly Server Spec', () => {
         Molly.Logic.Configuration.collectionInfos.push(group);
         Molly.Logic.Configuration.collectionInfos.push(right);
 
-        console.info(Molly.Logic.Configuration.collectionInfos);
+        // TODO: assert the Results
     });
 
     it('setup some validation info', async () => {
@@ -143,7 +143,7 @@ describe('Molly Server Spec', () => {
         Molly.Logic.Configuration.validationInfos.push(group);
         Molly.Logic.Configuration.validationInfos.push(right);
 
-        console.info(Molly.Logic.Configuration.validationInfos);
+        // TODO: assert the results
     });
 
     it('throw error on invalid binding', async function () {
