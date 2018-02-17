@@ -3,6 +3,8 @@ import {assert} from 'chai';
 import 'mocha';
 import { MollyConfiguration } from '../../src/models/configuration/molly_configuration';
 
+const request = require('sync-request');
+
 describe('Molly Server Spec', () => {
     let server = new Molly.Serve.ExpressServer();
     let customString = Molly.Definitions.BaseTypes.custom.string();
@@ -10,8 +12,9 @@ describe('Molly Server Spec', () => {
     let array = Molly.Definitions.BaseTypes.custom.array();
     let bool = Molly.Definitions.BaseTypes.bool;
     let type = Molly.Definitions.BaseTypes.type;
+    let rights = [];
 
-    it('setup user schema', async () => {
+    it('setup user schema', () => {
         let user = new Molly.Models.Configuration.CollectionInformation('user', [
             new Molly.Models.Configuration.MongoLookup('group', 'groupId', '_id', Molly.JoinType.ONEONE),
             new Molly.Models.Configuration.MongoLookup('right', 'group.rights', 'group.rights', Molly.JoinType.ONEMANY)
@@ -45,10 +48,10 @@ describe('Molly Server Spec', () => {
             });
         });
 
-        let rightCreateSchema = type({
+        let rightCreateSchema = array.items(type({
             key: customString.max(255).required(),
             active: bool.default(true)
-        });
+        }));
         let rightReadSchema = type({
             _id: mongoDbObjectId.required(),
             key: customString.max(255).required(),
@@ -64,10 +67,10 @@ describe('Molly Server Spec', () => {
             id: mongoDbObjectId
         });
 
-        let groupCreateSchema = type({
+        let groupCreateSchema = array.items(type({
             name: customString.max(255).required(),
             rights: array.items(mongoDbObjectId)
-        });
+        }));
         let groupReadSchema = type({
             _id: mongoDbObjectId.required(),
             name: customString.max(255).required(),
@@ -84,12 +87,12 @@ describe('Molly Server Spec', () => {
             id: mongoDbObjectId.required()
         });
 
-        let userCreateSchema = type({
+        let userCreateSchema = array.items(type({
             username: customString.max(255).required(),
             password: customString.min(8).required(),
             email: customString.max(255).allow(null).default(null),
             groupId: mongoDbObjectId.required()
-        });
+        }));
         let userReadSchema = type({
             _id: mongoDbObjectId.required(),
             username: customString.max(255).required(),
@@ -110,13 +113,13 @@ describe('Molly Server Spec', () => {
         });
 
         let userV = new Molly.Models.Configuration.ValidationInformation(
-            userCreateSchema, userReadSchema, userUpdateSchema, userDeleteSchema
+            'user', userCreateSchema, userReadSchema, userUpdateSchema, userDeleteSchema
         );
         let groupV = new Molly.Models.Configuration.ValidationInformation(
-            groupCreateSchema, groupReadSchema, groupUpdateSchema, groupDeleteSchema
+            'group', groupCreateSchema, groupReadSchema, groupUpdateSchema, groupDeleteSchema
         );
         let rightV = new Molly.Models.Configuration.ValidationInformation(
-            rightCreateSchema, rightReadSchema, rightUpdateSchema, rightDeleteSchema
+            'right', rightCreateSchema, rightReadSchema, rightUpdateSchema, rightDeleteSchema
         );
 
         Molly.Logic.Configuration.validationInfos.push(userV);
@@ -127,7 +130,8 @@ describe('Molly Server Spec', () => {
         Molly.Logic.Configuration.collectionInfos.push(group);
         Molly.Logic.Configuration.collectionInfos.push(right);
         
-        // TODO: assert the Results
+        assert.equal(Molly.Logic.Configuration.validationInfos.length, 3, 'not enough validations');
+        assert.equal(Molly.Logic.Configuration.collectionInfos.length, 3, 'not enough collections');
     });
 
     it('start server', async () => {
@@ -135,7 +139,50 @@ describe('Molly Server Spec', () => {
         assert.equal(msg, 'server listen on http://localhost:8086/', 'invalid return message');
     });
 
-    it('stop server', async () => {
+    it('create rights', async () => {
+        let rightData = [
+            {
+                key: 'CAN_DO_SOMETHING',
+                active: true
+            },
+            {
+                key: 'CAN_DO_ANOTHER',
+                active: true
+            },
+            {
+                key: 'CAN_DO_ALL',
+                active: true
+            },
+            {
+                key: 'CAN_LOGIN',
+                active: true
+            },
+            {
+                key: 'CAN_REQUEST_USER',
+                active: true
+            }
+        ];
+        let rs = request('POST', `http://localhost:8086/create/right`, {
+            json: {
+                params: rightData
+            }
+        });
+        assert.isNull(rs.error, rs.error);
+        assert.isNotNull(rs.data, 'data is null');
+        assert.isArray(rs.data, 'data must be an array');
+        assert.equal(rs.data.length, 5, 'invalid count');
+        rights = rs.data;
+    });
+
+    it('create groups', async () => {
+
+    });
+
+    it('create users', async () => {
+
+    });
+
+    it('stop server', () => {
         server.stop();
     });
 });

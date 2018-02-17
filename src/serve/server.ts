@@ -126,5 +126,6 @@ export class ExpressServer {
             this._server.close();
             this._server = null;
         }
+        MongoDb.close();
     }
 }
