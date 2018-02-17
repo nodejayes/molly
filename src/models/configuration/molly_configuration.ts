@@ -12,8 +12,6 @@ import {ValidationInformation} from './validation_information';
  * @property validationInfo a Array of Validations for Types
  */
 export class MollyConfiguration {
-    address: String;
-    port: Number;
-    collectionInfo: Array<CollectionInformation>;
-    validationInfo: Array<ValidationInformation>;
+    collectionInfos: Array<CollectionInformation>;
+    validationInfos: Array<ValidationInformation>;
 }
