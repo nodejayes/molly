@@ -31,7 +31,7 @@ export class MongoLookup {
         this.Type = joinType;
     }
 
-    getAggregate(): Array<any> {
+    getAggregate(): Array<Object> {
         switch(this.Type) {
             case JoinType.ONEONE:
                 return [

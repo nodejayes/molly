@@ -74,7 +74,7 @@ export class ExpressServer {
      * @returns {void} 
      * @memberof Server
      */
-    private _filterRequest(req: express.Request, res: express.Response, next: express.NextFunction): void {
+    private async _filterRequest(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
         if (req.method !== 'POST') {
             res.status(405);
             res.send(new ResponseModel(
@@ -84,7 +84,7 @@ export class ExpressServer {
         }
         try {
             let data = new RequestModel(req, this._routeNames);
-            let result = <ResponseModel>Routes[data.Action](data);
+            let result = <ResponseModel>(await Routes[data.Action](data));
             res.status(200);
             res.send(result.toString());
         } catch (err) {
