@@ -4,23 +4,14 @@ import 'mocha';
 import { MollyConfiguration } from '../../src/models/configuration/molly_configuration';
 
 describe('Molly Server Spec', () => {
+    let server = new Molly.Serve.ExpressServer();
     let customString = Molly.Definitions.BaseTypes.custom.string();
     let mongoDbObjectId = Molly.Definitions.BaseTypes.mongoDbObjectId;
     let array = Molly.Definitions.BaseTypes.custom.array();
     let bool = Molly.Definitions.BaseTypes.bool;
     let type = Molly.Definitions.BaseTypes.type;
 
-    it('boot Server', async () => {
-        let s = new Molly.Serve.ExpressServer();
-        let msg = await s.start('localhost', 8086);
-        assert.equal(msg, 'server listen on http://localhost:8086/', 'invalid return message');
-        s.stop();
-    });
-
-    it('setup some collection info', async () => {
-        let s = new Molly.Serve.ExpressServer();
-        Molly.Logic.Configuration = new MollyConfiguration();
-        
+    it('setup user schema', async () => {
         let user = new Molly.Models.Configuration.CollectionInformation('user', [
             new Molly.Models.Configuration.MongoLookup('group', 'groupId', '_id', Molly.JoinType.ONEONE),
             new Molly.Models.Configuration.MongoLookup('right', 'group.rights', 'group.rights', Molly.JoinType.ONEMANY)
@@ -53,17 +44,6 @@ describe('Molly Server Spec', () => {
                 background: true,
             });
         });
-
-        Molly.Logic.Configuration.collectionInfos.push(user);
-        Molly.Logic.Configuration.collectionInfos.push(group);
-        Molly.Logic.Configuration.collectionInfos.push(right);
-
-        // TODO: assert the Results
-    });
-
-    it('setup some validation info', async () => {
-        let s = new Molly.Serve.ExpressServer();
-        Molly.Logic.Configuration = new MollyConfiguration();
 
         let rightCreateSchema = type({
             key: customString.max(255).required(),
@@ -129,35 +109,33 @@ describe('Molly Server Spec', () => {
             id: mongoDbObjectId.required()
         });
 
-        let user = new Molly.Models.Configuration.ValidationInformation(
+        let userV = new Molly.Models.Configuration.ValidationInformation(
             userCreateSchema, userReadSchema, userUpdateSchema, userDeleteSchema
         );
-        let group = new Molly.Models.Configuration.ValidationInformation(
+        let groupV = new Molly.Models.Configuration.ValidationInformation(
             groupCreateSchema, groupReadSchema, groupUpdateSchema, groupDeleteSchema
         );
-        let right = new Molly.Models.Configuration.ValidationInformation(
+        let rightV = new Molly.Models.Configuration.ValidationInformation(
             rightCreateSchema, rightReadSchema, rightUpdateSchema, rightDeleteSchema
         );
 
-        Molly.Logic.Configuration.validationInfos.push(user);
-        Molly.Logic.Configuration.validationInfos.push(group);
-        Molly.Logic.Configuration.validationInfos.push(right);
+        Molly.Logic.Configuration.validationInfos.push(userV);
+        Molly.Logic.Configuration.validationInfos.push(groupV);
+        Molly.Logic.Configuration.validationInfos.push(rightV);
 
-        // TODO: assert the results
+        Molly.Logic.Configuration.collectionInfos.push(user);
+        Molly.Logic.Configuration.collectionInfos.push(group);
+        Molly.Logic.Configuration.collectionInfos.push(right);
+        
+        // TODO: assert the Results
     });
 
-    it('throw error on invalid binding', async function () {
-        // TODO: Open see https://gitlab.sw-gis.de/root/molly/issues/1
-        /*
-        this.timeout(30000);
-        let s = new Molly.Serve.ExpressServer();
-        try {
-            await s.start('xyz', 8086);
-            console.info('');
-            assert.fail('dont throw an error');
-        } catch (err) {
-            assert.equal(err.message, 'getaddrinfo ENOTFOUND xyz', 'wrong error message');
-        }
-        */
+    it('start server', async () => {
+        let msg = await server.start('localhost', 8086, 'mongodb://localhost:27017/', 'test_molly');
+        assert.equal(msg, 'server listen on http://localhost:8086/', 'invalid return message');
+    });
+
+    it('stop server', async () => {
+        server.stop();
     });
 });

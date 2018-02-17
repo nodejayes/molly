@@ -4,6 +4,7 @@ import {keys} from 'lodash';
 import {promisify} from 'util';
 import { Server } from 'http';
 
+import {MongoDb} from './../database/mongo_db';
 import {Routes} from './routes';
 import {RequestModel} from './../models/communicate/request';
 import {ResponseModel} from './../models/communicate/response';
@@ -92,6 +93,10 @@ export class ExpressServer {
         }
     }
 
+    private async _buildSchema() {
+        await MongoDb.createCollections.bind(MongoDb)();
+    }
+
     /**
      * start the Express Server
      * 
@@ -100,7 +105,9 @@ export class ExpressServer {
      * @returns {Promise<string>} 
      * @memberof Server
      */
-    async start(binding: string, port: number): Promise<string> {
+    async start(binding: string, port: number, mongoUrl: string, mongoDatabase: string): Promise<string> {
+        await MongoDb.connect(`${mongoUrl}${mongoDatabase}`, mongoDatabase);
+        await this._buildSchema();
         return new Promise<string>((resolve, reject) => {
             this._server = this.App.listen(port, binding, () => {
                 resolve(`server listen on http://${binding}:${port}/`);
