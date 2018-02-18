@@ -61,8 +61,8 @@ export class ExpressServer {
      * @memberof Server
      */
     private _registerRoutes(): void {
-        this.App.use(express.static('docs'));
         this.App.use(helmet());
+        this.App.use(express.static('docs'));
         this.App.use(bodyParser.json());
         this.App.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
             this._filterRequest.bind(this)(req, res, next);
