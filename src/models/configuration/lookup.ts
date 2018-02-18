@@ -40,7 +40,7 @@ export class MongoLookup {
                             'from': this.From,
                             'localField': this.LocalField,
                             'foreignField': this.ForeignField,
-                            'as': this.From,
+                            'as': this.LocalField,
                         }
                     },
                     {
@@ -57,7 +57,7 @@ export class MongoLookup {
                             'from': this.From,
                             'localField': this.LocalField,
                             'foreignField': this.ForeignField,
-                            'as': this.From,
+                            'as': this.LocalField,
                         }
                     }
                 ];

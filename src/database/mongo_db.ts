@@ -17,30 +17,26 @@ export class MongoDb {
         let names = this._existCollections.filter((col: Collection<any>) => {
             return col.collectionName === info.Name;
         });
-        if (names.length < 1) {
+        if (names.length < 1 || clear) {
             let db = this._client.db(this._db);
+            if (clear && names.length > 0) {
+                await db.dropCollection(info.Name);
+            }
             let newCollection = await db.createCollection(info.Name, {
 
             });
             if (info.setIndex) {
-                newCollection.createIndex(info.setIndex);
+                info.setIndex(newCollection);
             }
             this._collectionList.push(new CollectionStore(newCollection, info.Joins));
         } else {
-            if (clear) {
-                await this._client.db(this._db).dropCollection(info.Name);
-            }
             this._collectionList.push(new CollectionStore(names[0], info.Joins));
         }
     }
 
     static async createCollections(clear: boolean) {
         this._collectionList = new Array<CollectionStore>();
-        if (!clear) {
-            this._existCollections = await this._client.db(this._db).collections();
-        } else {
-            this._existCollections = new Array<Collection<any>>();
-        }
+        this._existCollections = await this._client.db(this._db).collections();
         for (let i = 0; i < Logic.Configuration.collectionInfos.length; i++) {
             let ci = Logic.Configuration.collectionInfos[i];
             await this._createCollection.bind(this)(ci, clear);
@@ -50,7 +46,9 @@ export class MongoDb {
     static async connect(url, database) {
         this._db = database;
         this._client = await MongoClient.connect(`${url}${database}`, {
-            appname: 'Molly'
+            appname: 'Molly',
+            autoReconnect: true,
+            poolSize: 25
         });
     }
 

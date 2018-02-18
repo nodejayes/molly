@@ -50,7 +50,7 @@ export class Routes {
         if (joins) {
             for (let i = 0; i < joins.length; i++) {
                 let j = joins[i];
-                pipe.concat(j.getAggregate());
+                pipe = pipe.concat(j.getAggregate());
             }
         }
         if (keys(data.Parameter).length > 0) {

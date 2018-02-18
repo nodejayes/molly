@@ -1,6 +1,5 @@
 import * as express from 'express';
 import * as helmet from 'helmet';
-import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
 import {keys} from 'lodash';
 import {promisify} from 'util';
@@ -63,7 +62,6 @@ export class ExpressServer {
      */
     private _registerRoutes(): void {
         this.App.use(express.static('docs'));
-        this.App.use(logger('dev'));
         this.App.use(helmet());
         this.App.use(bodyParser.json());
         this.App.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -113,6 +111,9 @@ export class ExpressServer {
      * @memberof Server
      */
     async start(binding: string, port: number, mongoUrl: string, mongoDatabase: string, clear = false): Promise<string> {
+        if (mongoUrl[mongoUrl.length - 1] !== '/') {
+            mongoUrl += '/';
+        }
         await MongoDb.connect(`${mongoUrl}${mongoDatabase}`, mongoDatabase);
         await this._buildSchema(clear);
         return new Promise<string>((resolve, reject) => {
