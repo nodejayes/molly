@@ -1,5 +1,6 @@
+import {ObjectId} from 'mongodb';
 import {Request} from 'express';
-import {hasIn} from 'lodash';
+import {hasIn, keys, isObject, isString, isArray} from 'lodash';
 
 /**
  * Interface for RequestModel
@@ -43,11 +44,51 @@ export class RequestModel implements IRequestModel {
         if (!hasIn(req.body, 'params')) {
             throw new Error(`invalid request body ${req.body}`);
         }
-        this.Parameter = req.body.params;
+        this.Parameter = this._replaceStringIds(req.body.params);
         if (hasIn(req.body, 'props')) {
             this.Properties = req.body.props;
         } else {
             this.Properties = null;
         }
+    }
+
+    private _replaceStringIds(source: any): any {
+        for (let key in source) {
+            if (!source.hasOwnProperty(key)) {
+                continue;
+            } else if (key === '_id') {
+                if (typeof source[key] === 'string' && source[key].length === 24) {
+                    source[key] = new ObjectId(source[key]);
+                } else if (isObject(source[key])) {
+                    for (let innerKey in source[key]) {
+                        if (!source[key].hasOwnProperty(innerKey)) {
+                            continue;
+                        }
+                        switch (innerKey) {
+                            case '$in':
+                                let tmp = [];
+                                for (let i = 0; i < source[key][innerKey].length; i++) {
+                                    tmp.push(new ObjectId(source[key][innerKey][i]));
+                                }
+                                source[key][innerKey] = tmp;
+                                break;
+                            case '$eq':
+                            case '$ne':
+                                source[key][innerKey] = new ObjectId(source[key][innerKey]);
+                                break;
+                        }
+                    }
+                }
+            } else if (['$and', '$or'].indexOf(key) > -1) {
+                for (let i = 0; i < source[key].length; i++) {
+                    source[key][i] = this._replaceStringIds(source[key][i]);
+                }
+            }
+            if (isObject(source[key])) {
+                this._replaceStringIds(source[key]);
+            }
+        }
+        return source;
+
     }
 }

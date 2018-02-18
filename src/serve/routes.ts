@@ -75,6 +75,11 @@ export class Routes {
                 });
             }
         }
+        if (data.Properties) {
+            pipe.push({
+                '$project': data.Properties
+            });
+        }
         return pipe;
     }
     /**

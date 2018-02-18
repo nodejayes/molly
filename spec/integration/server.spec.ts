@@ -151,7 +151,7 @@ describe('Molly Server Spec', () => {
 
     describe('Model CRUD check', () => {
         before(async () => {
-            await server.start('localhost', 8086, 'mongodb://localhost:27017/', 'test_molly');
+            await server.start('localhost', 8086, 'mongodb://localhost:27017/', 'test_molly', true);
         });
 
         after(() => {
@@ -270,6 +270,216 @@ describe('Molly Server Spec', () => {
             assert.isArray(rs.data, 'data must be an array');
             assert.equal(rs.data.length, 3, 'invalid count');
             users = rs.data;
+        });
+
+        it('read user', async () => {
+            let resUsers = await request({
+                method: 'POST',
+                uri: 'http://localhost:8086/read/user',
+                body: {
+                    params: {}
+                },
+                json: true
+            });
+            assert.isNull(resUsers.errors, 'errors is not null');
+            assert.isArray(resUsers.data, 'user data are not an array');
+            assert.equal(resUsers.data.length, 3, 'invalid users count');
+            assert.isDefined(resUsers.data[0].group, 'relation one to one not work');
+            assert.isArray(resUsers.data[0].group.rights, 'relation ont to many not work');
+        });
+
+        it('update user email', async () => {
+            let res = await request({
+                method: 'POST',
+                uri: 'http://localhost:8086/update/user',
+                body: {
+                    params: {
+                        id: users[0]._id,
+                        updateSet: {
+                            email: 'neue@email.de'
+                        }
+                    }
+                },
+                json: true
+            });
+            assert.isNull(res.errors, 'errors is not null');
+            assert.equal(res.data, true, 'update maybe not work');
+            let user = await request({
+                method: 'POST',
+                uri: 'http://localhost:8086/read/user',
+                body: {
+                    params: {
+                        _id: users[0]._id
+                    }
+                },
+                json: true
+            });
+            assert.isNull(user.errors, 'errors is not null');
+            assert.isArray(user.data, 'user data are not an array');
+            assert.equal(user.data.length, 1, 'user not found');
+            assert.equal(user.data[0].email, 'neue@email.de', 'update not write in database');
+        });
+
+        it('read with restrictions', async () => {
+            let resUsers = await request({
+                method: 'POST',
+                uri: 'http://localhost:8086/read/user',
+                body: {
+                    params: {
+                        RESTRICTIONS: {
+                            skip: 1,
+                            limit: 2,
+                            sort: {
+                                username: -1
+                            }
+                        }
+                    }
+                },
+                json: true
+            });
+            assert.isNull(resUsers.errors, 'errors is not null');
+            assert.isArray(resUsers.data, 'user data are not an array');
+            assert.equal(resUsers.data.length, 2, 'invalid users count');
+            assert.equal(resUsers.data[0].username, 'Reporter', 'wrong dataset');
+        });
+
+        it('replace ids in arrays', async () => {
+            let resUsers = await request({
+                method: 'POST',
+                uri: 'http://localhost:8086/read/user',
+                body: {
+                    params: {
+                        _id: {
+                            $in: users.map((e) => e._id)
+                        }
+                    }
+                },
+                json: true
+            });
+            assert.isNull(resUsers.errors, 'errors is not null');
+            assert.isArray(resUsers.data, 'user data are not an array');
+            assert.equal(resUsers.data.length, 3, 'invalid users count');
+        });
+
+        it('replace ids in $or', async () => {
+            let resUsers = await request({
+                method: 'POST',
+                uri: 'http://localhost:8086/read/user',
+                body: {
+                    params: {
+                        $or: [
+                            {_id: users[0]._id},
+                            {_id: users[1]._id}
+                        ]
+                    }
+                },
+                json: true
+            });
+            assert.isNull(resUsers.errors, 'errors is not null');
+            assert.isArray(resUsers.data, 'user data are not an array');
+            assert.equal(resUsers.data.length, 2, 'invalid users count');
+            assert.equal(resUsers.data[0]._id, users[0]._id, 'invalid data in result');
+            assert.equal(resUsers.data[1]._id, users[1]._id, 'invalid data in result');
+        });
+
+        it('replace ids in $and', async () => {
+            let resUsers = await request({
+                method: 'POST',
+                uri: 'http://localhost:8086/read/user',
+                body: {
+                    params: {
+                        $and: [
+                            {_id: users[0]._id}
+                        ]
+                    }
+                },
+                json: true
+            });
+            assert.isNull(resUsers.errors, 'errors is not null');
+            assert.isArray(resUsers.data, 'user data are not an array');
+            assert.equal(resUsers.data.length, 1, 'invalid users count');
+            assert.equal(resUsers.data[0]._id, users[0]._id, 'invalid data in result');
+        });
+        
+        it('replace ids in $ne', async () => {
+            let resUsers = await request({
+                method: 'POST',
+                uri: 'http://localhost:8086/read/user',
+                body: {
+                    params: {
+                        _id: {$ne: users[0]._id}
+                    }
+                },
+                json: true
+            });
+            assert.isNull(resUsers.errors, 'errors is not null');
+            assert.isArray(resUsers.data, 'user data are not an array');
+            assert.equal(resUsers.data.length, 2, 'invalid users count');
+            assert.equal(resUsers.data[0]._id, users[1]._id, 'invalid data in result');
+            assert.equal(resUsers.data[1]._id, users[2]._id, 'invalid data in result');
+        });
+
+        it('replace ids in $ne', async () => {
+            let resUsers = await request({
+                method: 'POST',
+                uri: 'http://localhost:8086/read/user',
+                body: {
+                    params: {
+                        _id: {$eq: users[0]._id}
+                    }
+                },
+                json: true
+            });
+            assert.isNull(resUsers.errors, 'errors is not null');
+            assert.isArray(resUsers.data, 'user data are not an array');
+            assert.equal(resUsers.data.length, 1, 'invalid users count');
+            assert.equal(resUsers.data[0]._id, users[0]._id, 'invalid data in result');
+        });
+
+        it('replace ids in $in', async () => {
+            let resUsers = await request({
+                method: 'POST',
+                uri: 'http://localhost:8086/read/user',
+                body: {
+                    params: {
+                        _id: {$in: [users[0]._id, users[2]._id]}
+                    }
+                },
+                json: true
+            });
+            assert.isNull(resUsers.errors, 'errors is not null');
+            assert.isArray(resUsers.data, 'user data are not an array');
+            assert.equal(resUsers.data.length, 2, 'invalid users count');
+            assert.equal(resUsers.data[0]._id, users[0]._id, 'invalid data in result');
+            assert.equal(resUsers.data[1]._id, users[2]._id, 'invalid data in result');
+        });
+
+        it('delete user', async () => {
+            let res = await request({
+                method: 'POST',
+                uri: 'http://localhost:8086/delete/user',
+                body: {
+                    params: {
+                        id: users[0]._id
+                    }
+                },
+                json: true
+            });
+            assert.isNull(res.errors, 'errors is not null');
+            assert.equal(res.data, true, 'delete maybe not work');
+            let user = await request({
+                method: 'POST',
+                uri: 'http://localhost:8086/read/user',
+                body: {
+                    params: {
+                        _id: users[0]._id
+                    }
+                },
+                json: true
+            });
+            assert.isNull(user.errors, 'errors is not null');
+            assert.isArray(user.data, 'user data are not an array');
+            assert.equal(user.data.length, 0, 'user already exists');
         });
     });
 });
