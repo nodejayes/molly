@@ -34,7 +34,7 @@ export class RequestModel implements IRequestModel {
      * @memberof RequestModel
      */
     constructor(req: Request, routeNames: Array<string>) {
-        let tmp = req.path.split('/');
+        let tmp = req.path.split('/').filter((e) => { return e.length > 0; });
         if (tmp.length !== 2 || routeNames.indexOf(tmp[0]) === -1) {
             throw new Error(`invalid route ${req.path}`);
         }

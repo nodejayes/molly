@@ -1,5 +1,7 @@
 import * as express from 'express';
 import * as helmet from 'helmet';
+import * as logger from 'morgan';
+import * as bodyParser from 'body-parser';
 import {keys} from 'lodash';
 import {promisify} from 'util';
 import { Server } from 'http';
@@ -48,7 +50,7 @@ export class ExpressServer {
      */
     constructor() {
         this._server = null;
-        this._routeNames = keys(Routes);
+        this._routeNames = Routes.Names;
         this.App = express();
         this._registerRoutes();
     }
@@ -60,8 +62,13 @@ export class ExpressServer {
      * @memberof Server
      */
     private _registerRoutes(): void {
+        this.App.use(express.static('docs'));
+        this.App.use(logger('dev'));
         this.App.use(helmet());
-        this.App.use(this._filterRequest.bind(this));
+        this.App.use(bodyParser.json());
+        this.App.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+            this._filterRequest.bind(this)(req, res, next);
+        });
     }
 
     /**

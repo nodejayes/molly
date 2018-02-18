@@ -134,12 +134,19 @@ describe('Molly Server Spec', () => {
         assert.equal(Molly.Logic.Configuration.collectionInfos.length, 3, 'not enough collections');
     });
 
-    it('start server', async () => {
-        let msg = await server.start('localhost', 8086, 'mongodb://localhost:27017/', 'test_molly');
-        assert.equal(msg, 'server listen on http://localhost:8086/', 'invalid return message');
+    it('start server', async (done) => {
+        server.start('localhost', 8086, 'mongodb://localhost:27017/', 'test_molly');
+        await setTimeout(() => {
+            console.info('check index.html');
+            let index = request('GET', 'http://localhost:8086/index.html');
+            console.info(index);
+            done();
+            // assert.equal(msg, 'server listen on http://localhost:8086/', 'invalid return message');
+        }, 1000);
     });
 
     it('create rights', async () => {
+        console.info('run create rights');
         let rightData = [
             {
                 key: 'CAN_DO_SOMETHING',
