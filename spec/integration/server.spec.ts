@@ -30,7 +30,7 @@ describe('Molly Server Spec', () => {
     describe('Define Schema', () => {
         it('setup user schema', async () => {
             let user = new Molly.Models.Configuration.CollectionInformation('user', [
-                new Molly.Models.Configuration.MongoLookup('group', 'groupId', '_id', Molly.JoinType.ONEONE),
+                new Molly.Models.Configuration.MongoLookup('group', 'group', '_id', Molly.JoinType.ONEONE),
                 new Molly.Models.Configuration.MongoLookup('right', 'group.rights', 'group.rights', Molly.JoinType.ONEMANY)
             ], async (col) => {
                 await col.createIndex({
@@ -452,6 +452,62 @@ describe('Molly Server Spec', () => {
             assert.equal(resUsers.data.length, 2, 'invalid users count');
             assert.equal(resUsers.data[0]._id, users[0]._id, 'invalid data in result');
             assert.equal(resUsers.data[1]._id, users[2]._id, 'invalid data in result');
+        });
+
+        it('filter result', async () => {
+            let resUsers = await request({
+                method: 'POST',
+                uri: 'http://localhost:8086/read/user',
+                body: {
+                    params: {},
+                    props: {
+                        _id: true
+                    }
+                },
+                json: true
+            });
+            assert.isNull(resUsers.errors, 'errors is not null');
+            assert.isArray(resUsers.data, 'user data are not an array');
+            assert.equal(resUsers.data.length, 3, 'invalid users count');
+            for (let i = 0; i < resUsers.data.length; i++) {
+                let test = resUsers.data[i];
+                assert.isDefined(test._id, `_id not found in ${test}`);
+                assert.isUndefined(test.username, `username found in ${test}`);
+                assert.isUndefined(test.email, `email found in ${test}`);
+                assert.isUndefined(test.password, `password found in ${test}`);
+                assert.isUndefined(test.group, `group found in ${test}`);
+            }
+        });
+
+        it('filter result recursive', async () => {
+            let resUsers = await request({
+                method: 'POST',
+                uri: 'http://localhost:8086/read/user',
+                body: {
+                    params: {},
+                    props: {
+                        _id: true,
+                        group: {
+                            _id: true
+                        }
+                    }
+                },
+                json: true
+            });
+            assert.isNull(resUsers.errors, 'errors is not null');
+            assert.isArray(resUsers.data, 'user data are not an array');
+            assert.equal(resUsers.data.length, 3, 'invalid users count');
+            for (let i = 0; i < resUsers.data.length; i++) {
+                let test = resUsers.data[i];
+                assert.isDefined(test._id, `_id not found in ${JSON.stringify(test)}`);
+                assert.isUndefined(test.username, `username found in ${JSON.stringify(test)}`);
+                assert.isUndefined(test.email, `email found in ${JSON.stringify(test)}`);
+                assert.isUndefined(test.password, `password found in ${JSON.stringify(test)}`);
+                assert.isDefined(test.group, `group not found in ${JSON.stringify(test)}`);
+                assert.isDefined(test.group._id, `group._id not found in ${JSON.stringify(test)}`);
+                assert.isUndefined(test.group.name, `group.name found in ${JSON.stringify(test)}`);
+                assert.isUndefined(test.group.rights, `group.rights found in ${JSON.stringify(test)}`);
+            }
         });
 
         it('delete user', async () => {
