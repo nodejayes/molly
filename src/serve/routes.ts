@@ -80,6 +80,7 @@ export class Routes {
                 '$project': data.Properties
             });
         }
+        console.info(pipe);
         return pipe;
     }
     /**

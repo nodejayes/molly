@@ -9,7 +9,7 @@
             "type": "node",
             "request": "launch",
             "preLaunchTask": "build",
-            "args": ["${workspaceRoot}/spec/integration/user.ts"],
+            "args": ["${workspaceRoot}/scripts/run.ts"],
             "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
             "sourceMaps": true,
             "cwd": "${workspaceRoot}",
