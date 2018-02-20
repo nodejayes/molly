@@ -31,7 +31,7 @@ describe('Molly Server Spec', () => {
         it('setup user schema', async () => {
             let user = new Molly.Models.Configuration.CollectionInformation('user', [
                 new Molly.Models.Configuration.MongoLookup('group', 'group', '_id', Molly.JoinType.ONEONE),
-                new Molly.Models.Configuration.MongoLookup('right', 'group.rights', 'group.rights', Molly.JoinType.ONEMANY)
+                new Molly.Models.Configuration.MongoLookup('right', 'group.rights', '_id', Molly.JoinType.ONEMANY)
             ], async (col) => {
                 await col.createIndex({
                     username: 1,
@@ -42,7 +42,7 @@ describe('Molly Server Spec', () => {
                 });
             });
             let group = new Molly.Models.Configuration.CollectionInformation('group', [
-                new Molly.Models.Configuration.MongoLookup('right', 'rights', 'rights', Molly.JoinType.ONEMANY)
+                new Molly.Models.Configuration.MongoLookup('right', 'rights', '_id', Molly.JoinType.ONEMANY)
             ], async (col) => {
                 await col.createIndex({
                     name: 1,
@@ -285,7 +285,7 @@ describe('Molly Server Spec', () => {
             assert.isArray(resUsers.data, 'user data are not an array');
             assert.equal(resUsers.data.length, 3, 'invalid users count');
             assert.isDefined(resUsers.data[0].group, 'relation one to one not work');
-            assert.isDefined(resUsers.data[0].name, 'name is not defined');
+            assert.isDefined(resUsers.data[0].group.name, 'name is not defined');
             assert.isArray(resUsers.data[0].group.rights, 'relation one to many not work');
         });
 

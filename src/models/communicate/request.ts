@@ -83,9 +83,15 @@ export class RequestModel implements IRequestModel {
                 for (let i = 0; i < source[key].length; i++) {
                     source[key][i] = this._replaceStringIds(source[key][i]);
                 }
-            }
-            if (isObject(source[key])) {
-                this._replaceStringIds(source[key]);
+            } else {
+                if (isObject(source[key])) {
+                    this._replaceStringIds(source[key]);
+                } else if (isString(source[key]) && source[key].length === 24) {
+                    try {
+                        let oid = new ObjectId(source[key]);
+                        source[key] = oid;
+                    } catch (err) {}
+                }
             }
         }
         return source;
