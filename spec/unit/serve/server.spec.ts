@@ -23,7 +23,6 @@ describe('Server Spec', () => {
             });
             assert.fail('GET request is good');
         } catch (err) {
-            console.info(err.message);
             assert.equal(err.message, '405 - {"data":null,"errors":"not supported method GET"}', 'error not returned');
         }
     });
