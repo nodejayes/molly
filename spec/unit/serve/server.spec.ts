@@ -8,7 +8,7 @@ describe('Server Spec', () => {
     let server = new Molly.Serve.ExpressServer();
 
     it('start server', async () => {
-        let msg = await server.start('localhost', 8086, 'mongodb://localhost:27017/', 'test_molly', true);
+        let msg = await server.start('localhost', 8086, 'mongodb://localhost:27017', 'test_molly', true);
         assert.equal(msg, 'server listen on http://localhost:8086/', 'invalid return message');
     });
 
@@ -24,6 +24,67 @@ describe('Server Spec', () => {
             assert.fail('GET request is good');
         } catch (err) {
             assert.equal(err.message, '405 - {"data":null,"errors":"not supported method GET"}', 'error not returned');
+        }
+    });
+
+    it('catch invalid route', async () => {
+        let rs = null;
+        try {
+            rs = await request({
+                method: 'POST',
+                uri: 'http://localhost:8086/nothing/user',
+                body: {params:{}},
+                json: true
+            });
+        } catch (err) {
+            assert.equal(err.message, '500 - {"data":null,"errors":"invalid route /nothing/user"}', 'error not returned');
+        }
+    });
+
+    it('catch invalid model', async () => {
+        let rs = null;
+        try {
+            rs = await request({
+                method: 'POST',
+                uri: 'http://localhost:8086/read/notexist',
+                body: {params:{}},
+                json: true
+            });
+        } catch (err) {
+            assert.equal(err.message, '500 - {"data":null,"errors":"no validation found for model notexist"}', 'error not returned');
+        }
+
+        try {
+            rs = await request({
+                method: 'POST',
+                uri: 'http://localhost:8086/create/notexist',
+                body: {params:{}},
+                json: true
+            });
+        } catch (err) {
+            assert.equal(err.message, '500 - {"data":null,"errors":"no validation found for model notexist"}', 'error not returned');
+        }
+
+        try {
+            rs = await request({
+                method: 'POST',
+                uri: 'http://localhost:8086/update/notexist',
+                body: {params:{}},
+                json: true
+            });
+        } catch (err) {
+            assert.equal(err.message, '500 - {"data":null,"errors":"no validation found for model notexist"}', 'error not returned');
+        }
+
+        try {
+            rs = await request({
+                method: 'POST',
+                uri: 'http://localhost:8086/delete/notexist',
+                body: {params:{}},
+                json: true
+            });
+        } catch (err) {
+            assert.equal(err.message, '500 - {"data":null,"errors":"no validation found for model notexist"}', 'error not returned');
         }
     });
 

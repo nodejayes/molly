@@ -61,6 +61,8 @@ export class MongoLookup {
                         }
                     }
                 ];
+            default:
+                return [];
         }
     }
 }
