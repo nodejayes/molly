@@ -1,15 +1,14 @@
-import {Molly} from './../../../../src/index';
+import {BaseTypes, ValidationInformation} from './../../../../src/index';
 import {assert} from 'chai';
 import 'mocha'
 
-let ValidationInformation = Molly.Models.Configuration.ValidationInformation;
-let type = Molly.Definitions.BaseTypes.type;
+let type = BaseTypes.type;
 
 describe('ValidationInformation Spec', () => {
     it('construct valid', () => {
         let info = new ValidationInformation(
             'Test', null, type({
-                name: Molly.Definitions.BaseTypes.custom.string()
+                name: BaseTypes.custom.string()
             }));
         assert.equal(info.Name, 'Test', 'Name was not set');
         assert.isNull(info.CreateSchema, 'CreateSchema is Defined');
@@ -21,7 +20,7 @@ describe('ValidationInformation Spec', () => {
     it('catch empty Name', () => {
         try {
             let info = new ValidationInformation('', null, type({
-                name: Molly.Definitions.BaseTypes.custom.string()
+                name: BaseTypes.custom.string()
             }));
             assert.fail('no Error thrown');
         } catch (err) {
@@ -41,7 +40,7 @@ describe('ValidationInformation Spec', () => {
     it('catch check not allowed', () => {
         try {
             let info = new ValidationInformation('Test', null, type({
-                name: Molly.Definitions.BaseTypes.custom.string()
+                name: BaseTypes.custom.string()
             }));
             info.checkCreate({});
             assert.fail('no Error thrown');
@@ -50,7 +49,7 @@ describe('ValidationInformation Spec', () => {
         }
         try {
             let info = new ValidationInformation('Test', null, null, type({
-                name: Molly.Definitions.BaseTypes.custom.string()
+                name: BaseTypes.custom.string()
             }));
             info.checkRead({});
             assert.fail('no Error thrown');
@@ -59,7 +58,7 @@ describe('ValidationInformation Spec', () => {
         }
         try {
             let info = new ValidationInformation('Test', null, type({
-                name: Molly.Definitions.BaseTypes.custom.string()
+                name: BaseTypes.custom.string()
             }));
             info.checkUpdate({});
             assert.fail('no Error thrown');
@@ -68,7 +67,7 @@ describe('ValidationInformation Spec', () => {
         }
         try {
             let info = new ValidationInformation('Test', null, type({
-                name: Molly.Definitions.BaseTypes.custom.string()
+                name: BaseTypes.custom.string()
             }));
             info.checkDelete({});
             assert.fail('no Error thrown');

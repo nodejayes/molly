@@ -1,4 +1,16 @@
-import {Molly, IRouteInvoker} from './../../src/index';
+import {
+    ExpressServer, 
+    BaseTypes, 
+    IRouteInvoker, 
+    CollectionInformation, 
+    JoinType, 
+    MongoLookup,
+    ValidationInformation,
+    OperationInformation,
+    registerCollection,
+    registerOperation,
+    registerValidation
+} from './../../src/index';
 import {assert} from 'chai';
 import 'mocha';
 import { MollyConfiguration } from '../../src/models/configuration/molly_configuration';
@@ -6,12 +18,12 @@ import { MollyConfiguration } from '../../src/models/configuration/molly_configu
 const request = require('request-promise');
 
 describe('Molly Server Spec', () => {
-    let server = new Molly.Serve.ExpressServer();
-    let customString = Molly.Definitions.BaseTypes.custom.string();
-    let mongoDbObjectId = Molly.Definitions.BaseTypes.mongoDbObjectId;
-    let array = Molly.Definitions.BaseTypes.custom.array();
-    let bool = Molly.Definitions.BaseTypes.bool;
-    let type = Molly.Definitions.BaseTypes.type;
+    let server = new ExpressServer();
+    let customString = BaseTypes.custom.string();
+    let mongoDbObjectId = BaseTypes.mongoDbObjectId;
+    let array = BaseTypes.custom.array();
+    let bool = BaseTypes.bool;
+    let type = BaseTypes.type;
     let rights = [];
     let groups = [];
     let users = [];
@@ -29,9 +41,9 @@ describe('Molly Server Spec', () => {
 
     describe('Define Schema', () => {
         it('setup user schema', async () => {
-            let user = new Molly.Models.Configuration.CollectionInformation('user', [
-                new Molly.Models.Configuration.MongoLookup('group', 'group', '_id', Molly.JoinType.ONEONE),
-                new Molly.Models.Configuration.MongoLookup('right', 'group.rights', '_id', Molly.JoinType.ONEMANY)
+            let user = new CollectionInformation('user', [
+                new MongoLookup('group', 'group', '_id', JoinType.ONEONE),
+                new MongoLookup('right', 'group.rights', '_id', JoinType.ONEMANY)
             ], async (col) => {
                 await col.createIndex({
                     username: 1,
@@ -41,8 +53,8 @@ describe('Molly Server Spec', () => {
                     background: true,
                 });
             });
-            let group = new Molly.Models.Configuration.CollectionInformation('group', [
-                new Molly.Models.Configuration.MongoLookup('right', 'rights', '_id', Molly.JoinType.ONEMANY)
+            let group = new CollectionInformation('group', [
+                new MongoLookup('right', 'rights', '_id', JoinType.ONEMANY)
             ], async (col) => {
                 await col.createIndex({
                     name: 1,
@@ -52,7 +64,7 @@ describe('Molly Server Spec', () => {
                     background: true,
                 });
             });
-            let right = new Molly.Models.Configuration.CollectionInformation('right', null, async (col) => {
+            let right = new CollectionInformation('right', null, async (col) => {
                 await col.createIndex({
                     key: 1,
                 }, {
@@ -126,26 +138,23 @@ describe('Molly Server Spec', () => {
                 id: mongoDbObjectId.required()
             });
     
-            let userV = new Molly.Models.Configuration.ValidationInformation(
+            let userV = new ValidationInformation(
                 'user', userCreateSchema, userReadSchema, userUpdateSchema, userDeleteSchema
             );
-            let groupV = new Molly.Models.Configuration.ValidationInformation(
+            let groupV = new ValidationInformation(
                 'group', groupCreateSchema, groupReadSchema, groupUpdateSchema, groupDeleteSchema
             );
-            let rightV = new Molly.Models.Configuration.ValidationInformation(
+            let rightV = new ValidationInformation(
                 'right', rightCreateSchema, rightReadSchema, rightUpdateSchema, rightDeleteSchema
             );
     
-            Molly.Logic.Configuration.validationInfos.push(userV);
-            Molly.Logic.Configuration.validationInfos.push(groupV);
-            Molly.Logic.Configuration.validationInfos.push(rightV);
+            registerValidation(userV);
+            registerValidation(groupV);
+            registerValidation(rightV);
     
-            Molly.Logic.Configuration.collectionInfos.push(user);
-            Molly.Logic.Configuration.collectionInfos.push(group);
-            Molly.Logic.Configuration.collectionInfos.push(right);
-            
-            assert.equal(Molly.Logic.Configuration.validationInfos.length, 3, 'not enough validations');
-            assert.equal(Molly.Logic.Configuration.collectionInfos.length, 3, 'not enough collections');
+            registerCollection(user);
+            registerCollection(group);
+            registerCollection(right);
         });
     });
 
@@ -540,25 +549,21 @@ describe('Molly Server Spec', () => {
         });
 
         it('register some operation', () => {
-            let countUser = new Molly.Models.Configuration.OperationInformation('countUser', async (inv: IRouteInvoker) => {
+            let countUser = new OperationInformation('countUser', async (inv: IRouteInvoker) => {
                 let user = await inv.read('user', {});
                 return user.length;
             });
-            let passParameter = new Molly.Models.Configuration.OperationInformation('passParameter', async (inv: IRouteInvoker, params: any) => {
+            let passParameter = new OperationInformation('passParameter', async (inv: IRouteInvoker, params: any) => {
                 return params;
             });
 
-            Molly.Logic.Configuration.operationInfos.push(countUser);
-            Molly.Logic.Configuration.operationInfos.push(passParameter);
-
-            assert.equal(Molly.Logic.Configuration.operationInfos.length, 2);
-            assert.equal(Molly.Logic.Configuration.operationInfos[0].Name, 'countUser');
-            assert.equal(Molly.Logic.Configuration.operationInfos[1].Name, 'passParameter');
+            registerOperation(countUser);
+            registerOperation(passParameter);
         });
 
         it('catch empty operation name', () => {
             try {
-                new Molly.Models.Configuration.OperationInformation('', () => {});
+                new OperationInformation('', () => {});
                 assert.fail('error not thrown');
             } catch (err) {
                 assert.equal(err.message, 'invalid name for operation ');

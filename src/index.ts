@@ -1,22 +1,22 @@
-import {Database as DB} from './database/index';
-import {Definitions as DEF} from './definitions/index';
-import {Models as MOD} from './models/index';
-import {Serve as S} from './serve/index';
+import {Logic} from './logic';
+import { ValidationInformation, CollectionInformation, OperationInformation } from '.';
 
-import {Logic as LOGI} from './logic';
-import {JoinType as JT} from './models/configuration/lookup';
-export * from './interfaces/RouteInvoker';
-
-/**
- * Molly Modul
- * @module Molly
- */
-export namespace Molly {
-    export let Database = DB;
-    export let Definitions = DEF;
-    export let Models = MOD;
-    export let Serve = S;
-
-    export let Logic = LOGI;
-    export let JoinType = JT;
+export function registerValidation(v: ValidationInformation) {
+    Logic.Configuration.validationInfos.push(v);
 }
+
+export function registerCollection(c: CollectionInformation) {
+    Logic.Configuration.collectionInfos.push(c);
+}
+
+export function registerOperation(o: OperationInformation) {
+    Logic.Configuration.operationInfos.push(o);
+}
+
+export * from './definitions/base_types';
+export * from './models/configuration/lookup';
+export * from './serve/server';
+export * from './interfaces/RouteInvoker';
+export * from './models/configuration/operation_information';
+export * from './models/configuration/validation_information';
+export * from './models/configuration/collection_information';

@@ -1,8 +1,6 @@
-import {Molly} from './../../../../src/index';
+import {CollectionInformation} from './../../../../src/index';
 import {assert} from 'chai';
 import 'mocha'
-
-const CollectionInformation = Molly.Models.Configuration.CollectionInformation;
 
 describe('CollectionInformation Spec', () => {
     it('can create', () => {

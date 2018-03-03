@@ -1,9 +1,6 @@
-import {Molly} from './../../../../src/index';
+import {MongoLookup, JoinType} from './../../../../src/index';
 import {assert} from 'chai';
 import 'mocha'
-
-let MongoLookup = Molly.Models.Configuration.MongoLookup;
-let JoinType = Molly.JoinType;
 
 describe('MongoLookup Spec', async () => {
     it('construct MongoLookup', () => {
