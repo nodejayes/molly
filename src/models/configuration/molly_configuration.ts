@@ -1,5 +1,6 @@
 import {CollectionInformation} from './collection_information';
 import {ValidationInformation} from './validation_information';
+import {OperationInformation} from './operation_information';
 
 /**
  * Configuration Object
@@ -14,9 +15,11 @@ import {ValidationInformation} from './validation_information';
 export class MollyConfiguration {
     collectionInfos: Array<CollectionInformation>;
     validationInfos: Array<ValidationInformation>;
+    operationInfos: Array<OperationInformation>;
 
     constructor() {
         this.collectionInfos = new Array<CollectionInformation>();
         this.validationInfos = new Array<ValidationInformation>();
+        this.operationInfos = new Array<OperationInformation>();
     }
 }

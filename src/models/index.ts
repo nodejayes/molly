@@ -4,6 +4,7 @@ import {CollectionInformation as CI} from './configuration/collection_informatio
 import {MollyConfiguration as MC} from './configuration/molly_configuration';
 import {ValidationInformation as VI} from './configuration/validation_information';
 import {MongoLookup as LOOK, MongoLookup} from './configuration/lookup';
+import {OperationInformation as OI} from './configuration/operation_information';
 
 export namespace Models {
     export namespace Communicate {
@@ -15,5 +16,6 @@ export namespace Models {
         export let MollyConfiguration = MC;
         export let ValidationInformation = VI;
         export let MongoLookup = LOOK;
+        export let OperationInformation = OI;
     }
 }

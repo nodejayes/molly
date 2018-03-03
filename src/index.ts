@@ -5,6 +5,7 @@ import {Serve as S} from './serve/index';
 
 import {Logic as LOGI} from './logic';
 import {JoinType as JT} from './models/configuration/lookup';
+export * from './interfaces/RouteInvoker';
 
 /**
  * Molly Modul

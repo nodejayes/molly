@@ -1,4 +1,4 @@
-import {Molly} from './../../src/index';
+import {Molly, IRouteInvoker} from './../../src/index';
 import {assert} from 'chai';
 import 'mocha';
 import { MollyConfiguration } from '../../src/models/configuration/molly_configuration';
@@ -537,6 +537,74 @@ describe('Molly Server Spec', () => {
             assert.isNull(user.errors, 'errors is not null');
             assert.isArray(user.data, 'user data are not an array');
             assert.equal(user.data.length, 0, 'user already exists');
+        });
+
+        it('register some operation', () => {
+            let countUser = new Molly.Models.Configuration.OperationInformation('countUser', async (inv: IRouteInvoker) => {
+                let user = await inv.read('user', {});
+                return user.length;
+            });
+            let passParameter = new Molly.Models.Configuration.OperationInformation('passParameter', async (inv: IRouteInvoker, params: any) => {
+                return params;
+            });
+
+            Molly.Logic.Configuration.operationInfos.push(countUser);
+            Molly.Logic.Configuration.operationInfos.push(passParameter);
+
+            assert.equal(Molly.Logic.Configuration.operationInfos.length, 2);
+            assert.equal(Molly.Logic.Configuration.operationInfos[0].Name, 'countUser');
+            assert.equal(Molly.Logic.Configuration.operationInfos[1].Name, 'passParameter');
+        });
+
+        it('catch empty operation name', () => {
+            try {
+                new Molly.Models.Configuration.OperationInformation('', () => {});
+                assert.fail('error not thrown');
+            } catch (err) {
+                assert.equal(err.message, 'invalid name for operation ');
+            }
+        });
+
+        it('operation without parameter', async () => {
+            let rs = await request({
+                method: 'POST',
+                uri: `http://localhost:8086/operation/countUser`,
+                body: {
+                    params: {}
+                },
+                json: true
+            });
+            assert.isNull(rs.errors);
+            assert.equal(rs.data, 2);
+        });
+
+        it('operation with parameter', async () => {
+            let rs = await request({
+                method: 'POST',
+                uri: `http://localhost:8086/operation/passParameter`,
+                body: {
+                    params: 'parameter'
+                },
+                json: true
+            });
+            assert.isNull(rs.errors);
+            assert.equal(rs.data, 'parameter');
+        });
+
+        it('catch operation not found', async () => {
+            try {
+                let rs = await request({
+                    method: 'POST',
+                    uri: `http://localhost:8086/operation/nothing`,
+                    body: {
+                        params: 'parameter'
+                    },
+                    json: true
+                });
+                assert.fail('error not thrown');
+            } catch (err) {
+                assert.equal(err.message, '500 - {"data":null,"errors":"operation not found nothing"}');
+            }
         });
     });
 });

@@ -8,6 +8,7 @@ import { ValidationInformation } from '../models/configuration/validation_inform
 import {MongoDb} from './../database/mongo_db';
 import { CollectionStore } from '../models/configuration/collection_store';
 import {MongoLookup} from './../models/configuration/lookup';
+import { OperationInformation } from '../models/configuration/operation_information';
 
 /**
  * holds all available Routes
@@ -18,8 +19,17 @@ import {MongoLookup} from './../models/configuration/lookup';
 export class Routes {
     static get Names(): Array<string> {
         return [
-            'create', 'read', 'update', 'delete'
+            'create', 'read', 'update', 'delete', 'operation'
         ];
+    }
+    private static _getOperation(action: string, model: string): OperationInformation {
+        let op = Logic.Configuration.operationInfos.filter((e: OperationInformation) => {
+            return e.Name === model;
+        });
+        if (op.length < 1) {
+            return null;
+        }
+        return op[0];
     }
     private static _getValidation(action: string, model: string): ValidationInformation {
         let validations = Logic.Configuration.validationInfos.filter((e: ValidationInformation) => {
@@ -184,7 +194,11 @@ export class Routes {
      * @returns {ResponseModel} 
      * @memberof Routes
      */
-    static operation(data: IRequestModel): ResponseModel {
-        return new ResponseModel(true, false);
+    static async operation(data: IRequestModel): Promise<ResponseModel> {
+        let operation = Routes._getOperation(data.Action, data.Model);
+        if (operation === null) {
+            throw new Error(`operation not found ${data.Model}`);
+        }
+        return new ResponseModel(await operation.invoke(data.Parameter), false);
     }
 }
