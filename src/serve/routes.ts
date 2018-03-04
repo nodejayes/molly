@@ -1,6 +1,6 @@
 import {Collection, ObjectId} from 'mongodb';
 import {hasIn, unset, keys} from 'lodash';
-import {IRequestModel} from './../models/communicate/request';
+import {IRequestModel} from './../interfaces/request_model';
 import {ResponseModel} from './../models/communicate/response';
 
 import {Logic} from './../logic';

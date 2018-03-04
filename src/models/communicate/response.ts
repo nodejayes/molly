@@ -1,7 +1,4 @@
-export interface IResponseModel {
-    data: string;
-    errors: string;
-}
+import {IResponseModel} from './../../interfaces/response_model';
 
 export class ResponseModel implements IResponseModel {
     data: any;
