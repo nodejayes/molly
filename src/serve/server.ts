@@ -1,4 +1,6 @@
 import * as express from 'express';
+import {Server as WsServer} from 'ws';
+import {createServer} from 'http';
 import * as helmet from 'helmet';
 import * as bodyParser from 'body-parser';
 import {keys} from 'lodash';
@@ -9,6 +11,9 @@ import {MongoDb} from './../database/mongo_db';
 import {Routes} from './routes';
 import {RequestModel} from './../models/communicate/request';
 import {ResponseModel} from './../models/communicate/response';
+import { RouteInvoker } from './routeinvoker';
+import { WebsocketMessage } from '../models/communicate/websocketmessage';
+import { IRequestModel } from '..';
 
 /**
  * implement a small Express Server
@@ -34,6 +39,8 @@ export class ExpressServer {
      * @memberof ExpressServer
      */
     private _server: Server;
+    private _WsServer: WsServer;
+    private _invoker: RouteInvoker;
 
     /**
      * the Express Server Instance
@@ -48,6 +55,7 @@ export class ExpressServer {
      * @memberof Server
      */
     constructor() {
+        this._invoker = new RouteInvoker();
         this._server = null;
         this._routeNames = Routes.Names;
         this.App = express();
@@ -66,6 +74,43 @@ export class ExpressServer {
         this.App.use(bodyParser.json());
         this.App.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
             this._filterRequest.bind(this)(req, res, next);
+        });
+    }
+
+    private _registerWebsocket(): void {
+        this._WsServer = new WsServer({server: this._server});
+        this._WsServer.on('connection', (ws) => {
+            ws.on('message', async (msg: string) => {
+                let tmp = null;
+                let result: WebsocketMessage = null;
+                try {
+                    let data = <IRequestModel>JSON.parse(msg);
+                    switch(data.Action) {
+                        case 'create':
+                            tmp = await this._invoker.create(data.Model, data.Parameter);
+                            break;
+                        case 'read':
+                            tmp = await this._invoker.read(data.Model, data.Parameter, data.Properties);
+                            break;
+                        case 'update':
+                            tmp = await this._invoker.update(data.Model, data.Parameter);
+                            break;
+                        case 'delete':
+                            tmp = await this._invoker.delete(data.Model, data.Parameter);
+                            break;
+                        case 'operation':
+                            tmp = await this._invoker.operation(data.Model, data.Parameter);
+                            break;
+                    }
+                    result = new WebsocketMessage(`${data.Action}_${data.Model}`, tmp);
+                } catch (err) {
+                    tmp = err.message;
+                    result = new WebsocketMessage(`ERROR`, tmp);
+                } finally {
+                    ws.send(result.toString());
+                }
+            });
+            ws.send(new WebsocketMessage('initFinish', true).toString());
         });
     }
 
@@ -110,7 +155,7 @@ export class ExpressServer {
      * @returns {Promise<string>} 
      * @memberof Server
      */
-    async start(binding: string, port: number, mongoUrl: string, mongoDatabase: string, clear = false): Promise<string> {
+    async start(binding: string, port: number, mongoUrl: string, mongoDatabase: string, clear = false, useWebsocket?: boolean): Promise<string> {
         if (mongoUrl[mongoUrl.length - 1] !== '/') {
             mongoUrl += '/';
         }
@@ -121,6 +166,9 @@ export class ExpressServer {
                 resolve(`server listen on http://${binding}:${port}/`);
             });
             this._server.on('error', reject);
+            if (useWebsocket) {
+                this._registerWebsocket();
+            }
         });
     }
 
@@ -129,7 +177,7 @@ export class ExpressServer {
      * 
      * @memberof ExpressServer
      */
-    stop() {
+    async stop() {
         if (this._server !== null) {
             this._server.close();
             this._server = null;

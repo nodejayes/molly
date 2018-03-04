@@ -1,19 +1,7 @@
 import {ObjectId} from 'mongodb';
 import {Request} from 'express';
 import {hasIn, keys, isObject, isString, isArray} from 'lodash';
-
-/**
- * Interface for RequestModel
- * 
- * @export
- * @interface IRequestModel
- */
-export interface IRequestModel {
-    Action: string;
-    Model: string;
-    Parameter: any;
-    Properties: any;
-}
+import {IRequestModel} from './../../interfaces/request_model';
 
 /**
  * holds the Request Parameter

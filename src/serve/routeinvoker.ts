@@ -1,6 +1,6 @@
 import {Routes} from './routes';
 import { RequestModel } from '../models/communicate/request';
-import {IRouteInvoker} from './../interfaces/RouteInvoker';
+import {IRouteInvoker} from './../interfaces/route_invoker';
 
 export class RouteInvoker implements IRouteInvoker {
     async create(model: string, params: any): Promise<Array<object>> {
@@ -42,6 +42,18 @@ export class RouteInvoker implements IRouteInvoker {
     async delete(model: string, params: any): Promise<boolean> {
         let res = await Routes.delete({
             Action: 'delete',
+            Model: model,
+            Parameter: params,
+            Properties: undefined
+        });
+        if (res.errors) {
+            throw new Error(res.errors);
+        }
+        return res.data;
+    }
+    async operation(model: string, params: any): Promise<any> {
+        let res = await Routes.operation({
+            Action: 'operation',
             Model: model,
             Parameter: params,
             Properties: undefined

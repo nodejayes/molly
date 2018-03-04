@@ -13,7 +13,6 @@ import {
 } from './../../src/index';
 import {assert} from 'chai';
 import 'mocha';
-import { MollyConfiguration } from '../../src/models/configuration/molly_configuration';
 
 const request = require('request-promise');
 
@@ -34,8 +33,8 @@ describe('Molly Server Spec', () => {
             assert.equal(msg, 'server listen on http://localhost:8086/', 'invalid return message');
         });
 
-        it('stop server', () => {
-            server.stop();
+        it('stop server', async () => {
+            await server.stop();
         });
     });
 
@@ -163,8 +162,8 @@ describe('Molly Server Spec', () => {
             await server.start('localhost', 8086, 'mongodb://localhost:27017/', 'test_molly', true);
         });
 
-        after(() => {
-            server.stop();
+        after(async () => {
+            await server.stop();
         });
 
         it('create rights', async () => {

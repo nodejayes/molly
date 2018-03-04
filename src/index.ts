@@ -16,7 +16,10 @@ export function registerOperation(o: OperationInformation) {
 export * from './definitions/base_types';
 export * from './models/configuration/lookup';
 export * from './serve/server';
-export * from './interfaces/RouteInvoker';
+export * from './interfaces/request_model';
+export * from './interfaces/response_model';'initFinish'
+export * from './interfaces/route_invoker';
+export * from './interfaces/websocket_message';
 export * from './models/configuration/operation_information';
 export * from './models/configuration/validation_information';
 export * from './models/configuration/collection_information';
