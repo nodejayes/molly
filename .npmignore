@@ -1,0 +1,13 @@
+.nyc_output/**
+.vscode/**
+coverage/**
+docs/**
+node_modules/**
+scripts/**
+spec/**
+src/**
+.gitignore
+.nycrc
+tsconfig.json
+tslint.json
+yarn.lock
