@@ -17,11 +17,29 @@ import { OperationInformation } from '../models/configuration/operation_informat
  * @class Routes
  */
 export class Routes {
+    /**
+     * get the List of names for valid Routes
+     * 
+     * @readonly
+     * @static
+     * @type {Array<string>}
+     * @memberof Routes
+     */
     static get Names(): Array<string> {
         return [
             'create', 'read', 'update', 'delete', 'operation'
         ];
     }
+    /**
+     * Get the Operation based on Request
+     * 
+     * @private
+     * @static
+     * @param {string} action 
+     * @param {string} model 
+     * @returns {OperationInformation} 
+     * @memberof Routes
+     */
     private static _getOperation(action: string, model: string): OperationInformation {
         let op = Logic.Configuration.operationInfos.filter((e: OperationInformation) => {
             return e.Name === model;
@@ -31,6 +49,16 @@ export class Routes {
         }
         return op[0];
     }
+    /**
+     * get the Validation based on Request
+     * 
+     * @private
+     * @static
+     * @param {string} action 
+     * @param {string} model 
+     * @returns {ValidationInformation} 
+     * @memberof Routes
+     */
     private static _getValidation(action: string, model: string): ValidationInformation {
         let validations = Logic.Configuration.validationInfos.filter((e: ValidationInformation) => {
             return e.Name === model;
@@ -40,6 +68,15 @@ export class Routes {
         }
         return validations[0];
     }
+    /**
+     * get Collection for Model based on Request
+     * 
+     * @private
+     * @static
+     * @param {string} model 
+     * @returns {CollectionStore} 
+     * @memberof Routes
+     */
     private static _getCollection(model: string): CollectionStore {
         let collections = MongoDb.Collections.filter((e: CollectionStore) => {
             return e.collection.collectionName === model;
@@ -49,6 +86,16 @@ export class Routes {
         }
         return collections[0];
     }
+    /**
+     * get the Pipeline for Read
+     * 
+     * @private
+     * @static
+     * @param {Array<MongoLookup>} joins 
+     * @param {IRequestModel} data 
+     * @returns {Array<Object>} 
+     * @memberof Routes
+     */
     private static _getPipeline(joins: Array<MongoLookup>, data: IRequestModel): Array<Object> {
         let restrictions = null;
         let hasRestrictions = hasIn(data.Parameter, 'RESTRICTIONS');

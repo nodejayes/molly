@@ -3,16 +3,69 @@ import {Logic} from '../logic';
 import {CollectionInformation} from '../models/configuration/collection_information';
 import {CollectionStore} from '../models/configuration/collection_store';
 
+/**
+ * a MongoDb Instance
+ * 
+ * @export
+ * @class MongoDb
+ */
 export class MongoDb {
+    /**
+     * Database Name
+     * 
+     * @private
+     * @static
+     * @type {string}
+     * @memberof MongoDb
+     */
     private static _db: string;
+    /**
+     * Database Instance
+     * 
+     * @private
+     * @static
+     * @type {MongoClient}
+     * @memberof MongoDb
+     */
     private static _client: MongoClient;
+    /**
+     * Database Collections
+     * 
+     * @private
+     * @static
+     * @memberof MongoDb
+     */
     private static _existCollections = new Array<Collection<any>>();
+    /**
+     * Collection List as CollectionStore Element
+     * 
+     * @private
+     * @static
+     * @type {Array<CollectionStore>}
+     * @memberof MongoDb
+     */
     private static _collectionList: Array<CollectionStore>;
 
+    /**
+     * Refer an CollectionList
+     * 
+     * @readonly
+     * @static
+     * @memberof MongoDb
+     */
     static get Collections() {
         return this._collectionList;
     }
 
+    /**
+     * create Collection that not exists
+     * 
+     * @private
+     * @static
+     * @param {CollectionInformation} info 
+     * @param {boolean} clear 
+     * @memberof MongoDb
+     */
     private static async _createCollection(info: CollectionInformation, clear: boolean) {
         let names = this._existCollections.filter((col: Collection<any>) => {
             return col.collectionName === info.Name;
@@ -34,6 +87,13 @@ export class MongoDb {
         }
     }
 
+    /**
+     * create Collection that not exists
+     * 
+     * @static
+     * @param {boolean} clear 
+     * @memberof MongoDb
+     */
     static async createCollections(clear: boolean) {
         this._collectionList = new Array<CollectionStore>();
         this._existCollections = await this._client.db(this._db).collections();
@@ -43,6 +103,14 @@ export class MongoDb {
         }
     }
 
+    /**
+     * connect to Database
+     * 
+     * @static
+     * @param {any} url 
+     * @param {any} database 
+     * @memberof MongoDb
+     */
     static async connect(url, database) {
         this._db = database;
         this._client = await MongoClient.connect(`${url}${database}`, {
@@ -52,6 +120,12 @@ export class MongoDb {
         });
     }
 
+    /**
+     * close the Connection to Database
+     * 
+     * @static
+     * @memberof MongoDb
+     */
     static close() {
         if (this._client !== null) {
             this._client.close();

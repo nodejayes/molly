@@ -39,7 +39,21 @@ export class ExpressServer {
      * @memberof ExpressServer
      */
     private _server: Server;
+    /**
+     * Websocket Server
+     * 
+     * @private
+     * @type {WsServer}
+     * @memberof ExpressServer
+     */
     private _WsServer: WsServer;
+    /**
+     * Route Invoker
+     * 
+     * @private
+     * @type {RouteInvoker}
+     * @memberof ExpressServer
+     */
     private _invoker: RouteInvoker;
 
     /**
@@ -77,6 +91,12 @@ export class ExpressServer {
         });
     }
 
+    /**
+     * create the Events for Websockets
+     * 
+     * @private
+     * @memberof ExpressServer
+     */
     private _registerWebsocket(): void {
         this._WsServer = new WsServer({server: this._server});
         this._WsServer.on('connection', (ws) => {
@@ -143,6 +163,13 @@ export class ExpressServer {
         }
     }
 
+    /**
+     * start the Schema Build in MongoDb
+     * 
+     * @private
+     * @param {boolean} clear 
+     * @memberof ExpressServer
+     */
     private async _buildSchema(clear: boolean) {
         await MongoDb.createCollections.bind(MongoDb, clear)();
     }

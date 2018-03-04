@@ -13,10 +13,32 @@ import {OperationInformation} from './operation_information';
  * @property validationInfo a Array of Validations for Types
  */
 export class MollyConfiguration {
+    /**
+     * List of Collection Informations
+     * 
+     * @type {Array<CollectionInformation>}
+     * @memberof MollyConfiguration
+     */
     collectionInfos: Array<CollectionInformation>;
+    /**
+     * List of Validation Informations
+     * 
+     * @type {Array<ValidationInformation>}
+     * @memberof MollyConfiguration
+     */
     validationInfos: Array<ValidationInformation>;
+    /**
+     * List of Operation Informations
+     * 
+     * @type {Array<OperationInformation>}
+     * @memberof MollyConfiguration
+     */
     operationInfos: Array<OperationInformation>;
 
+    /**
+     * Creates an instance of MollyConfiguration.
+     * @memberof MollyConfiguration
+     */
     constructor() {
         this.collectionInfos = new Array<CollectionInformation>();
         this.validationInfos = new Array<ValidationInformation>();

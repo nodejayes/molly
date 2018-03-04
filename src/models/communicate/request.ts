@@ -11,9 +11,33 @@ import {IRequestModel} from './../../interfaces/request_model';
  * @implements {IRequestModel}
  */
 export class RequestModel implements IRequestModel {
+    /**
+     * the Action of the Request
+     * 
+     * @type {string}
+     * @memberof RequestModel
+     */
     Action: string;
+    /**
+     * the Model where the Action is executed
+     * 
+     * @type {string}
+     * @memberof RequestModel
+     */
     Model: string;
+    /**
+     * the Parameters for the Action
+     * 
+     * @type {*}
+     * @memberof RequestModel
+     */
     Parameter: any;
+    /**
+     * the Return Filter for the Read Operation of the Model
+     * 
+     * @type {*}
+     * @memberof RequestModel
+     */
     Properties: any;
 
     /**
@@ -40,6 +64,14 @@ export class RequestModel implements IRequestModel {
         }
     }
 
+    /**
+     * replace the String MongoDb Object ids with ObjectId
+     * 
+     * @private
+     * @param {*} source 
+     * @returns {*} 
+     * @memberof RequestModel
+     */
     private _replaceStringIds(source: any): any {
         for (let key in source) {
             if (!source.hasOwnProperty(key)) {

@@ -1,9 +1,34 @@
 import {IResponseModel} from './../../interfaces/response_model';
 
+/**
+ * The Response Model
+ * 
+ * @export
+ * @class ResponseModel
+ * @implements {IResponseModel}
+ */
 export class ResponseModel implements IResponseModel {
+    /**
+     * Data that was generated from Action
+     * 
+     * @type {*}
+     * @memberof ResponseModel
+     */
     data: any;
+    /**
+     * Errors that are thrown by Action
+     * 
+     * @type {string}
+     * @memberof ResponseModel
+     */
     errors: string;
 
+    /**
+     * Creates an instance of ResponseModel.
+     * @param {*} msg 
+     * @param {boolean} iserror 
+     * @memberof ResponseModel
+     */
     constructor(msg: any, iserror: boolean) {
         if (iserror) {
             this.data = null;
@@ -14,6 +39,12 @@ export class ResponseModel implements IResponseModel {
         }
     }
 
+    /**
+     * convert the ResponseModel to a JSON String
+     * 
+     * @returns 
+     * @memberof ResponseModel
+     */
     toString() {
         return JSON.stringify(this);
     }

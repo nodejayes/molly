@@ -1,3 +1,10 @@
+
+/**
+ * Interface for the RouteInvoker
+ * 
+ * @export
+ * @interface IRouteInvoker
+ */
 export interface IRouteInvoker {
     create(model: string, params: any): Promise<Array<object>>;
     read(model: string, params: any, props?: any): Promise<Array<object>>;

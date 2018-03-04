@@ -1,14 +1,32 @@
 import {Logic} from './logic';
 import { ValidationInformation, CollectionInformation, OperationInformation } from '.';
 
+/**
+ * register a ValidationInformation on Molly
+ * 
+ * @export
+ * @param {ValidationInformation} v 
+ */
 export function registerValidation(v: ValidationInformation) {
     Logic.Configuration.validationInfos.push(v);
 }
 
+/**
+ * register a CollectionInformation on Molly
+ * 
+ * @export
+ * @param {CollectionInformation} c 
+ */
 export function registerCollection(c: CollectionInformation) {
     Logic.Configuration.collectionInfos.push(c);
 }
 
+/**
+ * register a OperationInformation on Molly
+ * 
+ * @export
+ * @param {OperationInformation} o 
+ */
 export function registerOperation(o: OperationInformation) {
     Logic.Configuration.operationInfos.push(o);
 }
