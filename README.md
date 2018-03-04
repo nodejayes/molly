@@ -12,12 +12,12 @@ The goal of Molly is to create services that are as flexible and easy to configu
 
 ## Howtos
 
-[Setup Server](setup-server)
+[Setup Server](https://gitlab.sw-gis.de/root/molly/wikis/setup-server)
 
-[Define some Models](how-to-define-models)
+[Define some Models](https://gitlab.sw-gis.de/root/molly/wikis/how-to-define-models)
 
-[Call the CRUD Operations over Request](call-over-request)
+[Call the CRUD Operations over Request](https://gitlab.sw-gis.de/root/molly/wikis/call-over-request)
 
-[Call over Websockets](use-websockets)
+[Call over Websockets](https://gitlab.sw-gis.de/root/molly/wikis/use-websockets)
 
-[Define Custom Operations](custom-operations)
+[Define Custom Operations](https://gitlab.sw-gis.de/root/molly/wikis/custom-operations)
