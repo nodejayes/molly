@@ -1,8 +1,8 @@
 import {
-    ExpressServer, 
-    BaseTypes, 
-    IRouteInvoker,  
-    JoinType, 
+    ExpressServer,
+    BaseTypes,
+    IRouteInvoker,
+    JoinType,
     MongoLookup,
     collection, operation, validation
 } from './../../src/index';
@@ -164,7 +164,7 @@ describe('Molly Server Spec', () => {
             assert.equal(rs.data.length, 5, 'invalid count');
             rights = rs.data;
         });
-    
+
         it('create groups', async () => {
             let groupData = [
                 {
@@ -198,7 +198,7 @@ describe('Molly Server Spec', () => {
             assert.equal(rs.data.length, 3, 'invalid count');
             groups = rs.data;
         });
-    
+
         it('create users', async () => {
             let userData = [
                 {
@@ -370,7 +370,7 @@ describe('Molly Server Spec', () => {
             assert.equal(resUsers.data.length, 1, 'invalid users count');
             assert.equal(resUsers.data[0]._id, users[0]._id, 'invalid data in result');
         });
-        
+
         it('replace ids in $ne', async () => {
             let resUsers = await request({
                 method: 'POST',

@@ -14,5 +14,5 @@
       "text-summary",
       "lcov"
     ],
-    "all": true
+    "all": false
 }
