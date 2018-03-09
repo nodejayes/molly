@@ -25,8 +25,8 @@ describe('Websocket Spec', () => {
         it('setup user schema', async () => {
             @collection({
                 lookup: [
-                    new MongoLookup('group', 'group', '_id', JoinType.ONEONE),
-                    new MongoLookup('right', 'group.rights', '_id', JoinType.ONEMANY)
+                    new MongoLookup('Group', 'group', '_id', JoinType.ONEONE),
+                    new MongoLookup('Right', 'group.rights', '_id', JoinType.ONEMANY)
                 ],
                 index: async (col) => {
                     await col.createIndex({
@@ -54,7 +54,7 @@ describe('Websocket Spec', () => {
 
             @collection({
                 lookup: [
-                    new MongoLookup('right', 'rights', '_id', JoinType.ONEMANY)
+                    new MongoLookup('Right', 'rights', '_id', JoinType.ONEMANY)
                 ],
                 index: async (col) => {
                     await col.createIndex({
@@ -129,7 +129,7 @@ describe('Websocket Spec', () => {
                     case 'initFinish':
                         c.send(JSON.stringify(<IRequestModel>{
                             Action: 'create',
-                            Model: 'user',
+                            Model: 'User',
                             Parameter: [
                                 {
                                     username: 'Test',
@@ -162,7 +162,7 @@ describe('Websocket Spec', () => {
                     case 'initFinish':
                         c.send(JSON.stringify(<IRequestModel>{
                             Action: 'read',
-                            Model: 'user',
+                            Model: 'User',
                             Parameter: {}
                         }));
                         break;
@@ -211,7 +211,7 @@ describe('Websocket Spec', () => {
                     case 'initFinish':
                         c.send(JSON.stringify(<IRequestModel>{
                             Action: 'update',
-                            Model: 'user',
+                            Model: 'User',
                             Parameter: {
                                 id: user[0]._id,
                                 updateSet: {
@@ -240,7 +240,7 @@ describe('Websocket Spec', () => {
                     case 'initFinish':
                         c.send(JSON.stringify(<IRequestModel>{
                             Action: 'delete',
-                            Model: 'user',
+                            Model: 'User',
                             Parameter: {
                                 id: user[0]._id
                             }

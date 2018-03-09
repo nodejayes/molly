@@ -37,8 +37,8 @@ describe('Molly Server Spec', () => {
         it('setup user schema', async () => {
             @collection({
                 lookup: [
-                    new MongoLookup('group', 'group', '_id', JoinType.ONEONE),
-                    new MongoLookup('right', 'group.rights', '_id', JoinType.ONEMANY)
+                    new MongoLookup('Group', 'group', '_id', JoinType.ONEONE),
+                    new MongoLookup('Right', 'group.rights', '_id', JoinType.ONEMANY)
                 ],
                 index: async (col) => {
                     await col.createIndex({
@@ -52,6 +52,9 @@ describe('Molly Server Spec', () => {
                 allow: 'CUD'
             })
             class User {
+                @validation({type: BaseTypes.mongoDbObjectId})
+                _id: string;
+
                 @validation({type: BaseTypes.stringDefaultLength})
                 username: string;
 
@@ -66,7 +69,7 @@ describe('Molly Server Spec', () => {
 
             @collection({
                 lookup: [
-                    new MongoLookup('right', 'rights', '_id', JoinType.ONEMANY)
+                    new MongoLookup('Right', 'rights', '_id', JoinType.ONEMANY)
                 ],
                 index: async (col) => {
                     await col.createIndex({
@@ -80,6 +83,9 @@ describe('Molly Server Spec', () => {
                 allow: 'CUD'
             })
             class Group {
+                @validation({type: BaseTypes.mongoDbObjectId})
+                _id: string;
+
                 @validation({type: BaseTypes.stringDefaultLength})
                 name: string;
 
@@ -100,6 +106,9 @@ describe('Molly Server Spec', () => {
                 allow: 'C'
             })
             class Right {
+                @validation({type: BaseTypes.mongoDbObjectId})
+                _id: string;
+
                 @validation({type: BaseTypes.stringDefaultLength})
                 key: string;
 
@@ -143,7 +152,7 @@ describe('Molly Server Spec', () => {
             ];
             let rs = await request({
                 method: 'POST',
-                uri: `http://localhost:8086/create/right`,
+                uri: `http://localhost:8086/create/Right`,
                 body: {
                     params: rightData
                 },
@@ -177,7 +186,7 @@ describe('Molly Server Spec', () => {
             ];
             let rs = await request({
                 method: 'POST',
-                uri: `http://localhost:8086/create/group`,
+                uri: `http://localhost:8086/create/Group`,
                 body: {
                     params: groupData
                 },
@@ -219,7 +228,7 @@ describe('Molly Server Spec', () => {
             ];
             let rs = await request({
                 method: 'POST',
-                uri: `http://localhost:8086/create/user`,
+                uri: `http://localhost:8086/create/User`,
                 body: {
                     params: userData
                 },
@@ -235,7 +244,7 @@ describe('Molly Server Spec', () => {
         it('read user', async () => {
             let resUsers = await request({
                 method: 'POST',
-                uri: 'http://localhost:8086/read/user',
+                uri: 'http://localhost:8086/read/User',
                 body: {
                     params: {}
                 },
@@ -252,7 +261,7 @@ describe('Molly Server Spec', () => {
         it('update user email', async () => {
             let res = await request({
                 method: 'POST',
-                uri: 'http://localhost:8086/update/user',
+                uri: 'http://localhost:8086/update/User',
                 body: {
                     params: {
                         id: users[0]._id,
@@ -267,7 +276,7 @@ describe('Molly Server Spec', () => {
             assert.equal(res.data, true, 'update maybe not work');
             let user = await request({
                 method: 'POST',
-                uri: 'http://localhost:8086/read/user',
+                uri: 'http://localhost:8086/read/User',
                 body: {
                     params: {
                         _id: users[0]._id
@@ -284,7 +293,7 @@ describe('Molly Server Spec', () => {
         it('read with restrictions', async () => {
             let resUsers = await request({
                 method: 'POST',
-                uri: 'http://localhost:8086/read/user',
+                uri: 'http://localhost:8086/read/User',
                 body: {
                     params: {
                         RESTRICTIONS: {
@@ -307,7 +316,7 @@ describe('Molly Server Spec', () => {
         it('replace ids in arrays', async () => {
             let resUsers = await request({
                 method: 'POST',
-                uri: 'http://localhost:8086/read/user',
+                uri: 'http://localhost:8086/read/User',
                 body: {
                     params: {
                         _id: {
@@ -325,7 +334,7 @@ describe('Molly Server Spec', () => {
         it('replace ids in $or', async () => {
             let resUsers = await request({
                 method: 'POST',
-                uri: 'http://localhost:8086/read/user',
+                uri: 'http://localhost:8086/read/User',
                 body: {
                     params: {
                         $or: [
@@ -346,7 +355,7 @@ describe('Molly Server Spec', () => {
         it('replace ids in $and', async () => {
             let resUsers = await request({
                 method: 'POST',
-                uri: 'http://localhost:8086/read/user',
+                uri: 'http://localhost:8086/read/User',
                 body: {
                     params: {
                         $and: [
@@ -365,7 +374,7 @@ describe('Molly Server Spec', () => {
         it('replace ids in $ne', async () => {
             let resUsers = await request({
                 method: 'POST',
-                uri: 'http://localhost:8086/read/user',
+                uri: 'http://localhost:8086/read/User',
                 body: {
                     params: {
                         _id: {$ne: users[0]._id}
@@ -383,7 +392,7 @@ describe('Molly Server Spec', () => {
         it('replace ids in $ne', async () => {
             let resUsers = await request({
                 method: 'POST',
-                uri: 'http://localhost:8086/read/user',
+                uri: 'http://localhost:8086/read/User',
                 body: {
                     params: {
                         _id: {$eq: users[0]._id}
@@ -400,7 +409,7 @@ describe('Molly Server Spec', () => {
         it('replace ids in $in', async () => {
             let resUsers = await request({
                 method: 'POST',
-                uri: 'http://localhost:8086/read/user',
+                uri: 'http://localhost:8086/read/User',
                 body: {
                     params: {
                         _id: {$in: [users[0]._id, users[2]._id]}
@@ -418,7 +427,7 @@ describe('Molly Server Spec', () => {
         it('filter result', async () => {
             let resUsers = await request({
                 method: 'POST',
-                uri: 'http://localhost:8086/read/user',
+                uri: 'http://localhost:8086/read/User',
                 body: {
                     params: {},
                     props: {
@@ -443,7 +452,7 @@ describe('Molly Server Spec', () => {
         it('filter result recursive', async () => {
             let resUsers = await request({
                 method: 'POST',
-                uri: 'http://localhost:8086/read/user',
+                uri: 'http://localhost:8086/read/User',
                 body: {
                     params: {},
                     props: {
@@ -474,7 +483,7 @@ describe('Molly Server Spec', () => {
         it('delete user', async () => {
             let res = await request({
                 method: 'POST',
-                uri: 'http://localhost:8086/delete/user',
+                uri: 'http://localhost:8086/delete/User',
                 body: {
                     params: {
                         id: users[0]._id
@@ -486,7 +495,7 @@ describe('Molly Server Spec', () => {
             assert.equal(res.data, true, 'delete maybe not work');
             let user = await request({
                 method: 'POST',
-                uri: 'http://localhost:8086/read/user',
+                uri: 'http://localhost:8086/read/User',
                 body: {
                     params: {
                         _id: users[0]._id
@@ -503,7 +512,7 @@ describe('Molly Server Spec', () => {
             class Ops {
                 @operation
                 async countUser(inv: IRouteInvoker) {
-                    let user = await inv.read('user', {});
+                    let user = await inv.read('User', {});
                     return user.length;
                 }
 

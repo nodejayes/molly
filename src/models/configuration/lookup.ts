@@ -83,7 +83,7 @@ export class MongoLookup {
                     },
                     {
                         '$unwind': {
-                            'path': `$${this.From}`,
+                            'path': `$${this.LocalField}`,
                             'preserveNullAndEmptyArrays': true,
                         }
                     }
