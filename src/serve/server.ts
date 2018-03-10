@@ -14,6 +14,7 @@ import {ResponseModel} from './../models/communicate/response';
 import { RouteInvoker } from './routeinvoker';
 import { WebsocketMessage } from '../models/communicate/websocketmessage';
 import { IRequestModel } from '..';
+import {ValidationRules} from './../decorators/register';
 
 /**
  * implement a small Express Server
@@ -186,6 +187,7 @@ export class ExpressServer {
         if (mongoUrl[mongoUrl.length - 1] !== '/') {
             mongoUrl += '/';
         }
+        ValidationRules.registerValidations();
         await MongoDb.connect(`${mongoUrl}${mongoDatabase}`, mongoDatabase);
         await this._buildSchema(clear);
         return new Promise<string>((resolve, reject) => {

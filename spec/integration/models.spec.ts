@@ -1,15 +1,10 @@
 import {
-    ExpressServer, 
-    BaseTypes, 
-    IRouteInvoker, 
-    CollectionInformation, 
-    JoinType, 
+    ExpressServer,
+    BaseTypes,
+    IRouteInvoker,
+    JoinType,
     MongoLookup,
-    ValidationInformation,
-    OperationInformation,
-    registerCollection,
-    registerOperation,
-    registerValidation
+    collection, operation, validation
 } from './../../src/index';
 import {assert} from 'chai';
 import 'mocha';
@@ -40,120 +35,86 @@ describe('Molly Server Spec', () => {
 
     describe('Define Schema', () => {
         it('setup user schema', async () => {
-            let user = new CollectionInformation('user', [
-                new MongoLookup('group', 'group', '_id', JoinType.ONEONE),
-                new MongoLookup('right', 'group.rights', '_id', JoinType.ONEMANY)
-            ], async (col) => {
-                await col.createIndex({
-                    username: 1,
-                }, {
-                    sparse: true,
-                    unique: true,
-                    background: true,
-                });
-            });
-            let group = new CollectionInformation('group', [
-                new MongoLookup('right', 'rights', '_id', JoinType.ONEMANY)
-            ], async (col) => {
-                await col.createIndex({
-                    name: 1,
-                }, {
-                    sparse: true,
-                    unique: true,
-                    background: true,
-                });
-            });
-            let right = new CollectionInformation('right', null, async (col) => {
-                await col.createIndex({
-                    key: 1,
-                }, {
-                    sparse: true,
-                    unique: true,
-                    background: true,
-                });
-            });
-    
-            let rightCreateSchema = array.items(type({
-                key: customString.max(255).required(),
-                active: bool.default(true)
-            }));
-            let rightReadSchema = type({
-                _id: mongoDbObjectId.required(),
-                key: customString.max(255).required(),
-                active: bool.required()
-            });
-            let rightUpdateSchema = type({
-                id: mongoDbObjectId,
-                updateSet: type({
-                    active: bool.optional()
-                })
-            });
-            let rightDeleteSchema = type({
-                id: mongoDbObjectId
-            });
-    
-            let groupCreateSchema = array.items(type({
-                name: customString.max(255).required(),
-                rights: array.items(mongoDbObjectId)
-            }));
-            let groupReadSchema = type({
-                _id: mongoDbObjectId.required(),
-                name: customString.max(255).required(),
-                rights: array.items(rightReadSchema)
-            });
-            let groupUpdateSchema = type({
-                id: mongoDbObjectId.required(),
-                updateSet: type({
-                    name: customString.max(255).optional(),
-                    rights: array.items(mongoDbObjectId.required()).optional()
-                })
-            });
-            let groupDeleteSchema = type({
-                id: mongoDbObjectId.required()
-            });
-    
-            let userCreateSchema = array.items(type({
-                username: customString.max(255).required(),
-                password: customString.min(8).required(),
-                email: customString.max(255).allow(null).default(null),
-                groupId: mongoDbObjectId.required()
-            }));
-            let userReadSchema = type({
-                _id: mongoDbObjectId.required(),
-                username: customString.max(255).required(),
-                email: customString.max(255).allow(null).default(null),
-                group: groupReadSchema
-            });
-            let userUpdateSchema = type({
-                id: mongoDbObjectId.required(),
-                updateSet: type({
-                    username: customString.max(255).optional(),
-                    password: customString.min(8).optional(),
-                    email: customString.max(255).allow(null).optional(),
-                    groupId: mongoDbObjectId.optional()
-                }).required()
-            });
-            let userDeleteSchema = type({
-                id: mongoDbObjectId.required()
-            });
-    
-            let userV = new ValidationInformation(
-                'user', userCreateSchema, userReadSchema, userUpdateSchema, userDeleteSchema
-            );
-            let groupV = new ValidationInformation(
-                'group', groupCreateSchema, groupReadSchema, groupUpdateSchema, groupDeleteSchema
-            );
-            let rightV = new ValidationInformation(
-                'right', rightCreateSchema, rightReadSchema, rightUpdateSchema, rightDeleteSchema
-            );
-    
-            registerValidation(userV);
-            registerValidation(groupV);
-            registerValidation(rightV);
-    
-            registerCollection(user);
-            registerCollection(group);
-            registerCollection(right);
+            @collection({
+                lookup: [
+                    new MongoLookup('Group', 'group', '_id', JoinType.ONEONE),
+                    new MongoLookup('Right', 'group.rights', '_id', JoinType.ONEMANY)
+                ],
+                index: async (col) => {
+                    await col.createIndex({
+                        username: 1,
+                    }, {
+                        sparse: true,
+                        unique: true,
+                        background: true,
+                    });
+                },
+                allow: 'CUD'
+            })
+            class User {
+                @validation({type: BaseTypes.mongoDbObjectId})
+                _id: string;
+
+                @validation({type: BaseTypes.stringDefaultLength})
+                username: string;
+
+                @validation({type: BaseTypes.stringDefaultLength})
+                password: string;
+
+                @validation({type: BaseTypes.stringDefaultLength})
+                email: string;
+
+                group: Group;
+            }
+
+            @collection({
+                lookup: [
+                    new MongoLookup('Right', 'rights', '_id', JoinType.ONEMANY)
+                ],
+                index: async (col) => {
+                    await col.createIndex({
+                        name: 1,
+                    }, {
+                        sparse: true,
+                        unique: true,
+                        background: true,
+                    });
+                },
+                allow: 'CUD'
+            })
+            class Group {
+                @validation({type: BaseTypes.mongoDbObjectId})
+                _id: string;
+
+                @validation({type: BaseTypes.stringDefaultLength})
+                name: string;
+
+                rights: Right[];
+            }
+
+            @collection({
+                lookup: null,
+                index: async (col) => {
+                    await col.createIndex({
+                        key: 1,
+                    }, {
+                        sparse: true,
+                        unique: true,
+                        background: true,
+                    });
+                },
+                allow: 'C'
+            })
+            class Right {
+                @validation({type: BaseTypes.mongoDbObjectId})
+                _id: string;
+
+                @validation({type: BaseTypes.stringDefaultLength})
+                key: string;
+
+                @validation({type: BaseTypes.bool})
+                active: boolean;
+            }
         });
     });
 
@@ -191,7 +152,7 @@ describe('Molly Server Spec', () => {
             ];
             let rs = await request({
                 method: 'POST',
-                uri: `http://localhost:8086/create/right`,
+                uri: `http://localhost:8086/create/Right`,
                 body: {
                     params: rightData
                 },
@@ -203,7 +164,7 @@ describe('Molly Server Spec', () => {
             assert.equal(rs.data.length, 5, 'invalid count');
             rights = rs.data;
         });
-    
+
         it('create groups', async () => {
             let groupData = [
                 {
@@ -225,7 +186,7 @@ describe('Molly Server Spec', () => {
             ];
             let rs = await request({
                 method: 'POST',
-                uri: `http://localhost:8086/create/group`,
+                uri: `http://localhost:8086/create/Group`,
                 body: {
                     params: groupData
                 },
@@ -237,7 +198,7 @@ describe('Molly Server Spec', () => {
             assert.equal(rs.data.length, 3, 'invalid count');
             groups = rs.data;
         });
-    
+
         it('create users', async () => {
             let userData = [
                 {
@@ -267,7 +228,7 @@ describe('Molly Server Spec', () => {
             ];
             let rs = await request({
                 method: 'POST',
-                uri: `http://localhost:8086/create/user`,
+                uri: `http://localhost:8086/create/User`,
                 body: {
                     params: userData
                 },
@@ -283,7 +244,7 @@ describe('Molly Server Spec', () => {
         it('read user', async () => {
             let resUsers = await request({
                 method: 'POST',
-                uri: 'http://localhost:8086/read/user',
+                uri: 'http://localhost:8086/read/User',
                 body: {
                     params: {}
                 },
@@ -300,7 +261,7 @@ describe('Molly Server Spec', () => {
         it('update user email', async () => {
             let res = await request({
                 method: 'POST',
-                uri: 'http://localhost:8086/update/user',
+                uri: 'http://localhost:8086/update/User',
                 body: {
                     params: {
                         id: users[0]._id,
@@ -315,7 +276,7 @@ describe('Molly Server Spec', () => {
             assert.equal(res.data, true, 'update maybe not work');
             let user = await request({
                 method: 'POST',
-                uri: 'http://localhost:8086/read/user',
+                uri: 'http://localhost:8086/read/User',
                 body: {
                     params: {
                         _id: users[0]._id
@@ -332,7 +293,7 @@ describe('Molly Server Spec', () => {
         it('read with restrictions', async () => {
             let resUsers = await request({
                 method: 'POST',
-                uri: 'http://localhost:8086/read/user',
+                uri: 'http://localhost:8086/read/User',
                 body: {
                     params: {
                         RESTRICTIONS: {
@@ -355,7 +316,7 @@ describe('Molly Server Spec', () => {
         it('replace ids in arrays', async () => {
             let resUsers = await request({
                 method: 'POST',
-                uri: 'http://localhost:8086/read/user',
+                uri: 'http://localhost:8086/read/User',
                 body: {
                     params: {
                         _id: {
@@ -373,7 +334,7 @@ describe('Molly Server Spec', () => {
         it('replace ids in $or', async () => {
             let resUsers = await request({
                 method: 'POST',
-                uri: 'http://localhost:8086/read/user',
+                uri: 'http://localhost:8086/read/User',
                 body: {
                     params: {
                         $or: [
@@ -394,7 +355,7 @@ describe('Molly Server Spec', () => {
         it('replace ids in $and', async () => {
             let resUsers = await request({
                 method: 'POST',
-                uri: 'http://localhost:8086/read/user',
+                uri: 'http://localhost:8086/read/User',
                 body: {
                     params: {
                         $and: [
@@ -409,11 +370,11 @@ describe('Molly Server Spec', () => {
             assert.equal(resUsers.data.length, 1, 'invalid users count');
             assert.equal(resUsers.data[0]._id, users[0]._id, 'invalid data in result');
         });
-        
+
         it('replace ids in $ne', async () => {
             let resUsers = await request({
                 method: 'POST',
-                uri: 'http://localhost:8086/read/user',
+                uri: 'http://localhost:8086/read/User',
                 body: {
                     params: {
                         _id: {$ne: users[0]._id}
@@ -431,7 +392,7 @@ describe('Molly Server Spec', () => {
         it('replace ids in $ne', async () => {
             let resUsers = await request({
                 method: 'POST',
-                uri: 'http://localhost:8086/read/user',
+                uri: 'http://localhost:8086/read/User',
                 body: {
                     params: {
                         _id: {$eq: users[0]._id}
@@ -448,7 +409,7 @@ describe('Molly Server Spec', () => {
         it('replace ids in $in', async () => {
             let resUsers = await request({
                 method: 'POST',
-                uri: 'http://localhost:8086/read/user',
+                uri: 'http://localhost:8086/read/User',
                 body: {
                     params: {
                         _id: {$in: [users[0]._id, users[2]._id]}
@@ -466,7 +427,7 @@ describe('Molly Server Spec', () => {
         it('filter result', async () => {
             let resUsers = await request({
                 method: 'POST',
-                uri: 'http://localhost:8086/read/user',
+                uri: 'http://localhost:8086/read/User',
                 body: {
                     params: {},
                     props: {
@@ -491,7 +452,7 @@ describe('Molly Server Spec', () => {
         it('filter result recursive', async () => {
             let resUsers = await request({
                 method: 'POST',
-                uri: 'http://localhost:8086/read/user',
+                uri: 'http://localhost:8086/read/User',
                 body: {
                     params: {},
                     props: {
@@ -522,7 +483,7 @@ describe('Molly Server Spec', () => {
         it('delete user', async () => {
             let res = await request({
                 method: 'POST',
-                uri: 'http://localhost:8086/delete/user',
+                uri: 'http://localhost:8086/delete/User',
                 body: {
                     params: {
                         id: users[0]._id
@@ -534,7 +495,7 @@ describe('Molly Server Spec', () => {
             assert.equal(res.data, true, 'delete maybe not work');
             let user = await request({
                 method: 'POST',
-                uri: 'http://localhost:8086/read/user',
+                uri: 'http://localhost:8086/read/User',
                 body: {
                     params: {
                         _id: users[0]._id
@@ -548,24 +509,17 @@ describe('Molly Server Spec', () => {
         });
 
         it('register some operation', () => {
-            let countUser = new OperationInformation('countUser', async (inv: IRouteInvoker) => {
-                let user = await inv.read('user', {});
-                return user.length;
-            });
-            let passParameter = new OperationInformation('passParameter', async (inv: IRouteInvoker, params: any) => {
-                return params;
-            });
+            class Ops {
+                @operation
+                async countUser(inv: IRouteInvoker) {
+                    let user = await inv.read('User', {});
+                    return user.length;
+                }
 
-            registerOperation(countUser);
-            registerOperation(passParameter);
-        });
-
-        it('catch empty operation name', () => {
-            try {
-                new OperationInformation('', () => {});
-                assert.fail('error not thrown');
-            } catch (err) {
-                assert.equal(err.message, 'invalid name for operation ');
+                @operation
+                async passParameter(inv: IRouteInvoker, params: any) {
+                    return params;
+                }
             }
         });
 

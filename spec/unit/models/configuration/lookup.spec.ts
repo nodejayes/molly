@@ -49,7 +49,7 @@ describe('MongoLookup Spec', async () => {
         assert.equal(agg[0]['$lookup'].foreignField, '_id');
         assert.equal(agg[0]['$lookup'].as, 'myId');
         assert.isDefined(agg[1]['$unwind']);
-        assert.equal(agg[1]['$unwind'].path, '$other');
+        assert.equal(agg[1]['$unwind'].path, '$myId');
         assert.equal(agg[1]['$unwind'].preserveNullAndEmptyArrays, true);
     });
 
