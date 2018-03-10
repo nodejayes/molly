@@ -15,6 +15,18 @@
             "cwd": "${workspaceRoot}",
             "protocol": "inspector",
             "console": "integratedTerminal"
+        },
+        {
+            "name": "Test Script",
+            "type": "node",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "args": ["${workspaceRoot}/scripts/test.ts"],
+            "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
+            "sourceMaps": true,
+            "cwd": "${workspaceRoot}",
+            "protocol": "inspector",
+            "console": "integratedTerminal"
         }
     ]
 }

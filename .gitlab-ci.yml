@@ -1,0 +1,18 @@
+stages:
+  - analyze
+  - test
+
+test:
+  stage: test
+  only:
+    - release
+  script:
+    - yarn install
+    - yarn test
+
+analyze:
+  stage: analyze
+  only:
+    - release
+  script:
+    - sonar-scanner -Dsonar.inclusions=src/**/* -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
