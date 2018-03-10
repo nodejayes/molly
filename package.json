@@ -20,7 +20,8 @@
         "test:integration": "mocha --bail -r ts-node/register \"./spec/integration/**/*.spec.ts\"",
         "test:unit": "mocha --bail -r ts-node/register \"./spec/unit/**/*.spec.ts\"",
         "test:websocket": "mocha --bail -r ts-node/register \"./spec/integration/websockets.spec.ts\"",
-        "release": "tsc && npm publish"
+        "release": "tsc && npm publish",
+        "sonar": "sonar-scanner -Dsonar.inclusions=src/**/* -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info"
     },
     "dependencies": {
         "body-parser": "^1.18.2",

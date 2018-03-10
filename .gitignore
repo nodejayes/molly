@@ -1,5 +1,7 @@
 
 .nyc_output/**
+.scannerwork/**
+.sonarlint/**
 coverage/**
 node_modules/**
 dist/**
