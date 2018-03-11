@@ -4,6 +4,7 @@ import {readFileSync, existsSync} from 'fs';
 import * as express from 'express';
 import {Server as WsServer} from 'ws';
 import * as helmet from 'helmet';
+import * as compress from 'compression';
 import * as bodyParser from 'body-parser';
 import {keys} from 'lodash';
 import {promisify} from 'util';
@@ -81,6 +82,22 @@ export class ExpressServer {
     }
 
     /**
+     * Custom Compression Filter
+     * 
+     * @private
+     * @param {any} req 
+     * @param {any} res 
+     * @returns 
+     * @memberof ExpressServer
+     */
+    private _shouldCompress(req, res) {
+        if (req.headers['x-no-compression']) {
+          return false
+        }
+        return true;
+    }
+
+    /**
      * map all Routes to the Express App
      * 
      * @private
@@ -88,6 +105,10 @@ export class ExpressServer {
      */
     private _registerRoutes(cfg: IServerConfiguration): void {
         this.App.use(helmet());
+        this.App.use(compress({
+            filter: this._shouldCompress,
+            level: 9
+        }));
         if (cfg.staticFiles) {
             let staticPath = isAbsolute(cfg.staticFiles) ? cfg.staticFiles : join(process.cwd(), cfg.staticFiles);
             if (!existsSync(staticPath)) {
