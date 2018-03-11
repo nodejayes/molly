@@ -107,7 +107,14 @@ describe('Websocket Spec', () => {
 
     describe('main server functionallity', () => {
         it('start server', async () => {
-            let msg = await server.start('localhost', 8086, 'mongodb://localhost:27017/', 'test_molly', true, true);
+            let msg = await server.start({
+                binding: 'localhost',
+                port: 8086,
+                mongoUrl: 'mongodb://localhost:27017/',
+                mongoDatabase: 'test_molly',
+                clear: true,
+                useWebsocket: true
+            });
             assert.equal(msg, 'server listen on http://localhost:8086/', 'invalid return message');
         });
 

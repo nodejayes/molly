@@ -8,7 +8,13 @@ describe('Server Spec', () => {
     let server = new ExpressServer();
 
     it('start server', async () => {
-        let msg = await server.start('localhost', 8086, 'mongodb://localhost:27017', 'test_molly', true);
+        let msg = await server.start({
+            binding: 'localhost', 
+            port: 8086,
+            mongoUrl: 'mongodb://localhost:27017',
+            mongoDatabase: 'test_molly',
+            clear: true
+        });
         assert.equal(msg, 'server listen on http://localhost:8086/', 'invalid return message');
     });
 
