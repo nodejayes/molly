@@ -21,3 +21,13 @@ The goal of Molly is to create services that are as flexible and easy to configu
 [Call over Websockets](https://gitlab.sw-gis.de/root/molly/wikis/use-websockets)
 
 [Define Custom Operations](https://gitlab.sw-gis.de/root/molly/wikis/custom-operations)
+
+## Release Notes
+
+1.1.0
+
+* add Decorators collection, validation and operation for better define Models and Operations
+
+1.0.0
+
+* First Release
