@@ -102,9 +102,6 @@ export class ExpressServer {
      * @memberof ExpressServer
      */
     private _registerWebsocket(): void {
-        if (this._WsServer !== null) {
-            return;
-        }
         this._WsServer = new WsServer({server: this._server});
         this._WsServer.on('connection', (ws) => {
             ws.on('message', async (msg: string) => {

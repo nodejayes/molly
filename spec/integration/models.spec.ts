@@ -39,6 +39,126 @@ describe('Molly Server Spec', () => {
         });
     });
 
+    describe('incomplete Schema', () => {
+        before(async () => {
+            class Right {
+                @validation({type: BaseTypes.mongoDbObjectId})
+                _id: string;
+
+                @validation({type: BaseTypes.stringDefaultLength})
+                key: string;
+
+                @validation({type: BaseTypes.bool})
+                active: boolean;
+            }
+            
+            await server.start({
+                binding: 'localhost',
+                port: 8086,
+                mongoUrl: 'mongodb://localhost:27017/',
+                mongoDatabase: 'test_molly',
+                clear: true
+            });
+        });
+
+        it('catch create rights', async () => {
+            let rightData = [
+                {
+                    key: 'CAN_DO_SOMETHING',
+                    active: true
+                },
+                {
+                    key: 'CAN_DO_ANOTHER',
+                    active: true
+                },
+                {
+                    key: 'CAN_DO_ALL',
+                    active: true
+                },
+                {
+                    key: 'CAN_LOGIN',
+                    active: true
+                },
+                {
+                    key: 'CAN_REQUEST_USER',
+                    active: true
+                }
+            ];
+            try {
+                let resRights = await request({
+                    method: 'POST',
+                    uri: `http://localhost:8086/create/Right`,
+                    body: {
+                        params: rightData
+                    },
+                    json: true
+                });
+                assert.fail('no error thrown');
+            } catch (err) {
+                assert.equal(err.message, '500 - {"data":null,"errors":"no validation found for model Right"}');   
+            }
+        });
+
+        it('catch read rights', async () => {
+            try {
+                let resRights = await request({
+                    method: 'POST',
+                    uri: 'http://localhost:8086/read/Right',
+                    body: {
+                        params: {}
+                    },
+                    json: true
+                });
+                assert.fail('no error thrown');
+            } catch (err) {
+                assert.equal(err.message, '500 - {"data":null,"errors":"no validation found for model Right"}');
+            }
+        });
+
+        it('catch update rights', async () => {
+            try {
+                let resRights = await request({
+                    method: 'POST',
+                    uri: 'http://localhost:8086/update/Right',
+                    body: {
+                        params: {
+                            id: '5aa517d30ebd980e2e52a250',
+                            updateSet: {
+                                key: 'UPDATE'
+                            }
+                        }
+                    },
+                    json: true
+                });
+                assert.fail('no error thrown');
+            } catch (err) {
+                assert.equal(err.message, '500 - {"data":null,"errors":"no validation found for model Right"}');
+            }
+        });
+
+        it('catch delete rights', async () => {
+            try {
+                let resRights = await request({
+                    method: 'POST',
+                    uri: 'http://localhost:8086/delete/Right',
+                    body: {
+                        params: {
+                            id: '5aa517d30ebd980e2e52a250'
+                        }
+                    },
+                    json: true
+                });
+                assert.fail('no error thrown');
+            } catch (err) {
+                assert.equal(err.message, '500 - {"data":null,"errors":"no validation found for model Right"}');
+            }
+        });
+
+        after(() => {
+            server.stop();
+        });
+    });
+
     describe('Define Schema', () => {
         it('setup user schema', async () => {
             @collection({
@@ -574,6 +694,20 @@ describe('Molly Server Spec', () => {
                 assert.fail('error not thrown');
             } catch (err) {
                 assert.equal(err.message, '500 - {"data":null,"errors":"operation not found nothing"}');
+            }
+        });
+
+        it('catch invalid body', async () => {
+            try {
+                let rs = await request({
+                    method: 'POST',
+                    uri: `http://localhost:8086/read/User`,
+                    body: {},
+                    json: true
+                });
+                assert.fail('error not thrown');
+            } catch (err) {
+                assert.equal(err.message, '500 - {"data":null,"errors":"invalid request body [object Object]"}');
             }
         });
     });

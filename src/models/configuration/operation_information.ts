@@ -38,9 +38,6 @@ export class OperationInformation {
      * @memberof OperationInformation
      */
     constructor(name: string, call: Function) {
-        if (name.length < 1) {
-            throw new Error(`invalid name for operation ${name}`);
-        }
         this.Name = name;
         this.Call = call;
         this._invoker = new RouteInvoker();

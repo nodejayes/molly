@@ -129,12 +129,12 @@ describe('Websocket Spec', () => {
         });
 
         it('create user', async () => {
-            let c = new Websocket('ws://localhost:8086');
-            c.on('message', (inc: string) => {
+            let ccu = new Websocket('ws://localhost:8086');
+            ccu.on('message', (inc: string) => {
                 let d = <IWebsocketMessage>JSON.parse(inc);
                 switch(d.id) {
                     case 'initFinish':
-                        c.send(JSON.stringify(<IRequestModel>{
+                        ccu.send(JSON.stringify(<IRequestModel>{
                             Action: 'create',
                             Model: 'User',
                             Parameter: [
@@ -151,23 +151,23 @@ describe('Websocket Spec', () => {
                         assert.isArray(d.data);
                         assert.equal(d.data.length, 1);
                         user = d.data;
-                        c.close();
+                        ccu.close();
                         break;
                     case 'ERROR':
                         assert.fail(d.data);
-                        c.close();
+                        ccu.close();
                         break;
                 }
             });
         });
 
         it('read user', async () => {
-            let c = new Websocket('ws://localhost:8086');
-            c.on('message', (inc: string) => {
+            let cru = new Websocket('ws://localhost:8086');
+            cru.on('message', (inc: string) => {
                 let data = <IWebsocketMessage>JSON.parse(inc);
                 switch(data.id) {
                     case 'initFinish':
-                        c.send(JSON.stringify(<IRequestModel>{
+                        cru.send(JSON.stringify(<IRequestModel>{
                             Action: 'read',
                             Model: 'User',
                             Parameter: {}
@@ -176,10 +176,10 @@ describe('Websocket Spec', () => {
                     case 'read_user':
                         assert.isArray(data.data);
                         assert.equal(data.data.length, 1);
-                        c.close();
+                        cru.close();
                         break;
                     case 'ERROR':
-                        c.close();
+                        cru.close();
                         assert.fail(data.data);
                         break;
                 }
@@ -187,12 +187,12 @@ describe('Websocket Spec', () => {
         });
 
         it('operation userCount', async () => {
-            let c = new Websocket('ws://localhost:8086');
-            c.on('message', (inc: string) => {
+            let cuc = new Websocket('ws://localhost:8086');
+            cuc.on('message', (inc: string) => {
                 let data = <IWebsocketMessage>JSON.parse(inc);
                 switch(data.id) {
                     case 'initFinish':
-                        c.send(JSON.stringify(<IRequestModel>{
+                        cuc.send(JSON.stringify(<IRequestModel>{
                             Action: 'operation',
                             Model: 'countUser',
                             Parameter: {}
@@ -200,10 +200,10 @@ describe('Websocket Spec', () => {
                         break;
                     case 'operation_countUser':
                         assert.equal(data.data, 1);
-                        c.close();
+                        cuc.close();
                         break;
                     case 'ERROR':
-                        c.close();
+                        cuc.close();
                         assert.fail(data.data);
                         break;
                 }
@@ -211,12 +211,12 @@ describe('Websocket Spec', () => {
         });
 
         it('update user', async () => {
-            let c = new Websocket('ws://localhost:8086');
-            c.on('message', (inc: string) => {
+            let cuu = new Websocket('ws://localhost:8086');
+            cuu.on('message', (inc: string) => {
                 let data = <IWebsocketMessage>JSON.parse(inc);
                 switch(data.id) {
                     case 'initFinish':
-                        c.send(JSON.stringify(<IRequestModel>{
+                        cuu.send(JSON.stringify(<IRequestModel>{
                             Action: 'update',
                             Model: 'User',
                             Parameter: {
@@ -229,10 +229,10 @@ describe('Websocket Spec', () => {
                         break;
                     case 'update_user':
                         assert.equal(data.data, true);
-                        c.close();
+                        cuu.close();
                         break;
                     case 'ERROR':
-                        c.close();
+                        cuu.close();
                         assert.fail(data.data);
                         break;
                 }
@@ -240,25 +240,26 @@ describe('Websocket Spec', () => {
         });
 
         it('delete user', async () => {
-            let c = new Websocket('ws://localhost:8086');
-            c.on('message', (inc: string) => {
+            let cd = new Websocket('ws://localhost:8086');
+            cd.on('message', (inc: string) => {
                 let data = <IWebsocketMessage>JSON.parse(inc);
                 switch(data.id) {
                     case 'initFinish':
-                        c.send(JSON.stringify(<IRequestModel>{
+                        let d = JSON.stringify(<IRequestModel>{
                             Action: 'delete',
                             Model: 'User',
                             Parameter: {
                                 id: user[0]._id
                             }
-                        }));
+                        });
+                        cd.send(d);
                         break;
                     case 'delete_user':
                         assert.equal(data.data, true);
-                        c.close();
+                        cd.close();
                         break;
                     case 'ERROR':
-                        c.close();
+                        cd.close();
                         assert.fail(data.data);
                         break;
                 }
@@ -266,16 +267,16 @@ describe('Websocket Spec', () => {
         });
 
         it('catch invalid message', async () => {
-            let c = new Websocket('ws://localhost:8086');
-            c.on('message', (inc: string) => {
+            let cim = new Websocket('ws://localhost:8086');
+            cim.on('message', (inc: string) => {
                 let data = <IWebsocketMessage>JSON.parse(inc);
                 switch(data.id) {
                     case 'initFinish':
-                        c.send('invalid');
+                        cim.send('invalid');
                         break;
                     case 'ERROR':
                         assert.equal(data.data, 'Unexpected token i in JSON at position 0');
-                        c.close();
+                        cim.close();
                         break;
                 }
             });

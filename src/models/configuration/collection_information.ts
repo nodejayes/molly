@@ -38,9 +38,6 @@ export class CollectionInformation {
      * @memberof CollectionInformation
      */
     constructor(name: string, joins?: Array<MongoLookup>, setIndex?: Function) {
-        if (name.length < 1) {
-            throw new Error(`no empty names allowed`);
-        }
         this.Name = name;
         if (joins) {
             this.Joins = joins;

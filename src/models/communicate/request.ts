@@ -74,9 +74,7 @@ export class RequestModel implements IRequestModel {
      */
     private _replaceStringIds(source: any): any {
         for (let key in source) {
-            if (!source.hasOwnProperty(key)) {
-                continue;
-            } else if (key === '_id') {
+            if (key === '_id') {
                 if (typeof source[key] === 'string' && source[key].length === 24) {
                     source[key] = new ObjectId(source[key]);
                 } else if (isObject(source[key])) {

@@ -1,3 +1,9 @@
+/**
+ * Server Configuration Data
+ * 
+ * @export
+ * @interface IServerConfiguration
+ */
 export interface IServerConfiguration {
     binding: string;
     port: number;
