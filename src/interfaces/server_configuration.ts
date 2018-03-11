@@ -7,4 +7,5 @@ export interface IServerConfiguration {
     useWebsocket?: boolean;
     certFile?: string;
     keyFile?: string;
+    caFile?: string;
 }

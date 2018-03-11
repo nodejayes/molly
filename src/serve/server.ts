@@ -1,5 +1,5 @@
 import { Server as HttpServer } from 'http';
-import {createServer, Server as HttpsServer} from 'https';
+import {createServer, Server as HttpsServer, ServerOptions} from 'https';
 import {readFileSync, existsSync} from 'fs';
 import * as express from 'express';
 import {Server as WsServer} from 'ws';
@@ -198,10 +198,14 @@ export class ExpressServer {
         await this._buildSchema(cfg.clear);
         return new Promise<string>((resolve, reject) => {
             if (existsSync(cfg.certFile) && existsSync(cfg.keyFile)) {
-                this._server = createServer({
+                let options: ServerOptions = {
                     cert: readFileSync(cfg.certFile),
                     key: readFileSync(cfg.keyFile)
-                }, this.App).listen(cfg.port, cfg.binding, () => {
+                };
+                if (existsSync(cfg.caFile)) {
+                    options.ca = readFileSync(cfg.caFile);
+                }
+                this._server = createServer(options, this.App).listen(cfg.port, cfg.binding, () => {
                     resolve(`server listen on https://${cfg.binding}:${cfg.port}/`);
                 });
             } else {
