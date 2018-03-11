@@ -1,20 +1,22 @@
+import { Server as HttpServer } from 'http';
+import {createServer, Server as HttpsServer, ServerOptions} from 'https';
+import {readFileSync, existsSync} from 'fs';
 import * as express from 'express';
 import {Server as WsServer} from 'ws';
-import {createServer} from 'http';
 import * as helmet from 'helmet';
 import * as bodyParser from 'body-parser';
 import {keys} from 'lodash';
 import {promisify} from 'util';
-import { Server } from 'http';
 
 import {MongoDb} from './../database/mongo_db';
 import {Routes} from './routes';
 import {RequestModel} from './../models/communicate/request';
 import {ResponseModel} from './../models/communicate/response';
-import { RouteInvoker } from './routeinvoker';
-import { WebsocketMessage } from '../models/communicate/websocketmessage';
-import { IRequestModel } from '..';
+import {RouteInvoker} from './routeinvoker';
+import {WebsocketMessage} from '../models/communicate/websocketmessage';
+import {IRequestModel} from '..';
 import {ValidationRules} from './../decorators/register';
+import {IServerConfiguration} from './../interfaces/server_configuration';
 
 /**
  * implement a small Express Server
@@ -39,7 +41,7 @@ export class ExpressServer {
      * @type {Server}
      * @memberof ExpressServer
      */
-    private _server: Server;
+    private _server: HttpServer | HttpsServer;
     /**
      * Websocket Server
      * 
@@ -100,9 +102,6 @@ export class ExpressServer {
      * @memberof ExpressServer
      */
     private _registerWebsocket(): void {
-        if (this._WsServer !== null) {
-            return;
-        }
         this._WsServer = new WsServer({server: this._server});
         this._WsServer.on('connection', (ws) => {
             ws.on('message', async (msg: string) => {
@@ -187,19 +186,33 @@ export class ExpressServer {
      * @returns {Promise<string>} 
      * @memberof Server
      */
-    async start(binding: string, port: number, mongoUrl: string, mongoDatabase: string, clear = false, useWebsocket?: boolean): Promise<string> {
-        if (mongoUrl[mongoUrl.length - 1] !== '/') {
-            mongoUrl += '/';
+    async start(cfg: IServerConfiguration): Promise<string> {
+        if (cfg.mongoUrl[cfg.mongoUrl.length - 1] !== '/') {
+            cfg.mongoUrl += '/';
         }
         ValidationRules.registerValidations();
-        await MongoDb.connect(`${mongoUrl}${mongoDatabase}`, mongoDatabase);
-        await this._buildSchema(clear);
+        await MongoDb.connect(`${cfg.mongoUrl}${cfg.mongoDatabase}`, cfg.mongoDatabase);
+        await this._buildSchema(cfg.clear);
         return new Promise<string>((resolve, reject) => {
-            this._server = this.App.listen(port, binding, () => {
-                resolve(`server listen on http://${binding}:${port}/`);
-            });
+            if (existsSync(cfg.certFile) && existsSync(cfg.keyFile)) {
+                let options: ServerOptions = {
+                    cert: readFileSync(cfg.certFile),
+                    key: readFileSync(cfg.keyFile)
+                };
+                if (existsSync(cfg.caFile)) {
+                    options.ca = readFileSync(cfg.caFile);
+                }
+                this._server = createServer(options, this.App).listen(cfg.port, cfg.binding, () => {
+                    resolve(`server listen on https://${cfg.binding}:${cfg.port}/`);
+                });
+            } else {
+                this._server = this.App.listen(cfg.port, cfg.binding, () => {
+                    resolve(`server listen on http://${cfg.binding}:${cfg.port}/`);
+                });
+            }
+            
             this._server.on('error', reject);
-            if (useWebsocket) {
+            if (cfg.useWebsocket) {
                 this._registerWebsocket();
             }
         });

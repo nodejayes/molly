@@ -53,12 +53,6 @@ export class ValidationInformation {
      * @memberof ValidationInformation
      */
     constructor(name: string, createSchema?: ArraySchema, readSchema?: ObjectSchema, updateSchema?: ObjectSchema, deleteSchema?: ObjectSchema) {
-        if (!createSchema && !readSchema && !updateSchema && !deleteSchema) {
-            throw new Error(`you must define a create, read, update or delete schema`);
-        }
-        if (name.length < 1) {
-            throw new Error(`name must be specified for validation information`);
-        }
         this.Name = name;
         this.CreateSchema = createSchema ? createSchema : null;
         this.ReadSchema = readSchema ? readSchema : null;
@@ -74,9 +68,6 @@ export class ValidationInformation {
      * @memberof ValidationInformation
      */
     checkCreate(input: any): any {
-        if (!this.CreateSchema) {
-            throw new Error(`create not allowed for ${this.Name}`);
-        }
         return validate(input, this.CreateSchema).value;
     }
 
@@ -88,9 +79,6 @@ export class ValidationInformation {
      * @memberof ValidationInformation
      */
     checkRead(input: any): any {
-        if (!this.ReadSchema) {
-            throw new Error(`read not allowed for ${this.Name}`);
-        }
         return validate(input, this.ReadSchema).value;
     }
 
@@ -102,9 +90,6 @@ export class ValidationInformation {
      * @memberof ValidationInformation
      */
     checkUpdate(input: any): any {
-        if (!this.UpdateSchema) {
-            throw new Error(`update not allowed for ${this.Name}`);
-        }
         return validate(input, this.UpdateSchema).value;
     }
 
@@ -116,9 +101,6 @@ export class ValidationInformation {
      * @memberof ValidationInformation
      */
     checkDelete(input: any): any {
-        if (!this.DeleteSchema) {
-            throw new Error(`delete not allowed for ${this.Name}`);
-        }
         return validate(input, this.DeleteSchema).value;
     }
 }
