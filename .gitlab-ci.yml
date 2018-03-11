@@ -1,6 +1,8 @@
 stages:
   - publish
 
+# Use local Sonarscanner to analyse the Code
+
 publish:
   stage: publish
   only:
