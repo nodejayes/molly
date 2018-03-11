@@ -72,6 +72,7 @@ export class ExpressServer {
     constructor() {
         this._invoker = new RouteInvoker();
         this._server = null;
+        this._WsServer = null;
         this._routeNames = Routes.Names;
         this.App = express();
         this._registerRoutes();
@@ -99,6 +100,9 @@ export class ExpressServer {
      * @memberof ExpressServer
      */
     private _registerWebsocket(): void {
+        if (this._WsServer !== null) {
+            return;
+        }
         this._WsServer = new WsServer({server: this._server});
         this._WsServer.on('connection', (ws) => {
             ws.on('message', async (msg: string) => {
@@ -206,10 +210,14 @@ export class ExpressServer {
      * 
      * @memberof ExpressServer
      */
-    async stop() {
+    stop() {
         if (this._server !== null) {
             this._server.close();
             this._server = null;
+        }
+        if (this._WsServer !== null) {
+            this._WsServer.close();
+            this._WsServer = null;
         }
         MongoDb.close();
     }
