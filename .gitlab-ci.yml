@@ -1,27 +1,15 @@
 stages:
-  - test
-  - analyze
   - publish
 
-test:
-  stage: test
+# Use local Sonarscanner to analyse the Code
+
+publish:
+  stage: publish
   only:
     - release
   script:
     - yarn install
     - yarn build
     - yarn test
-
-analyze:
-  stage: analyze
-  only:
-    - release
-  script:
     - sonar-scanner -Dsonar.inclusions=src/**/* -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
-    
-publish:
-  stage: publish
-  only:
-    - release
-  script:
     - npm publish
