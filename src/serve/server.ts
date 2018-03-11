@@ -5,6 +5,7 @@ import * as express from 'express';
 import {Server as WsServer} from 'ws';
 import * as helmet from 'helmet';
 import * as compress from 'compression';
+import * as statics from 'serve-static';
 import * as bodyParser from 'body-parser';
 import {keys} from 'lodash';
 import {promisify} from 'util';
@@ -114,7 +115,7 @@ export class ExpressServer {
             if (!existsSync(staticPath)) {
                 console.warn(`you set the option for static files but folder not exists`);
             } else {
-                this.App.use(express.static(staticPath));
+                this.App.use(statics(staticPath));
             }
         }
         this.App.use(bodyParser.json());
