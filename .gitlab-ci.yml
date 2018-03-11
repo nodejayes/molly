@@ -1,6 +1,7 @@
 stages:
   - analyze
   - test
+  - publish
 
 test:
   stage: test
@@ -8,6 +9,7 @@ test:
     - release
   script:
     - yarn install
+    - yarn build
     - yarn test
 
 analyze:
@@ -16,3 +18,10 @@ analyze:
     - release
   script:
     - sonar-scanner -Dsonar.inclusions=src/**/* -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
+    
+publish:
+  stage: publish
+  only:
+    - release
+  script:
+    - npm publish
