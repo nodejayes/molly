@@ -28,8 +28,8 @@ describe('Molly Server Spec', () => {
             assert.equal(msg, 'server listen on http://localhost:8086/', 'invalid return message');
         });
 
-        it('stop server', async () => {
-            await server.stop();
+        it('stop server', () => {
+            server.stop();
         });
     });
 
@@ -123,8 +123,8 @@ describe('Molly Server Spec', () => {
             await server.start('localhost', 8086, 'mongodb://localhost:27017/', 'test_molly', true);
         });
 
-        after(async () => {
-            await server.stop();
+        after(() => {
+            server.stop();
         });
 
         it('create rights', async () => {

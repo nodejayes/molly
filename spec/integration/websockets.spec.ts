@@ -232,7 +232,7 @@ describe('Websocket Spec', () => {
             });
         });
 
-        it('update user', async () => {
+        it('delete user', async () => {
             let c = new Websocket('ws://localhost:8086');
             c.on('message', (inc: string) => {
                 let data = <IWebsocketMessage>JSON.parse(inc);
@@ -274,8 +274,8 @@ describe('Websocket Spec', () => {
             });
         });
 
-        it('stop server', async () => {
-            await server.stop();
+        it('stop server', () => {
+            server.stop();
         });
     });
 });

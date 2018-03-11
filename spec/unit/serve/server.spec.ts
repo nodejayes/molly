@@ -88,7 +88,7 @@ describe('Server Spec', () => {
         }
     });
 
-    it('stop server', async () => {
-        await server.stop();
+    it('stop server', () => {
+        server.stop();
     });
 });
