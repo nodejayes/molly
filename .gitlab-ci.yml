@@ -10,6 +10,7 @@ publish:
   script:
     - yarn install
     - yarn build
+    - yarn doc
     - yarn test
     - sonar-scanner -Dsonar.inclusions=src/**/* -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
     - npm publish

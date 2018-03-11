@@ -24,6 +24,10 @@ The goal of Molly is to create services that are as flexible and easy to configu
 
 ## Release Notes
 
+1.2.0
+
+* add Https Support
+
 1.1.0
 
 * add Decorators collection, validation and operation for better define Models and Operations
