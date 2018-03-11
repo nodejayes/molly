@@ -81,9 +81,6 @@ export class Routes {
         let collections = MongoDb.Collections.filter((e: CollectionStore) => {
             return e.collection.collectionName === model;
         });
-        if (collections.length < 1) {
-            return null;
-        }
         return collections[0];
     }
     /**
@@ -153,9 +150,6 @@ export class Routes {
             throw new Error(`no validation found for model ${data.Model}`);
         }     
         let col = Routes._getCollection(data.Model);
-        if (col === null) {
-            throw new Error(`no collection found for model ${data.Model}`);
-        }
         let pipe = Routes._getPipeline(col.joins, data);
         let tmp = validation.checkRead((await col.collection.aggregate(pipe).toArray()));
         return new ResponseModel(tmp, false);
@@ -175,9 +169,6 @@ export class Routes {
             throw new Error(`no validation found for model ${data.Model}`);
         }     
         let col = Routes._getCollection(data.Model);
-        if (col === null) {
-            throw new Error(`no collection found for model ${data.Model}`);
-        }
         let input = validation.checkCreate(data.Parameter);
         let tmp = await col.collection.insertMany(input);
         return new ResponseModel(tmp.ops, false);
@@ -197,9 +188,6 @@ export class Routes {
             throw new Error(`no validation found for model ${data.Model}`);
         }     
         let col = Routes._getCollection(data.Model);
-        if (col === null) {
-            throw new Error(`no collection found for model ${data.Model}`);
-        }
         let input = validation.checkUpdate(data.Parameter);
         await col.collection.update({
             _id: new ObjectId(input.id)
@@ -223,9 +211,6 @@ export class Routes {
             throw new Error(`no validation found for model ${data.Model}`);
         }     
         let col = Routes._getCollection(data.Model);
-        if (col === null) {
-            throw new Error(`no collection found for model ${data.Model}`);
-        }
         let input = validation.checkDelete(data.Parameter);
         await col.collection.deleteOne({
             _id: new ObjectId(input.id)

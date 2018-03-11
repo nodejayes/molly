@@ -28,9 +28,6 @@ export class ValidationRules {
 
     private static _getValidations(model: string): IValidationProperties[] {
         let tmp = this.rules.filter((e) => e.model === model)[0];
-        if (!tmp) {
-            throw new Error(`cannot found validations for ${model}`);
-        }
         return tmp.validation;
     }
 
