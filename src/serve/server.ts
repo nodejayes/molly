@@ -7,6 +7,7 @@ import * as helmet from 'helmet';
 import * as bodyParser from 'body-parser';
 import {keys} from 'lodash';
 import {promisify} from 'util';
+import {isAbsolute, join} from 'path';
 
 import {MongoDb} from './../database/mongo_db';
 import {Routes} from './routes';
@@ -77,7 +78,6 @@ export class ExpressServer {
         this._WsServer = null;
         this._routeNames = Routes.Names;
         this.App = express();
-        this._registerRoutes();
     }
 
     /**
@@ -86,9 +86,16 @@ export class ExpressServer {
      * @private
      * @memberof Server
      */
-    private _registerRoutes(): void {
+    private _registerRoutes(cfg: IServerConfiguration): void {
         this.App.use(helmet());
-        this.App.use(express.static('docs'));
+        if (cfg.staticFiles) {
+            let staticPath = isAbsolute(cfg.staticFiles) ? cfg.staticFiles : join(process.cwd(), cfg.staticFiles);
+            if (!existsSync(staticPath)) {
+                console.warn(`you set the option for static files but folder not exists`);
+            } else {
+                this.App.use(express.static(staticPath));
+            }
+        }
         this.App.use(bodyParser.json());
         this.App.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
             this._filterRequest.bind(this)(req, res, next);
@@ -194,6 +201,7 @@ export class ExpressServer {
         await MongoDb.connect(`${cfg.mongoUrl}${cfg.mongoDatabase}`, cfg.mongoDatabase);
         await this._buildSchema(cfg.clear);
         return new Promise<string>((resolve, reject) => {
+            this._registerRoutes(cfg);
             if (existsSync(cfg.certFile) && existsSync(cfg.keyFile)) {
                 let options: ServerOptions = {
                     cert: readFileSync(cfg.certFile),
