@@ -139,7 +139,45 @@ export class ValidationRules {
         };
     }
 
+    private static _readValidationRules(model: string, ci: CollectionInformation) {
+        let tmp = validationPool.filter((e) => {
+            return e.classname === ci.Name;
+        });
+        if (tmp.length > 0) {
+            if (ci.Joins) {
+                for (let i = 0; i < ci.Joins.length; i++) {
+                    tmp.push({
+                        existType: ci.Joins[i].From,
+                        join: ci.Joins[i].Type
+                    });
+                }
+            }
+            ValidationRules.rules.push({
+                model: ci.Name,
+                allow: ci.allow,
+                validation: clone(tmp)
+            });
+            for (let j = 0; j < tmp[0].prototypes.length; j++) {
+                let proto = tmp[0].prototypes[j];
+                let subCi = Logic.Configuration.collectionInfos.filter((e) => {
+                    return e.Name === proto;
+                })[0];
+                if (subCi) {
+                    this._readValidationRules(ci.Name, subCi);
+                }
+            }
+        }
+    }
+
+    private static _fillValidationRules() {
+        for (let i = 0; i < Logic.Configuration.collectionInfos.length; i++) {
+            let ci = Logic.Configuration.collectionInfos[i];
+            this._readValidationRules(ci.Name, ci);
+        }
+    }
+
     static registerValidations() {
+        this._fillValidationRules();
         for (let i = 0; i < this.rules.length; i++) {
             let rule = this.rules[i];
             let schema = this._buildValidation(rule.model, rule.allow);
@@ -153,29 +191,34 @@ export class ValidationRules {
 export function collection(collectionProps: ICollectionProperties) {
     return function(constructor: Function) {
         Logic.Configuration.collectionInfos.push(
-            new CollectionInformation(constructor.name, collectionProps.lookup, collectionProps.index)
+            new CollectionInformation(constructor.name, collectionProps.lookup, collectionProps.index, collectionProps.allow)
         );
-        if (validationPool.length > 0) {
-            if (collectionProps.lookup) {
-                for (let i = 0; i < collectionProps.lookup.length; i++) {
-                    validationPool.push({
-                        existType: collectionProps.lookup[i].From,
-                        join: collectionProps.lookup[i].Type
-                    });
-                }
-            }
-            ValidationRules.rules.push({
-                model: constructor.name,
-                allow: collectionProps.allow,
-                validation: clone(validationPool)
-            });
-            validationPool.splice(0, validationPool.length);
-        }
     }
+}
+
+function getClassName(obj: any): string {
+    var funcNameRegex = /function (.{1,})\(/;
+    var results = (funcNameRegex).exec(obj.constructor.toString());
+    return (results && results.length > 1) ? results[1] : "";
 }
 
 export function validation(validationProps: IValidationProperties) {
     return function(target, key: string) {
+        // target.constructor.name
+        // target.constructor.prototype
+        console.info(`fire validation decorator ${key}`);
+        if (!validationProps.classname) {
+            validationProps.classname = target.constructor.name;
+        }
+        if (!validationProps.prototypes) {
+            validationProps.prototypes = [];
+            let look = Object.getPrototypeOf(target);
+            let tmp: string;
+            while((tmp = getClassName(look)) !== 'Object') {
+                validationProps.prototypes.push(tmp);
+                look = Object.getPrototypeOf(look);
+            }
+        }
         validationProps.name = key;
         validationPool.push(validationProps);
     }
