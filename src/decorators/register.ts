@@ -139,17 +139,35 @@ export class ValidationRules {
         };
     }
 
+    private static _addCollectionInfoValidations(ci: CollectionInformation, tmp: IValidationProperties[]): void {
+        if (ci.Joins) {
+            for (let i = 0; i < ci.Joins.length; i++) {
+                tmp.push({
+                    classname: ci.Name,
+                    existType: ci.Joins[i].From,
+                    join: ci.Joins[i].Type
+                });
+            }
+        }
+    }
+
     private static _readValidationRules(model: string, ci: CollectionInformation) {
         let tmp = validationPool.filter((e) => {
             return e.classname === ci.Name;
         });
         if (tmp.length > 0) {
-            if (ci.Joins) {
-                for (let i = 0; i < ci.Joins.length; i++) {
-                    tmp.push({
-                        existType: ci.Joins[i].From,
-                        join: ci.Joins[i].Type
-                    });
+            this._addCollectionInfoValidations(ci, tmp);            
+            for (let j = 0; j < tmp[0].prototypes.length; j++) {
+                let proto = tmp[0].prototypes[j];
+                let subCi = Logic.Configuration.collectionInfos.filter((e) => {
+                    return e.Name === proto;
+                })[0];
+                let protoValidations = validationPool.filter((e) => {
+                    return e.classname === proto;
+                })[0];
+                if (protoValidations && subCi) {
+                    this._addCollectionInfoValidations(subCi, tmp);
+                    tmp = tmp.concat(protoValidations);
                 }
             }
             ValidationRules.rules.push({
@@ -157,15 +175,6 @@ export class ValidationRules {
                 allow: ci.allow,
                 validation: clone(tmp)
             });
-            for (let j = 0; j < tmp[0].prototypes.length; j++) {
-                let proto = tmp[0].prototypes[j];
-                let subCi = Logic.Configuration.collectionInfos.filter((e) => {
-                    return e.Name === proto;
-                })[0];
-                if (subCi) {
-                    this._readValidationRules(ci.Name, subCi);
-                }
-            }
         }
     }
 
