@@ -16,10 +16,10 @@
     "scripts": {
         "build": "tsc",
         "doc": "./node_modules/.bin/typedoc --mode file --module commonjs --target ES6 --readme ./README.md --ignoreCompilerErrors --out ./docs ./src",
-        "test": "nyc mocha --bail --recursive -r ts-node/register \"./spec/**/*.spec.ts\"",
-        "test:integration": "mocha --bail -r ts-node/register \"./spec/integration/**/*.spec.ts\"",
-        "test:unit": "mocha --bail -r ts-node/register \"./spec/unit/**/*.spec.ts\"",
-        "test:websocket": "mocha --bail -r ts-node/register \"./spec/integration/websockets.spec.ts\"",
+        "test": "nyc mocha -t 30000 --bail --recursive -r ts-node/register \"./spec/**/*.spec.ts\"",
+        "test:integration": "mocha -t 30000 --bail -r ts-node/register \"./spec/integration/**/*.spec.ts\"",
+        "test:unit": "mocha -t 30000 --bail -r ts-node/register \"./spec/unit/**/*.spec.ts\"",
+        "test:websocket": "mocha -t 30000 --bail -r ts-node/register \"./spec/integration/websockets.spec.ts\"",
         "release": "tsc && npm publish"
     },
     "dependencies": {

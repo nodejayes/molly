@@ -75,6 +75,6 @@ describe('extended Classes Spec', () => {
             mongoDatabase: 'test_molly'
         });
 
-        
+        server.stop();
     });
 });
