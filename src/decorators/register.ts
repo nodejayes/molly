@@ -42,7 +42,9 @@ export class ValidationRules {
             if (p.type) {
                 tmp[p.name] = p.type;
             } else if (p.existType) {
-                tmp[p.name] = this._buildRead(p.existType);
+                tmp[p.name] = p.join === JoinType.ONEONE ? 
+                    this._buildRead(p.existType) : 
+                    BaseTypes.typeArray(this._buildRead(p.existType));
             }
         }
         schema = BaseTypes.type(tmp);

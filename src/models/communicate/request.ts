@@ -114,4 +114,16 @@ export class RequestModel implements IRequestModel {
         }
         return source;
     }
+
+    static replaceObjectIdWithString(source: any) {
+        for (let key in source) {
+            if (source[key] instanceof ObjectId) {
+                source[key] = source[key].toString();
+            }
+            if (isObject(source[key])) {
+                source[key] = this.replaceObjectIdWithString(source[key]);
+            }
+        }
+        return source;
+    }
 }

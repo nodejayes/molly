@@ -1,4 +1,5 @@
 import {ObjectSchema, ArraySchema, validate} from 'joi';
+import {BaseTypes} from './../../index';
 
 const convert = require('joi-to-json-schema');
 
@@ -129,7 +130,7 @@ export class ValidationInformation {
      * @memberof ValidationInformation
      */
     checkRead(input: any): any {
-        let tmp = validate(input, this.ReadSchema);
+        let tmp = validate(input, BaseTypes.typeArray(this.ReadSchema));
         if (tmp.error) {
             throw tmp.error;
         }

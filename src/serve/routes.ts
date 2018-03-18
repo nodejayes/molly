@@ -182,7 +182,7 @@ export class Routes {
         let col = Routes._getCollection(data.Model);
         let pipe = Routes._getPipeline(col.joins, data);
         let tmp = await col.collection.aggregate(pipe).toArray();
-        // tmp = validation.checkRead(RequestModel.replaceStringIds(tmp));
+        tmp = validation.checkRead(RequestModel.replaceObjectIdWithString(tmp));
         return new ResponseModel(tmp, false);
     }
 
