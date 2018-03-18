@@ -113,6 +113,5 @@ export class RequestModel implements IRequestModel {
             }
         }
         return source;
-
     }
 }

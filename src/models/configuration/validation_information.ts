@@ -116,9 +116,6 @@ export class ValidationInformation {
     checkCreate(input: any): any {
         let tmp = validate(input, this.CreateSchema);
         if (tmp.error) {
-            console.info(input);
-            console.info(this.createJsonSchema);
-            console.error(tmp.error);
             throw tmp.error;
         }
         return tmp.value;
@@ -134,9 +131,6 @@ export class ValidationInformation {
     checkRead(input: any): any {
         let tmp = validate(input, this.ReadSchema);
         if (tmp.error) {
-            console.error(tmp.error.message);
-            console.info(JSON.stringify(input, null, 4));
-            console.info(JSON.stringify(this.readJsonSchema, null, 4));
             throw tmp.error;
         }
         return tmp.value;
