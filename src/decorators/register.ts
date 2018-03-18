@@ -8,6 +8,8 @@ import {ValidationInformation} from './../models/configuration/validation_inform
 import {ICollectionProperties} from './../interfaces/collection_properties';
 import {IValidationProperties} from './../interfaces/validation_properties';
 
+const convert = require('joi-to-json-schema');
+
 const validationPool: IValidationProperties[] = [];
 
 export interface IValidationRules {
@@ -142,7 +144,11 @@ export class ValidationRules {
     private static _addCollectionInfoValidations(ci: CollectionInformation, tmp: IValidationProperties[]): void {
         if (ci.Joins) {
             for (let i = 0; i < ci.Joins.length; i++) {
+                if (ci.Joins[i].LocalField.indexOf('.') !== -1) {
+                    continue;
+                }
                 tmp.push({
+                    name: ci.Joins[i].LocalField,
                     classname: ci.Name,
                     existType: ci.Joins[i].From,
                     join: ci.Joins[i].Type

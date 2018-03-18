@@ -9,6 +9,7 @@ import {MongoDb} from './../database/mongo_db';
 import { CollectionStore } from '../models/configuration/collection_store';
 import {MongoLookup} from './../models/configuration/lookup';
 import { OperationInformation } from '../models/configuration/operation_information';
+import { RequestModel } from '../models/communicate/request';
 
 /**
  * holds all available Routes
@@ -95,10 +96,11 @@ export class Routes {
      */
     private static _getPipeline(joins: Array<MongoLookup>, data: IRequestModel): Array<Object> {
         let restrictions = null;
-        let hasRestrictions = hasIn(data.Parameter, 'RESTRICTIONS');
+        let params = data.Parameter;
+        let hasRestrictions = hasIn(params, 'RESTRICTIONS');
         if (hasRestrictions) {
-            restrictions = data.Parameter['RESTRICTIONS'];
-            unset(data.Parameter, 'RESTRICTIONS');
+            restrictions = params['RESTRICTIONS'];
+            unset(params, 'RESTRICTIONS');
         }
         let pipe = new Array<Object>();
         if (joins) {
@@ -107,9 +109,9 @@ export class Routes {
                 pipe = pipe.concat(j.getAggregate());
             }
         }
-        if (keys(data.Parameter).length > 0) {
+        if (keys(params).length > 0) {
             pipe.push({
-                '$match': data.Parameter
+                '$match': params
             });
         }
         if (hasRestrictions) {
@@ -197,7 +199,7 @@ export class Routes {
             throw new Error(`no validation found for model ${data.Model}`);
         }     
         let col = Routes._getCollection(data.Model);
-        let input = validation.checkCreate(data.Parameter);
+        let input = RequestModel.replaceStringIds(validation.checkCreate(data.Parameter));
         let tmp = await col.collection.insertMany(input);
         return new ResponseModel(tmp.ops, false);
     }
@@ -216,7 +218,7 @@ export class Routes {
             throw new Error(`no validation found for model ${data.Model}`);
         }     
         let col = Routes._getCollection(data.Model);
-        let input = validation.checkUpdate(data.Parameter);
+        let input = RequestModel.replaceStringIds(validation.checkUpdate(data.Parameter));
         await col.collection.update({
             _id: new ObjectId(input.id)
         }, {
@@ -239,7 +241,7 @@ export class Routes {
             throw new Error(`no validation found for model ${data.Model}`);
         }     
         let col = Routes._getCollection(data.Model);
-        let input = validation.checkDelete(data.Parameter);
+        let input = RequestModel.replaceStringIds(validation.checkDelete(data.Parameter));
         await col.collection.deleteOne({
             _id: new ObjectId(input.id)
         });
