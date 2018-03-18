@@ -213,9 +213,6 @@ function getClassName(obj: any): string {
 
 export function validation(validationProps: IValidationProperties) {
     return function(target, key: string) {
-        // target.constructor.name
-        // target.constructor.prototype
-        console.info(`fire validation decorator ${key}`);
         if (!validationProps.classname) {
             validationProps.classname = target.constructor.name;
         }

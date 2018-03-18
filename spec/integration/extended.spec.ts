@@ -45,6 +45,8 @@ describe('extended Classes Spec', () => {
             lookup: []
         })
         class Field extends BaseProperties implements IField {
+            @validation({type: BaseTypes.mongoDbObjectId})
+            _id: string;
             @validation({type: BaseTypes.postgresDbId})
             id: number;
             @validation({type: BaseTypes.string})
@@ -57,6 +59,8 @@ describe('extended Classes Spec', () => {
             lookup: []
         })
         class SampleField extends Field implements ISampleField {
+            @validation({type: BaseTypes.mongoDbObjectId})
+            _id: string;
             @validation({type: BaseTypes.double})
             p: number;
             @validation({type: BaseTypes.double})
