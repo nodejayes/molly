@@ -175,4 +175,19 @@ describe('schema Spec', () => {
             type: 'object'
         });
     });
+
+    it('catch invalid type', async () => {
+        let msg = await req({
+            method: 'POST',
+            uri: 'http://localhost:8086/schema/Demo',
+            body: {
+                params: {
+                    type: 'unknow'
+                }
+            },
+            json: true
+        });
+        assert.isNull(msg.data);
+        assert.equal(msg.errors, 'schematype unknow not found');
+    });
 });

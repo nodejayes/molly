@@ -64,20 +64,6 @@ export class MongoLookup {
     }
 
     /**
-     * 
-     * 
-     * @readonly
-     * @type {string}
-     * @memberof MongoLookup
-     */
-    get ReferenceField(): string {
-        let tmp = this.LocalField.split('.').filter((e) => {
-            return e.length > 0;
-        });
-        return tmp[tmp.length-1] || null;
-    };
-
-    /**
      * get the MongoDb Aggregate based on the JoinType
      * 
      * @returns {Array<Object>} 
