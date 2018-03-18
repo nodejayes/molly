@@ -14,4 +14,5 @@ export interface IServerConfiguration {
     certFile?: string;
     keyFile?: string;
     caFile?: string;
+    staticFiles?: string;
 }

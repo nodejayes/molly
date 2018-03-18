@@ -153,6 +153,24 @@ describe('Molly Server Spec', () => {
                 assert.equal(err.message, '500 - {"data":null,"errors":"no validation found for model Right"}');
             }
         });
+        
+        it('catch no validation schema', async () => {
+            try {
+                await request({
+                    method: 'POST',
+                    uri: 'http://localhost:8086/schema/Right',
+                    body: {
+                        params: {
+                            type: 'read'
+                        }
+                    },
+                    json: true
+                });
+                assert.fail('no error thrown');
+            } catch (err) {
+                assert.equal(err.message, '500 - {"data":null,"errors":"no validation found for model Right"}');
+            }
+        });
 
         after(() => {
             server.stop();
@@ -388,6 +406,20 @@ describe('Molly Server Spec', () => {
             assert.isDefined(resUsers.data[0].group, 'relation one to one not work');
             assert.isDefined(resUsers.data[0].group.name, 'name is not defined');
             assert.isArray(resUsers.data[0].group.rights, 'relation one to many not work');
+        });
+
+        it('read user no compression', async () => {
+            await request({
+                method: 'POST',
+                uri: 'http://localhost:8086/read/User',
+                headers: {
+                    'x-no-compression': 'true'
+                },
+                body: {
+                    params: {}
+                },
+                json: true
+            });
         });
 
         it('update user email', async () => {

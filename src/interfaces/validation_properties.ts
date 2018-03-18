@@ -12,4 +12,6 @@ export interface IValidationProperties {
     existType?: string;
     join?: JoinType;
     name?: string;
+    classname?: string;
+    prototypes?: string[];
 }

@@ -38,7 +38,7 @@ export class MongoLookup {
      * @memberof MongoLookup
      */
     Type: JoinType;
-
+    
     /**
      * Creates an instance of MongoLookup.
      * @param {string} from 
