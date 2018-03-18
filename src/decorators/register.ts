@@ -63,10 +63,10 @@ export class ValidationRules {
             } else if (p.existType) {
                 switch(p.join) {
                     case JoinType.ONEONE:
-                        tmp[p.name] = BaseTypes.mongoDbObjectId;
+                        tmp[p.name] = BaseTypes.mongoDbObjectId.allow(null);
                         break;
                     case JoinType.ONEMANY:
-                        tmp[p.name] = BaseTypes.typeArray(BaseTypes.mongoDbObjectId);
+                        tmp[p.name] = BaseTypes.typeArray(BaseTypes.mongoDbObjectId.allow(null));
                         break;
                 }
             }

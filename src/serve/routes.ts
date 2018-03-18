@@ -96,7 +96,7 @@ export class Routes {
      */
     private static _getPipeline(joins: Array<MongoLookup>, data: IRequestModel): Array<Object> {
         let restrictions = null;
-        let params = data.Parameter;
+        let params = RequestModel.replaceStringIds(data.Parameter);
         let hasRestrictions = hasIn(params, 'RESTRICTIONS');
         if (hasRestrictions) {
             restrictions = params['RESTRICTIONS'];

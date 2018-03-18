@@ -143,6 +143,7 @@ export class ExpressServer {
                             tmp = await this._invoker.create(data.Model, data.Parameter);
                             break;
                         case 'read':
+                            data.Parameter = RequestModel.replaceStringIds(data.Parameter);
                             tmp = await this._invoker.read(data.Model, data.Parameter, data.Properties);
                             break;
                         case 'update':
