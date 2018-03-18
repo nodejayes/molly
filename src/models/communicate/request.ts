@@ -56,7 +56,7 @@ export class RequestModel implements IRequestModel {
         if (!hasIn(req.body, 'params')) {
             throw new Error(`invalid request body ${req.body}`);
         }
-        this.Parameter = this._replaceStringIds(req.body.params);
+        this.Parameter = req.body.params;
         if (hasIn(req.body, 'props')) {
             this.Properties = req.body.props;
         } else {
@@ -67,12 +67,12 @@ export class RequestModel implements IRequestModel {
     /**
      * replace the String MongoDb Object ids with ObjectId
      * 
-     * @private
+     * @static
      * @param {*} source 
      * @returns {*} 
      * @memberof RequestModel
      */
-    private _replaceStringIds(source: any): any {
+    public static replaceStringIds(source: any): any {
         for (let key in source) {
             if (key === '_id') {
                 if (typeof source[key] === 'string' && source[key].length === 24) {
@@ -99,11 +99,11 @@ export class RequestModel implements IRequestModel {
                 }
             } else if (['$and', '$or'].indexOf(key) > -1) {
                 for (let i = 0; i < source[key].length; i++) {
-                    source[key][i] = this._replaceStringIds(source[key][i]);
+                    source[key][i] = this.replaceStringIds(source[key][i]);
                 }
             } else {
                 if (isObject(source[key])) {
-                    this._replaceStringIds(source[key]);
+                    this.replaceStringIds(source[key]);
                 } else if (isString(source[key]) && source[key].length === 24) {
                     try {
                         let oid = new ObjectId(source[key]);
@@ -113,6 +113,17 @@ export class RequestModel implements IRequestModel {
             }
         }
         return source;
+    }
 
+    static replaceObjectIdWithString(source: any) {
+        for (let key in source) {
+            if (source[key] instanceof ObjectId) {
+                source[key] = source[key].toString();
+            }
+            if (isObject(source[key])) {
+                source[key] = this.replaceObjectIdWithString(source[key]);
+            }
+        }
+        return source;
     }
 }

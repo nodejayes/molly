@@ -29,6 +29,13 @@ export class CollectionInformation {
      * @memberof CollectionInformation
      */
     setIndex: Function;
+    /**
+     * 
+     * 
+     * @type {string}
+     * @memberof CollectionInformation
+     */
+    allow: string;
 
     /**
      * Creates an instance of CollectionInformation.
@@ -37,13 +44,16 @@ export class CollectionInformation {
      * @param {Function} [setIndex] 
      * @memberof CollectionInformation
      */
-    constructor(name: string, joins?: Array<MongoLookup>, setIndex?: Function) {
+    constructor(name: string, joins?: Array<MongoLookup>, setIndex?: Function, allow?: string) {
         this.Name = name;
         if (joins) {
             this.Joins = joins;
         }
         if (setIndex) {
             this.setIndex = setIndex;
+        }
+        if (allow) {
+            this.allow = allow;
         }
     }
 }
