@@ -27,7 +27,7 @@ export class Routes {
      */
     static get Names(): Array<string> {
         return [
-            'create', 'read', 'update', 'delete', 'operation'
+            'create', 'read', 'update', 'delete', 'operation', 'schema'
         ];
     }
     /**
@@ -136,6 +136,34 @@ export class Routes {
         }
         return pipe;
     }
+
+    /**
+     * return the JSON Schema (draft-4) for the Model
+     * 
+     * @static
+     * @param {IRequestModel} data 
+     * @returns {Promise<ResponseModel>} 
+     * @memberof Routes
+     */
+    static async schema(data: IRequestModel): Promise<ResponseModel> {
+        let validation = Routes._getValidation(data.Action, data.Model);
+        if (validation === null) {
+            throw new Error(`no validation found for model ${data.Model}`);
+        }
+        switch(data.Parameter.type) {
+            case 'create':
+                return new ResponseModel(validation.createJsonSchema, false);
+            case 'read':
+                return new ResponseModel(validation.readJsonSchema, false);
+            case 'update':
+                return new ResponseModel(validation.updateJsonSchema, false);
+            case 'delete':
+                return new ResponseModel(validation.deleteJsonSchema, false);
+            default:
+                return new ResponseModel(`schematype ${data.Parameter.type} not found`, true);
+        }
+    }
+
     /**
      * read a Model from Database
      * 

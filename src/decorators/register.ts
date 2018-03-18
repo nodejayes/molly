@@ -151,7 +151,7 @@ export class ValidationRules {
         }
     }
 
-    private static _readValidationRules(model: string, ci: CollectionInformation) {
+    private static _readValidationRules(model: string, ci: CollectionInformation, allCis: CollectionInformation[]) {
         let tmp = validationPool.filter((e) => {
             return e.classname === ci.Name;
         });
@@ -159,14 +159,16 @@ export class ValidationRules {
             this._addCollectionInfoValidations(ci, tmp);            
             for (let j = 0; j < tmp[0].prototypes.length; j++) {
                 let proto = tmp[0].prototypes[j];
-                let subCi = Logic.Configuration.collectionInfos.filter((e) => {
+                let subCi = allCis.filter((e) => {
                     return e.Name === proto;
                 })[0];
                 let protoValidations = validationPool.filter((e) => {
                     return e.classname === proto;
-                })[0];
-                if (protoValidations && subCi) {
+                });
+                if (protoValidations && protoValidations.length > 0 && subCi) {
                     this._addCollectionInfoValidations(subCi, tmp);
+                    tmp = tmp.concat(protoValidations);
+                } else if (protoValidations) {
                     tmp = tmp.concat(protoValidations);
                 }
             }
@@ -181,7 +183,7 @@ export class ValidationRules {
     private static _fillValidationRules() {
         for (let i = 0; i < Logic.Configuration.collectionInfos.length; i++) {
             let ci = Logic.Configuration.collectionInfos[i];
-            this._readValidationRules(ci.Name, ci);
+            this._readValidationRules(ci.Name, ci, Logic.Configuration.collectionInfos);
         }
     }
 

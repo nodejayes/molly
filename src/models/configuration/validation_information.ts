@@ -1,5 +1,7 @@
 import {ObjectSchema, ArraySchema, validate} from 'joi';
 
+const convert = require('joi-to-json-schema');
+
 /**
  * a Type Validation Info
  * 
@@ -61,6 +63,50 @@ export class ValidationInformation {
     }
 
     /**
+     * get JSON Schema (draft-04) for Create
+     * 
+     * @readonly
+     * @memberof ValidationInformation
+     */
+    get createJsonSchema() {
+        return this.CreateSchema ? 
+            convert(this.CreateSchema) : null;
+    }
+
+    /**
+     * get JSON Schema (draft-04) for Read
+     * 
+     * @readonly
+     * @memberof ValidationInformation
+     */
+    get readJsonSchema() {
+        return this.ReadSchema ? 
+            convert(this.ReadSchema) : null;
+    }
+
+    /**
+     * get JSON Schema (draft-04) for Update
+     * 
+     * @readonly
+     * @memberof ValidationInformation
+     */
+    get updateJsonSchema() {
+        return this.UpdateSchema ? 
+            convert(this.UpdateSchema) : null;
+    }
+
+    /**
+     * get JSON Schema (draft-04) for Delete
+     * 
+     * @readonly
+     * @memberof ValidationInformation
+     */
+    get deleteJsonSchema() {
+        return this.DeleteSchema ? 
+            convert(this.DeleteSchema) : null;
+    }
+
+    /**
      * check the Create Validation Schema
      * 
      * @param {*} input 
@@ -68,7 +114,11 @@ export class ValidationInformation {
      * @memberof ValidationInformation
      */
     checkCreate(input: any): any {
-        return validate(input, this.CreateSchema).value;
+        let tmp = validate(input, this.CreateSchema);
+        if (tmp.error) {
+            throw tmp.error;
+        }
+        return tmp.value;
     }
 
     /**
@@ -79,7 +129,11 @@ export class ValidationInformation {
      * @memberof ValidationInformation
      */
     checkRead(input: any): any {
-        return validate(input, this.ReadSchema).value;
+        let tmp = validate(input, this.ReadSchema);
+        if (tmp.error) {
+            throw tmp.error;
+        }
+        return tmp.value;
     }
 
     /**
@@ -90,7 +144,11 @@ export class ValidationInformation {
      * @memberof ValidationInformation
      */
     checkUpdate(input: any): any {
-        return validate(input, this.UpdateSchema).value;
+        let tmp = validate(input, this.UpdateSchema);
+        if (tmp.error) {
+            throw tmp.error;
+        }
+        return tmp.value;
     }
 
     /**
@@ -101,6 +159,10 @@ export class ValidationInformation {
      * @memberof ValidationInformation
      */
     checkDelete(input: any): any {
-        return validate(input, this.DeleteSchema).value;
+        let tmp = validate(input, this.DeleteSchema);
+        if (tmp.error) {
+            throw tmp.error;
+        }
+        return tmp.value;
     }
 }
