@@ -89,7 +89,7 @@ describe('Molly Server Spec', () => {
                     method: 'POST',
                     uri: `http://localhost:8086/create/Right`,
                     body: {
-                        params: rightData
+                        params: rightData[0]
                     },
                     json: true
                 });
@@ -264,6 +264,10 @@ describe('Molly Server Spec', () => {
 
     describe('Model CRUD check', () => {
         before(async () => {
+            rights = [];
+            groups = [];
+            users = [];
+
             await server.start({
                 binding: 'localhost',
                 port: 8086,
@@ -300,19 +304,20 @@ describe('Molly Server Spec', () => {
                     active: true
                 }
             ];
-            let rs = await request({
-                method: 'POST',
-                uri: `http://localhost:8086/create/Right`,
-                body: {
-                    params: rightData
-                },
-                json: true
-            });
-            assert.isNull(rs.errors, 'errors is not null');
-            assert.isNotNull(rs.data, 'data is null');
-            assert.isArray(rs.data, 'data must be an array');
-            assert.equal(rs.data.length, 5, 'invalid count');
-            rights = rs.data;
+            for (let i = 0; i < rightData.length; i++) {
+                let rs = await request({
+                    method: 'POST',
+                    uri: `http://localhost:8086/create/Right`,
+                    body: {
+                        params: rightData[i]
+                    },
+                    json: true
+                });
+                assert.isNull(rs.errors);
+                assert.isNotNull(rs.data);
+                assert.isObject(rs.data);
+                rights.push(rs.data);
+            }
         });
 
         it('create groups', async () => {
@@ -334,19 +339,20 @@ describe('Molly Server Spec', () => {
                         .map((e) => e._id)
                 }
             ];
-            let rs = await request({
-                method: 'POST',
-                uri: `http://localhost:8086/create/Group`,
-                body: {
-                    params: groupData
-                },
-                json: true
-            });
-            assert.isNull(rs.errors, 'errors is not null');
-            assert.isNotNull(rs.data, 'data is null');
-            assert.isArray(rs.data, 'data must be an array');
-            assert.equal(rs.data.length, 3, 'invalid count');
-            groups = rs.data;
+            for(let i = 0; i < groupData.length; i++) {
+                let rs = await request({
+                    method: 'POST',
+                    uri: `http://localhost:8086/create/Group`,
+                    body: {
+                        params: groupData[i]
+                    },
+                    json: true
+                });
+                assert.isNull(rs.errors, 'errors is not null');
+                assert.isNotNull(rs.data, 'data is null');
+                assert.isObject(rs.data);
+                groups.push(rs.data);
+            }
         });
 
         it('create users', async () => {
@@ -376,19 +382,20 @@ describe('Molly Server Spec', () => {
                         .map((e) => e._id)[0]
                 }
             ];
-            let rs = await request({
-                method: 'POST',
-                uri: `http://localhost:8086/create/User`,
-                body: {
-                    params: userData
-                },
-                json: true
-            });
-            assert.isNull(rs.errors, 'errors is not null');
-            assert.isNotNull(rs.data, 'data is null');
-            assert.isArray(rs.data, 'data must be an array');
-            assert.equal(rs.data.length, 3, 'invalid count');
-            users = rs.data;
+            for (let i = 0; i < userData.length; i++) {
+                let rs = await request({
+                    method: 'POST',
+                    uri: `http://localhost:8086/create/User`,
+                    body: {
+                        params: userData[i]
+                    },
+                    json: true
+                });
+                assert.isNull(rs.errors);
+                assert.isNotNull(rs.data);
+                assert.isObject(rs.data);
+                users.push(rs.data);
+            }
         });
 
         it('read user', async () => {
