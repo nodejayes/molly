@@ -52,22 +52,19 @@ describe('schema Spec', () => {
             json: true
         });
         assert.deepEqual(schema.data, {
-            items: {
-                additionalProperties: false,
-                patterns: [],
-                properties: {
-                    id: {
-                        maximum: 2147483647,
-                        minimum: 1,
-                        type: 'integer'
-                    },
-                    name: {
-                        type: 'string'
-                    }
+            additionalProperties: false,
+            patterns: [],
+            properties: {
+                id: {
+                    maximum: 2147483647,
+                    minimum: 1,
+                    type: 'integer'
                 },
-                type: 'object'
+                name: {
+                    type: 'string'
+                }
             },
-            type: 'array'
+            type: 'object'
         });
     });
 

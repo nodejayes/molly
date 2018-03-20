@@ -83,43 +83,38 @@ describe('extended Classes Spec', () => {
             method: 'POST',
             uri: 'http://localhost:8086/create/SampleField',
             body: {
-                params: [
-                    <SampleField>{
-                        cao: 12.5,
-                        k: 0.0,
-                        p: 0.0,
-                        mg: 0.0,
-                        created: new Date(),
-                        fieldname: 'Field 1',
-                        version: 1,
-                        id: 1
-                    }
-                ]
+                params: <SampleField>{
+                    cao: 12.5,
+                    k: 0.0,
+                    p: 0.0,
+                    mg: 0.0,
+                    created: new Date(),
+                    fieldname: 'Field 1',
+                    version: 1,
+                    id: 1
+                }
             },
             json: true
         });
 
         assert.isNull(res.errors);
-        assert.isArray(res.data);
-        assert.equal(res.data.length, 1);
+        assert.isObject(res.data);
 
         try {
             await req({
                 method: 'POST',
                 uri: 'http://localhost:8086/create/SampleField',
                 body: {
-                    params: [
-                        {
-                            cao: 12.5,
-                            k: 0.0,
-                            p: 0.0,
-                            mg: 0.0,
-                            created: 'ein text',
-                            fieldname: 'Field 1',
-                            version: 1,
-                            id: 1
-                        }
-                    ]
+                    params: {
+                        cao: 12.5,
+                        k: 0.0,
+                        p: 0.0,
+                        mg: 0.0,
+                        created: 'ein text',
+                        fieldname: 'Field 1',
+                        version: 1,
+                        id: 1
+                    }
                 },
                 json: true
             });

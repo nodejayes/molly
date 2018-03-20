@@ -1,4 +1,4 @@
-import {ObjectSchema, ArraySchema, validate} from 'joi';
+import {ObjectSchema, validate} from 'joi';
 import {BaseTypes} from './../../index';
 
 const convert = require('joi-to-json-schema');
@@ -20,10 +20,10 @@ export class ValidationInformation {
     /**
      * the Create Validation
      * 
-     * @type {ArraySchema}
+     * @type {ObjectSchema}
      * @memberof ValidationInformation
      */
-    CreateSchema: ArraySchema;
+    CreateSchema: ObjectSchema;
     /**
      * the Read Validation
      * 
@@ -49,13 +49,13 @@ export class ValidationInformation {
     /**
      * Creates an instance of ValidationInformation.
      * @param {string} name 
-     * @param {ArraySchema} [createSchema] 
+     * @param {ObjectSchema} [createSchema] 
      * @param {ObjectSchema} [readSchema] 
      * @param {ObjectSchema} [updateSchema] 
      * @param {ObjectSchema} [deleteSchema] 
      * @memberof ValidationInformation
      */
-    constructor(name: string, createSchema?: ArraySchema, readSchema?: ObjectSchema, updateSchema?: ObjectSchema, deleteSchema?: ObjectSchema) {
+    constructor(name: string, createSchema?: ObjectSchema, readSchema?: ObjectSchema, updateSchema?: ObjectSchema, deleteSchema?: ObjectSchema) {
         this.Name = name;
         this.CreateSchema = createSchema ? createSchema : null;
         this.ReadSchema = readSchema ? readSchema : null;

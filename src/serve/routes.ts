@@ -201,10 +201,8 @@ export class Routes {
         }     
         let col = Routes._getCollection(data.Model);
         let input = RequestModel.replaceStringIds(validation.checkCreate(data.Parameter));
-        let tmp = await col.collection.insertMany(input, {
-            ordered: false,
-        });
-        return new ResponseModel(tmp.ops, false);
+        let tmp = await col.collection.insertOne(input);
+        return new ResponseModel(tmp.ops[0], false);
     }
 
     /**
