@@ -18,7 +18,7 @@ let mongoDbObjectId = BaseTypes.mongoDbObjectId;
 let array = BaseTypes.custom.array();
 let bool = BaseTypes.bool;
 let type = BaseTypes.type;
-let user = [];
+let user = {};
 let socket = null;
 
 describe('Websocket Spec', () => {
@@ -138,19 +138,16 @@ describe('Websocket Spec', () => {
                         socket.send(JSON.stringify(<IRequestModel>{
                             Action: 'create',
                             Model: 'User',
-                            Parameter: [
-                                {
-                                    username: 'Test',
-                                    password: 'Test',
-                                    email: 'test@test.de',
-                                    group: null
-                                }
-                            ]
+                            Parameter: {
+                                username: 'Test',
+                                password: 'Test',
+                                email: 'test@test.de',
+                                group: null
+                            }
                         }));
                         break;
                     case 'create_User':
-                        assert.isArray(d.data);
-                        assert.equal(d.data.length, 1);
+                        assert.isObject(d.data);
                         user = d.data;
                         socket.send(JSON.stringify(<IRequestModel>{
                             Action: 'read',
@@ -173,7 +170,7 @@ describe('Websocket Spec', () => {
                             Action: 'update',
                             Model: 'User',
                             Parameter: {
-                                id: user[0]._id,
+                                id: user['_id'],
                                 updateSet: {
                                     username: 'Test2'
                                 }
@@ -186,7 +183,7 @@ describe('Websocket Spec', () => {
                             Action: 'delete',
                             Model: 'User',
                             Parameter: {
-                                id: user[0]._id
+                                id: user['_id']
                             }
                         }));
                         break;

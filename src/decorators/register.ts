@@ -1,6 +1,6 @@
 import {Logic} from './../logic';
 import {BaseTypes, JoinType} from './../index';
-import {ObjectSchema, ArraySchema} from 'joi';
+import {ObjectSchema} from 'joi';
 import {clone} from 'lodash';
 import {CollectionInformation} from './../models/configuration/collection_information';
 import {OperationInformation} from './../models/configuration/operation_information';
@@ -20,7 +20,7 @@ export interface IValidationRules {
 
 interface ISchemaInfo {
     readSchema: ObjectSchema;
-    createSchema?: ArraySchema;
+    createSchema?: ObjectSchema;
     updateSchema?: ObjectSchema;
     deleteSchema?: ObjectSchema;
 }
@@ -51,7 +51,7 @@ export class ValidationRules {
         return schema;
     }
 
-    private static _buildCreate(model: string): ArraySchema {
+    private static _buildCreate(model: string): ObjectSchema {
         let schema = null;
         let tmp = {};
         let props = this._getValidations(model);
@@ -73,7 +73,7 @@ export class ValidationRules {
                 }
             }
         }
-        schema = BaseTypes.typeArray(BaseTypes.type(tmp));
+        schema = BaseTypes.type(tmp);
         return schema;
     }
 
