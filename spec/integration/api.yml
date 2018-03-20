@@ -1,0 +1,47 @@
+swagger: "2.0"
+info:
+  description: "Beschreibung"
+  version: "1.0.0"
+  title: "API"
+  contact:
+    email: "contact@live.de"
+  license:
+    name: "MIT"
+    url: "https://opensource.org/licenses/MIT"
+host: "localhost:9000"
+basePath: "/"
+tags:
+- name: "Right"
+  description: ""
+schemes:
+- "http"
+paths:
+  /create/Right:
+    post:
+      tags:
+      - ""
+      summary: ""
+      description: ""
+      operationId: "createRight"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: ""
+        required: true
+        schema:
+          $ref: "#/definitions/Right"
+      responses:
+        200:
+          description: ""
+definitions:
+  Right:
+    type: "object"
+    properties:
+      key:
+        type: "string"
+      active:
+        type: "boolean"
