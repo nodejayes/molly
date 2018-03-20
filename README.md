@@ -24,6 +24,10 @@ The goal of Molly is to create services that are as flexible and easy to configu
 
 ## Release Notes
 
+1.3.2
+
+* create only takes one Object (multiple Objects implement later with transactions)
+
 1.3.1
 
 * when create many Models the errors was not created for example duplicates are not inserted the other models was
