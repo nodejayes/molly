@@ -1,34 +1,126 @@
 import {Logic} from './../logic';
 
-interface ISwaggerDocument {
+const PKG = require('./../../package.json');
+
+export interface ISwaggerDocument {
     version: string;
     host: string;
     basePath: string;
     schemes: string[];
-    info: ISwaggerInfo[];
+    info: ISwaggerInfo;
     tags: ISwaggerTag[];
     paths: ISwaggerPath[];
     definitions: ISwaggerDefinition[];
 }
 
-interface ISwaggerInfo {
-
+export interface ISwaggerInfo {
+    description: string;
+    version: string;
+    title: string;
+    contact: ISwaggerContact;
+    license: ISwaggerLicense;
 }
 
-interface ISwaggerPath {
-
+export interface ISwaggerContact {
+    email: string;
 }
 
-interface ISwaggerTag {
-
+export interface ISwaggerLicense {
+    name: string;
+    url: string;
 }
 
-interface ISwaggerDefinition {
-    
+export interface ISwaggerPath {
+    route: string;
+    method: HttpMethod;
+    tags: string[];
+    summary: string;
+    description: string;
+    operationId: string;
+    consumes: string[];
+    produces: string[];
+    parameters: ISwaggerParameter[];
+    responses: ISwaggerResponse[];
 }
 
-class DocumentationGenerator {
-    constructor() {}
+export interface ISwaggerParameter {
+    in: string;
+    name: string;
+    description: string;
+    required: boolean;
+    ref: string;
+}
+
+export interface ISwaggerResponse {
+    status: number;
+    description: string;
+}
+
+export enum HttpMethod {
+    GET = 'get',
+    POST = 'post',
+    PUT = 'put',
+    DELETE = 'delete'
+}
+
+export interface ISwaggerTag {
+    name: string;
+    description: string;
+}
+
+export interface ISwaggerDefinition {
+    name: string;
+    type: string;
+    properties: ISwaggerProperty[];
+}
+
+export interface ISwaggerProperty {
+    name: string;
+    type: string;
+}
+
+export interface ISwaggerBaseInfos {
+    host: string;
+    version: string;
+    useSsl: boolean;
+    contactEmail: string;
+    title: string;
+    licenseType: string;
+    description: string;
+}
+
+export class SwaggerDocument implements ISwaggerDocument {
+    version: string;
+    host: string;
+    basePath: string;
+    schemes: string[];
+    info: ISwaggerInfo;
+    tags: ISwaggerTag[];
+    paths: ISwaggerPath[];
+    definitions: ISwaggerDefinition[];
+
+    constructor(info: ISwaggerBaseInfos) {
+        this.host = info.host;
+        this.version = '2.0';
+        this.basePath = '/';
+        if (info.useSsl) {
+            this.schemes = ['https'];
+        } else {
+            this.schemes = ['http'];
+        }
+        this.info = {
+            contact: {
+                email: PKG.author ? PKG.author.email || '' : ''
+            },
+            description: PKG.description || '',
+            license: {
+                name: PKG.license || 'UNLICENSED',
+                url: ''
+            },
+            title: PKG.name,
+            version: PKG.version
+        }
+    }
 
     private _readConfiguration() {
         let collections = Logic.Configuration.collectionInfos;
@@ -41,5 +133,9 @@ class DocumentationGenerator {
         for (let i = 0; i < operations.length; i++) {
 
         }
+    }
+
+    toString() {
+        this._readConfiguration();
     }
 }
