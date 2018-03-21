@@ -4,22 +4,64 @@ info:
   version: "1.0.0"
   title: "API"
   contact:
-    email: "contact@live.de"
+    email: "markusgilg@outlook.de"
   license:
     name: "MIT"
-    url: "https://opensource.org/licenses/MIT"
 host: "localhost:9000"
 basePath: "/"
 tags:
 - name: "Right"
   description: ""
+- name: "Group"
+  description: ""
+- name: "User"
+  description: ""
 schemes:
 - "http"
 paths:
+  /read/Right:
+    post:
+      tags:
+      - "Right"
+      summary: ""
+      description: ""
+      operationId: "readRight"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: ""
+        required: true
+        schema:
+          type: 'object'
+          properties:
+            params:
+              type: 'object'
+              properties:
+                key:
+                  type: 'string'
+                RESTRICTIONS:
+                  type: 'object'
+                  limit: 'number'
+      responses:
+        200:
+          description: ""
+          schema:
+            type: 'object'
+            properties:
+              _id:
+                type: 'string'
+              key:
+                type: 'string'
+              active:
+                type: 'boolean'
   /create/Right:
     post:
       tags:
-      - ""
+      - "Right"
       summary: ""
       description: ""
       operationId: "createRight"
@@ -33,15 +75,24 @@ paths:
         description: ""
         required: true
         schema:
-          $ref: "#/definitions/Right"
+          type: 'object'
+          properties:
+            params:
+              type: 'object'
+              properties:
+                key:
+                  type: 'string'
+                active:
+                  type: 'boolean'
       responses:
         200:
           description: ""
-definitions:
-  Right:
-    type: "object"
-    properties:
-      key:
-        type: "string"
-      active:
-        type: "boolean"
+          schema:
+            type: 'object'
+            properties:
+              _id:
+                type: 'string'
+              key:
+                type: 'string'
+              active:
+                type: 'boolean'

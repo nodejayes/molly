@@ -122,6 +122,80 @@ export class SwaggerDocument implements ISwaggerDocument {
         }
     }
 
+    private _getMain(host: string, useSsl: boolean, email: string, license: string,
+                    description: string, version: string, title: string, tags: string, paths: string): string {
+        return `
+swagger: "2.0"
+info:
+  description: "${description}"
+  version: "${version}"
+  title: "${title}"
+  contact:
+    email: "${email}"
+  license:
+    name: "${license}"
+host: "${host}"
+basePath: "/"
+tags:
+${tags}
+schemes:
+- "${useSsl ? 'https' : 'http'}"
+paths:
+${paths}
+        `;
+    }
+
+    private _getTag(name: string, description: string): string {
+        return `
+- name: "${name}"
+description: "${description}"
+        `;
+    }
+
+    private _getPath(path: string, tag: string): string {
+        return `
+  ${path}:
+    post:
+      tags:
+      - "${tag}"
+      summary: ""
+      description: ""
+      operationId: "${path}"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: ""
+        required: true
+        schema:
+          type: 'object'
+          properties:
+          params:
+            type: 'object'
+            properties:
+            key:
+              type: 'string'
+            RESTRICTIONS:
+              type: 'object'
+              limit: 'number'
+      responses:
+        200:
+          description: ""
+          schema:
+            type: 'object'
+          properties:
+            _id:
+              type: 'string'
+            key:
+              type: 'string'
+            active:
+              type: 'boolean'
+        `;
+    }
+
     private _readConfiguration() {
         let collections = Logic.Configuration.collectionInfos;
         let operations = Logic.Configuration.operationInfos;
@@ -187,7 +261,19 @@ export class SwaggerDocument implements ISwaggerDocument {
         }
 
         for (let i = 0; i < operations.length; i++) {
-
+            let op = operations[i];
+            this.paths.push({
+                method: HttpMethod.POST,
+                description: '',
+                operationId: `/operation/${op.Name}`,
+                consumes: ['application/json'],
+                produces: ['application/json'],
+                route: `/operation/${op.Name}`,
+                tags: [],
+                parameters: [],
+                responses: [],
+                summary: ''
+            });
         }
     }
 
