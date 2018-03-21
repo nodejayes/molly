@@ -127,7 +127,63 @@ export class SwaggerDocument implements ISwaggerDocument {
         let operations = Logic.Configuration.operationInfos;
 
         for (let i = 0; i < collections.length; i++) {
-
+            let col = collections[i];
+            this.tags.push({
+                name: col.Name,
+                description: ''
+            });
+            if (col.allow.indexOf('C') === 0) {
+                this.paths.push({
+                    method: HttpMethod.POST,
+                    description: '',
+                    operationId: `/create/${col.Name}`,
+                    consumes: ['application/json'],
+                    produces: ['application/json'],
+                    route: `/create/${col.Name}`,
+                    tags: [],
+                    parameters: [],
+                    responses: [],
+                    summary: ''
+                });
+            } else if (col.allow.indexOf('U') === 1) {
+                this.paths.push({
+                    method: HttpMethod.POST,
+                    description: '',
+                    operationId: `/update/${col.Name}`,
+                    consumes: ['application/json'],
+                    produces: ['application/json'],
+                    route: `/update/${col.Name}`,
+                    tags: [],
+                    parameters: [],
+                    responses: [],
+                    summary: ''
+                });
+            } else if (col.allow.indexOf('D') === 2) {
+                this.paths.push({
+                    method: HttpMethod.POST,
+                    description: '',
+                    operationId: `/delete/${col.Name}`,
+                    consumes: ['application/json'],
+                    produces: ['application/json'],
+                    route: `/delete/${col.Name}`,
+                    tags: [],
+                    parameters: [],
+                    responses: [],
+                    summary: ''
+                });
+            }
+            this.paths.push({
+                method: HttpMethod.POST,
+                description: '',
+                operationId: `/read/${col.Name}`,
+                consumes: ['application/json'],
+                produces: ['application/json'],
+                route: `/read/${col.Name}`,
+                tags: [],
+                parameters: [],
+                responses: [],
+                summary: ''
+            });
         }
 
         for (let i = 0; i < operations.length; i++) {
