@@ -20,6 +20,7 @@
         "test:integration": "mocha -t 30000 --bail -r ts-node/register \"./spec/integration/**/*.spec.ts\"",
         "test:unit": "mocha -t 30000 --bail -r ts-node/register \"./spec/unit/**/*.spec.ts\"",
         "test:websocket": "mocha -t 30000 --bail -r ts-node/register \"./spec/integration/websockets.spec.ts\"",
+        "test:swagger": "mocha -t 30000 --bail -r ts-node/register \"./spec/integration/swagger.spec.ts\"",
         "release": "tsc && npm publish"
     },
     "dependencies": {

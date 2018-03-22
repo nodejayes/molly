@@ -1,6 +1,6 @@
 import { Server as HttpServer } from 'http';
 import {createServer, Server as HttpsServer, ServerOptions} from 'https';
-import {readFileSync, existsSync} from 'fs';
+import {readFileSync, existsSync, writeFileSync, unlinkSync} from 'fs';
 import * as express from 'express';
 import {Server as WsServer} from 'ws';
 import * as helmet from 'helmet';
@@ -10,6 +10,7 @@ import * as bodyParser from 'body-parser';
 import {keys} from 'lodash';
 import {promisify} from 'util';
 import {isAbsolute, join} from 'path';
+import {exec} from 'child_process';
 
 import {MongoDb} from './../database/mongo_db';
 import {Routes} from './routes';
@@ -20,6 +21,7 @@ import {WebsocketMessage} from '../models/communicate/websocketmessage';
 import {IRequestModel} from '..';
 import {ValidationRules} from './../decorators/register';
 import {IServerConfiguration} from './../interfaces/server_configuration';
+import { SwaggerGenerator } from '../swagger/generator';
 
 /**
  * implement a small Express Server
@@ -221,6 +223,17 @@ export class ExpressServer {
             cfg.mongoUrl += '/';
         }
         ValidationRules.registerValidations();
+        if (cfg.documentationPort > 0) {
+            let gen = new SwaggerGenerator(cfg.binding, cfg.certFile ? true : false);
+            let code = gen.toString();
+            let tmpFile = join(__dirname, 'tmpapi.yml');
+            writeFileSync(tmpFile, code, {
+                encoding: 'utf8'
+            });
+            let spectacle = promisify(exec);
+            await spectacle(join(__dirname, '..', '..', 'node_modules', '.bin', `spectacle -t ${join(__dirname, '..', '..', 'docs')} ${tmpFile}`));
+            unlinkSync(tmpFile);
+        }
         await MongoDb.connect(`${cfg.mongoUrl}${cfg.mongoDatabase}`, cfg.mongoDatabase);
         await this._buildSchema(cfg.clear);
         return new Promise<string>((resolve, reject) => {
