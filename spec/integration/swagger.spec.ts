@@ -86,7 +86,7 @@ describe('Swagger Generator Spec', () => {
     });
 
     it('use https', async () => {
-        await server.start({
+        let msg = await server.start({
             binding: 'localhost',
             port: 8086,
             documentationPort: 8087,
@@ -96,8 +96,7 @@ describe('Swagger Generator Spec', () => {
             keyFile: join(__dirname, '..', 'assets', 'server-key.pem'),
             caFile: join(__dirname, '..', 'assets', 'ca-crt.pem')
         });
-        let rs = await req('https://localhost:8087/');
-        assert.equal(rs.indexOf('<body id="spectacle">') > -1, true);
+        assert.equal(msg, 'server listen on https://localhost:8086/');
         server.stop();
     });
 });
