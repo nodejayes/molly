@@ -48,6 +48,14 @@ export class ExpressServer {
      */
     private _server: HttpServer | HttpsServer;
     /**
+     * Node Service Instance for Documentation
+     * 
+     * @private
+     * @type {(HttpServer | HttpsServer)}
+     * @memberof ExpressServer
+     */
+    private _docServer: HttpServer | HttpsServer;
+    /**
      * Websocket Server
      * 
      * @private
@@ -79,6 +87,7 @@ export class ExpressServer {
     constructor() {
         this._invoker = new RouteInvoker();
         this._server = null;
+        this._docServer = null;
         this._WsServer = null;
         this._routeNames = Routes.Names;
         this.App = express();
@@ -223,8 +232,20 @@ export class ExpressServer {
             cfg.mongoUrl += '/';
         }
         ValidationRules.registerValidations();
+        let options: ServerOptions = null;
+        if (existsSync(cfg.certFile) && existsSync(cfg.keyFile)) {
+            options = {
+                cert: readFileSync(cfg.certFile),
+                key: readFileSync(cfg.keyFile)
+            };
+            if (existsSync(cfg.caFile)) {
+                options.ca = readFileSync(cfg.caFile);
+            }
+        }
         if (cfg.documentationPort > 0) {
-            let gen = new SwaggerGenerator(cfg.binding, cfg.certFile ? true : false);
+            let useSsl = cfg.certFile ? true : false;
+            let address = useSsl ? `https://${cfg.binding}:${cfg.port}` : `http://${cfg.binding}:${cfg.port}`;
+            let gen = new SwaggerGenerator(address, useSsl);
             let code = gen.toString();
             let tmpFile = join(__dirname, 'tmpapi.yml');
             writeFileSync(tmpFile, code, {
@@ -233,19 +254,19 @@ export class ExpressServer {
             let spectacle = promisify(exec);
             await spectacle(join(__dirname, '..', '..', 'node_modules', '.bin', `spectacle -t ${join(__dirname, '..', '..', 'docs')} ${tmpFile}`));
             unlinkSync(tmpFile);
+            let docApp = express();
+            docApp.use(express.static('docs'));
+            if (existsSync(cfg.certFile) && existsSync(cfg.keyFile)) {
+                this._docServer = createServer(options, docApp).listen(cfg.documentationPort, cfg.binding);
+            } else {
+                this._docServer = docApp.listen(cfg.documentationPort, cfg.binding);
+            }
         }
         await MongoDb.connect(`${cfg.mongoUrl}${cfg.mongoDatabase}`, cfg.mongoDatabase);
         await this._buildSchema(cfg.clear);
         return new Promise<string>((resolve, reject) => {
             this._registerRoutes(cfg);
             if (existsSync(cfg.certFile) && existsSync(cfg.keyFile)) {
-                let options: ServerOptions = {
-                    cert: readFileSync(cfg.certFile),
-                    key: readFileSync(cfg.keyFile)
-                };
-                if (existsSync(cfg.caFile)) {
-                    options.ca = readFileSync(cfg.caFile);
-                }
                 this._server = createServer(options, this.App).listen(cfg.port, cfg.binding, () => {
                     resolve(`server listen on https://${cfg.binding}:${cfg.port}/`);
                 });
@@ -275,6 +296,10 @@ export class ExpressServer {
         if (this._WsServer !== null) {
             this._WsServer.close();
             this._WsServer = null;
+        }
+        if (this._docServer !== null) {
+            this._docServer.close();
+            this._docServer = null;
         }
         MongoDb.close();
     }
