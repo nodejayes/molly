@@ -1,30 +1,31 @@
 import {Logic} from './../logic';
 import { BaseTypes } from '..';
 
-const PKG = require('./../../package.json');
 const convert = require('joi-to-json-schema');
 
 export class SwaggerGenerator {
     private _host: string;
     private _useSsl: boolean;
+    private _pack: any;
 
-    constructor(host: string, useSsl: boolean) {
+    constructor(host: string, useSsl: boolean, pack: any) {
         this._host = host;
         this._useSsl = useSsl;
+        this._pack = pack;
     }
 
     private _getMain(tags: any[], paths: any, def: any): any {
         return {
             swagger: '2.0',
             info: {
-                description: PKG.description || '',
-                version: PKG.version || '',
-                title: PKG.name || '',
+                description: this._pack.description || '',
+                version: this._pack.version || '',
+                title: this._pack.name || '',
                 contact: {
-                    email: PKG.author ? PKG.author.email || '' : ''
+                    email: this._pack.author ? this._pack.author.email || '' : ''
                 },
                 license: {
-                    name: PKG.license || 'UNLICENSED'
+                    name: this._pack.license || 'UNLICENSED'
                 }
             },
             host: this._host,

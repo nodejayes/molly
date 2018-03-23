@@ -246,7 +246,8 @@ export class ExpressServer {
         if (cfg.documentationPort > 0) {
             let useSsl = cfg.certFile ? true : false;
             let address = `${cfg.binding}:${cfg.port}`;
-            let gen = new SwaggerGenerator(address, useSsl);
+            let pack = require(join(process.cwd(), 'package.json'));
+            let gen = new SwaggerGenerator(address, useSsl, pack);
             let code = gen.toString();
             let tmpFile = join(__dirname, 'tmpapi.json');
             writeFileSync(tmpFile, code, {
