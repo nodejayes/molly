@@ -1,7 +1,8 @@
 import {Logic} from './../logic';
+import { BaseTypes } from '..';
 
 const PKG = require('./../../package.json');
-const YML = require('json2yaml');
+const convert = require('joi-to-json-schema');
 
 export class SwaggerGenerator {
     private _host: string;
@@ -12,104 +13,131 @@ export class SwaggerGenerator {
         this._useSsl = useSsl;
     }
 
-    private _getMain(tags: string, paths: string): string {
-        return `swagger: "2.0"
-info:
-  description: "${PKG.description || ''}"
-  version: "${PKG.version || ''}"
-  title: "${PKG.name || ''}"
-  contact:
-    email: "${PKG.author ? PKG.author.email || '' : ''}"
-  license:
-    name: "${PKG.license || 'UNLICENSED'}"
-host: "${this._host}"
-basePath: "/"
-tags:${tags}
-schemes:
-- "${this._useSsl ? 'https' : 'http'}"
-paths:${paths}`;
+    private _getMain(tags: any[], paths: any): any {
+        return {
+            swagger: '2.0',
+            info: {
+                description: PKG.description || '',
+                version: PKG.version || '',
+                title: PKG.name || '',
+                contact: {
+                    email: PKG.author ? PKG.author.email || '' : ''
+                },
+                license: {
+                    name: PKG.license || 'UNLICENSED'
+                }
+            },
+            host: this._host,
+            basePath: '/',
+            tags: tags,
+            schemes: [this._useSsl ? 'https' : 'http'],
+            paths: paths
+        };
     }
 
-    private _getTag(name: string, description: string): string {
-        return `
-- name: "${name}"
-  description: "${description}"`;
+    private _getTag(name: string, description: string): any {
+        return {
+            name: name,
+            description: description
+        };
     }
 
     private _getObject(key: string, type: string) {
-        return `
-              ${key}:
-                type: '${type}'`;
+        let result = {};
+        let typeTemplate = {
+            type: type
+        };
+        return result[key] = typeTemplate;
     }
 
-    private _getPath(path: string, tag: string, resultProps: string): string {
-        return `
-  ${path}:
-    post:
-      tags:
-      - "${tag}"
-      summary: ""
-      description: ""
-      operationId: "${path}"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: ""
-        required: true
-        schema:
-          type: 'object'
-          properties:
-          params:
-            type: 'object'
-            properties:
-            key:
-              type: 'string'
-            RESTRICTIONS:
-              type: 'object'
-              limit: 'number'
-      responses:
-        200:
-          description: ""
-          schema:
-          ${resultProps}`;
+    private _getPath(path: string, tag: string, requestProps: any, resultProps: any): any {
+        return {
+            post: {
+                tags: [tag],
+                summary: '',
+                description: '',
+                operationId: path,
+                consumes: ['application/json'],
+                produces: ['application/json'],
+                parameters: [
+                    {
+                        in: 'body',
+                        name: 'body',
+                        description: '',
+                        required: true,
+                        schema: convert(requestProps)
+                    }
+                ],
+                responses: {
+                    200: {
+                        description: '',
+                        schema: convert(resultProps)
+                    }
+                }
+            }
+        };
     }
 
-    toString(): string {
+    toString(): any {
         let collections = Logic.Configuration.collectionInfos;
         let operations = Logic.Configuration.operationInfos;
-        let tags = '';
-        let paths = '';
+        let tags = [];
+        let paths = {};
 
         for (let i = 0; i < collections.length; i++) {
             let col = collections[i];
-            tags += this._getTag(col.Name, '');
+            tags.push(this._getTag(col.Name, ''));
             let validations = Logic.Configuration.validationInfos.filter((e) => e.Name === col.Name)[0];
             if (col.allow.indexOf('C') === 0) {
-                let createProps = YML.stringify(validations.createJsonSchema);
-                paths += this._getPath(`/create/${col.Name}`, col.Name, createProps);
-            } 
+                let createRequest = BaseTypes.type({
+                    params: validations.CreateSchema
+                });
+                let createResponse = validations.ReadSchema;
+                paths[`/create/${col.Name}`] = this._getPath(`/create/${col.Name}`, col.Name, createRequest, createResponse);
+            }
+            let readRequest = BaseTypes.type({
+                params: BaseTypes.type({
+                    _id: BaseTypes.mongoDbObjectId.optional(),
+                    RESTRICTIONS: BaseTypes.type({
+                        sort: BaseTypes.type({
+                            _id: BaseTypes.integer.min(0).max(1)
+                        }).optional(),
+                        limit: BaseTypes.integer.optional(),
+                        skip: BaseTypes.integer.optional()
+                    }).optional()
+                }),
+                props: BaseTypes.type({
+                    _id: BaseTypes.integer.min(0).max(1)
+                })
+            });
+            let readResponse = validations.ReadSchema;
+            paths[`/read/${col.Name}`] = this._getPath(`/read/${col.Name}`, col.Name, readRequest, readResponse); 
             if (col.allow.indexOf('U') === 1) {
-                let updateProps = YML.stringify(validations.updateJsonSchema);
-                paths += this._getPath(`/update/${col.Name}`, col.Name, updateProps);
+                let updateRequest = BaseTypes.type({
+                    params: validations.UpdateSchema
+                });
+                let updateResponse = BaseTypes.bool;
+                paths[`/update/${col.Name}`] = this._getPath(`/update/${col.Name}`, col.Name, updateRequest, updateResponse);
             } 
             if (col.allow.indexOf('D') === 2) {
-                let deleteProps = YML.stringify(validations.deleteJsonSchema);
-                paths += this._getPath(`/delete/${col.Name}`, col.Name, deleteProps);
+                let deleteRequest = BaseTypes.type({
+                    params: validations.DeleteSchema
+                });
+                let deleteResponse = BaseTypes.bool;
+                paths[`/delete/${col.Name}`] = this._getPath(`/delete/${col.Name}`, col.Name, deleteRequest, deleteResponse);
             }
-            let readProps = YML.stringify(validations.readJsonSchema);
-            paths += this._getPath(`/read/${col.Name}`, col.Name, readProps);
         }
 
         for (let i = 0; i < operations.length; i++) {
             let op = operations[i];
-            tags += this._getTag(op.Name, '');
-            paths += this._getPath(`/create/${op.Name}`, op.Name, '');
+            tags.push(this._getTag(op.Name, ''));
+            let operationRequest = BaseTypes.type({
+                params: BaseTypes.typeArray(BaseTypes.custom.any())
+            });
+            let operationResponse = BaseTypes.custom.any();
+            paths[`/operation/${op.Name}`] = this._getPath(`/operation/${op.Name}`, op.Name, operationRequest, operationResponse);
         }
 
-        return this._getMain(tags, paths);
+        return JSON.stringify(this._getMain(tags, paths));
     }
 }

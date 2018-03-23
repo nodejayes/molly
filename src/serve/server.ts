@@ -244,10 +244,10 @@ export class ExpressServer {
         }
         if (cfg.documentationPort > 0) {
             let useSsl = cfg.certFile ? true : false;
-            let address = useSsl ? `https://${cfg.binding}:${cfg.port}` : `http://${cfg.binding}:${cfg.port}`;
+            let address = `${cfg.binding}:${cfg.port}`;
             let gen = new SwaggerGenerator(address, useSsl);
             let code = gen.toString();
-            let tmpFile = join(__dirname, 'tmpapi.yml');
+            let tmpFile = join(__dirname, 'tmpapi.json');
             writeFileSync(tmpFile, code, {
                 encoding: 'utf8'
             });

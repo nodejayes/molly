@@ -30,7 +30,6 @@
         "helmet": "^3.11.0",
         "joi": "^13.1.2",
         "joi-to-json-schema": "^3.2.0",
-        "json2yaml": "^1.1.0",
         "lodash": "^4.17.5",
         "mongodb": "^3.0.2",
         "npm": "^5.7.1",

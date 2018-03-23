@@ -3,7 +3,8 @@ import {
     collection, validation, operation,
     BaseTypes,
     MongoLookup,
-    JoinType
+    JoinType,
+    IRouteInvoker
 } from './../../src/index';
 import {readFileSync, unlinkSync} from 'fs';
 import {join} from 'path';
@@ -61,6 +62,14 @@ class User {
     @validation({type: BaseTypes.email})
     email: string;
     group: Group;
+}
+
+class Ops {
+    @operation
+    async countUser(inv: IRouteInvoker) {
+        let userList = await inv.read('User', {params:{}});
+        return userList.length;
+    }
 }
 
 describe('Swagger Generator Spec', () => {
