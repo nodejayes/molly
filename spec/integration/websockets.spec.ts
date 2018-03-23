@@ -110,7 +110,7 @@ describe('Websocket Spec', () => {
             }
 
             class Ops {
-                @operation
+                @operation({})
                 async countUser(inv: IRouteInvoker, params: any) {
                     let u = await inv.read('User', {}, {_id: true});
                     return u.length;

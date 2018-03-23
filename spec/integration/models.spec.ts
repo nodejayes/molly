@@ -661,13 +661,13 @@ describe('Molly Server Spec', () => {
 
         it('register some operation', () => {
             class Ops {
-                @operation
+                @operation({})
                 async countUser(inv: IRouteInvoker) {
                     let user = await inv.read('User', {});
                     return user.length;
                 }
 
-                @operation
+                @operation({})
                 async passParameter(inv: IRouteInvoker, params: any) {
                     return params;
                 }
