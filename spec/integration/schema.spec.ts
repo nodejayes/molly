@@ -11,22 +11,24 @@ import 'mocha';
 
 const req = require('request-promise');
 
-let server = new ExpressServer();
-
-@collection({
-    allow: 'CUD',
-    index: () => {},
-    lookup: []
-})
-class Demo {
-    @validation({type: BaseTypes.postgresDbId})
-    id: number;
-    @validation({type: BaseTypes.string})
-    name: string;
-}
-
 describe('schema Spec', () => {
+    let server = new ExpressServer();
+
     before(async () => {
+        server.clearConfiguration();
+        
+        @collection({
+            allow: 'CUD',
+            index: () => {},
+            lookup: []
+        })
+        class Demo {
+            @validation({type: BaseTypes.postgresDbId})
+            id: number;
+            @validation({type: BaseTypes.string})
+            name: string;
+        }
+
         await server.start({
             binding: 'localhost',
             port: 8086,

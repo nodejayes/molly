@@ -22,6 +22,7 @@ import {IRequestModel} from '..';
 import {ValidationRules} from './../decorators/register';
 import {IServerConfiguration} from './../interfaces/server_configuration';
 import { SwaggerGenerator } from '../swagger/generator';
+import { Logic } from '../logic';
 
 /**
  * implement a small Express Server
@@ -281,6 +282,17 @@ export class ExpressServer {
                 this._registerWebsocket();
             }
         });
+    }
+
+    /**
+     * clear the exist Configurations
+     * 
+     * @memberof ExpressServer
+     */
+    clearConfiguration() {
+        Logic.Configuration.collectionInfos = [];
+        Logic.Configuration.operationInfos = [];
+        Logic.Configuration.validationInfos = [];
     }
 
     /**
