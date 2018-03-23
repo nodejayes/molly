@@ -24,7 +24,15 @@ describe('Swagger Generator Spec', () => {
         @collection({
             allow: 'CXD',
             index: () => {},
-            lookup: []
+            lookup: [],
+            createSummary: 'create a Right',
+            createDescription: 'Creates a new Right in Collection.',
+            readSummary: 'get Rights',
+            readDescription: 'Select Rights from Collection.',
+            updateSummary:'update a Right',
+            updateDescription: 'Update a Right in Collection.',
+            deleteSummary: 'deleta a Right',
+            deleteDescription: 'Remove a Right in Collection.'
         })
         class Right {
             @validation({type: BaseTypes.mongoDbObjectId})
@@ -40,7 +48,15 @@ describe('Swagger Generator Spec', () => {
             index: () => {},
             lookup: [
                 new MongoLookup('Right', 'rights', '_id', JoinType.ONEMANY)
-            ]
+            ],
+            createSummary: 'create a Group',
+            createDescription: 'Creates a new Group in Collection.',
+            readSummary: 'get Groups',
+            readDescription: 'Select Groups from Collection.',
+            updateSummary:'update a Group',
+            updateDescription: 'Update a Group in Collection.',
+            deleteSummary: 'deleta a Group',
+            deleteDescription: 'Remove a Group in Collection.'
         })
         class Group {
             @validation({type: BaseTypes.mongoDbObjectId})
@@ -55,7 +71,15 @@ describe('Swagger Generator Spec', () => {
             index: () => {},
             lookup: [
                 new MongoLookup('Group', 'group', '_id', JoinType.ONEONE)
-            ]
+            ],
+            createSummary: 'create a User',
+            createDescription: 'Creates a new User in Collection.',
+            readSummary: 'get Users',
+            readDescription: 'Select Users from Collection.',
+            updateSummary:'update a User',
+            updateDescription: 'Update a User in Collection.',
+            deleteSummary: 'deleta a User',
+            deleteDescription: 'Remove a User in Collection.'
         })
         class User {
             @validation({type: BaseTypes.mongoDbObjectId})
@@ -70,7 +94,10 @@ describe('Swagger Generator Spec', () => {
         }
     
         class Ops {
-            @operation
+            @operation({
+                Description: 'Get the Users from the User Collection and count them.',
+                Summary: 'count all Users'
+            })
             async countUser(inv: IRouteInvoker) {
                 let userList = await inv.read('User', {params:{}});
                 return userList.length;

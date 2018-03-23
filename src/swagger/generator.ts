@@ -51,12 +51,12 @@ export class SwaggerGenerator {
         return result[key] = typeTemplate;
     }
 
-    private _getPath(path: string, tag: string, requestProps: any, resultProps: any): any {
+    private _getPath(path: string, tag: string, requestProps: any, resultProps: any, sum: string, des: string): any {
         return {
             post: {
                 tags: [tag],
-                summary: '',
-                description: '',
+                summary: sum,
+                description: des,
                 operationId: path,
                 consumes: ['application/json'],
                 produces: ['application/json'],
@@ -97,7 +97,9 @@ export class SwaggerGenerator {
                     params: validations.CreateSchema
                 });
                 let createResponse = validations.ReadSchema;
-                paths[`/create/${col.Name}`] = this._getPath(`/create/${col.Name}`, col.Name, createRequest, createResponse);
+                paths[`/create/${col.Name}`] = this._getPath(`/create/${col.Name}`, col.Name, 
+                    createRequest, createResponse, col.createSummary || `save Model ${col.Name}`, 
+                    col.readDescription || '');
             }
             let readRequest = BaseTypes.type({
                 params: BaseTypes.type({
@@ -115,20 +117,26 @@ export class SwaggerGenerator {
                 })
             });
             let readResponse = validations.ReadSchema;
-            paths[`/read/${col.Name}`] = this._getPath(`/read/${col.Name}`, col.Name, readRequest, readResponse); 
+            paths[`/read/${col.Name}`] = this._getPath(`/read/${col.Name}`, 
+                col.Name, readRequest, readResponse, col.readSummary || `get Model ${col.Name}`,
+                col.readDescription || ''); 
             if (col.allow.indexOf('U') === 1) {
                 let updateRequest = BaseTypes.type({
                     params: validations.UpdateSchema
                 });
                 let updateResponse = BaseTypes.bool;
-                paths[`/update/${col.Name}`] = this._getPath(`/update/${col.Name}`, col.Name, updateRequest, updateResponse);
+                paths[`/update/${col.Name}`] = this._getPath(`/update/${col.Name}`, 
+                    col.Name, updateRequest, updateResponse, col.updateSummary || `update Model ${col.Name}`,
+                    col.updateDescription || '');
             } 
             if (col.allow.indexOf('D') === 2) {
                 let deleteRequest = BaseTypes.type({
                     params: validations.DeleteSchema
                 });
                 let deleteResponse = BaseTypes.bool;
-                paths[`/delete/${col.Name}`] = this._getPath(`/delete/${col.Name}`, col.Name, deleteRequest, deleteResponse);
+                paths[`/delete/${col.Name}`] = this._getPath(`/delete/${col.Name}`, 
+                    col.Name, deleteRequest, deleteResponse, col.deleteSummary || `delete Model ${col.Name}`,
+                    col.deleteDescription || '');
             }
         }
 
@@ -139,7 +147,8 @@ export class SwaggerGenerator {
                 params: BaseTypes.typeArray(BaseTypes.custom.any())
             });
             let operationResponse = BaseTypes.custom.any();
-            paths[`/operation/${op.Name}`] = this._getPath(`/operation/${op.Name}`, op.Name, operationRequest, operationResponse);
+            paths[`/operation/${op.Name}`] = this._getPath(`/operation/${op.Name}`, 
+                op.Name, operationRequest, operationResponse, op.Summary, op.Description);
         }
 
         return JSON.stringify(this._getMain(tags, paths, definitions));

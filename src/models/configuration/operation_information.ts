@@ -30,6 +30,20 @@ export class OperationInformation {
      * @memberof OperationInformation
      */
     Call: Function;
+    /**
+     * a Description
+     * 
+     * @type {string}
+     * @memberof OperationInformation
+     */
+    Description: string;
+    /**
+     * a Summary
+     * 
+     * @type {string}
+     * @memberof OperationInformation
+     */
+    Summary: string;
 
     /**
      * Creates an instance of OperationInformation.
@@ -37,9 +51,11 @@ export class OperationInformation {
      * @param {Function} call 
      * @memberof OperationInformation
      */
-    constructor(name: string, call: Function) {
+    constructor(name: string, call: Function, des?: string, sum?: string) {
         this.Name = name;
         this.Call = call;
+        this.Description = des || '';
+        this.Summary = sum || '';
         this._invoker = new RouteInvoker();
     }
 

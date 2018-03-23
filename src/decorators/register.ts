@@ -25,6 +25,11 @@ interface ISchemaInfo {
     deleteSchema?: ObjectSchema;
 }
 
+export interface IOperationParameter {
+    Description?: string;
+    Summary?: string;
+}
+
 export class ValidationRules {
     static rules: IValidationRules[] = [];
 
@@ -210,7 +215,11 @@ export class ValidationRules {
 export function collection(collectionProps: ICollectionProperties) {
     return function(constructor: Function) {
         Logic.Configuration.collectionInfos.push(
-            new CollectionInformation(constructor.name, collectionProps.lookup, collectionProps.index, collectionProps.allow)
+            new CollectionInformation(constructor.name, collectionProps.lookup, collectionProps.index, collectionProps.allow,
+                collectionProps.createDescription, collectionProps.createSummary,
+                collectionProps.readDescription, collectionProps.readSummary,
+                collectionProps.updateDescription, collectionProps.updateSummary,
+                collectionProps.deleteDescription, collectionProps.deleteSummary)
         );
     }
 }
@@ -240,8 +249,10 @@ export function validation(validationProps: IValidationProperties) {
     }
 }
 
-export function operation(target, key: string) {
-    Logic.Configuration.operationInfos.push(
-        new OperationInformation(key, target[key])
-    );
+export function operation(props: IOperationParameter) {
+    return function (target, key: string) {
+        Logic.Configuration.operationInfos.push(
+            new OperationInformation(key, target[key], props.Description, props.Summary)
+        );
+    };
 }
