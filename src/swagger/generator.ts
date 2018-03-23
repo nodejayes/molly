@@ -13,7 +13,7 @@ export class SwaggerGenerator {
         this._useSsl = useSsl;
     }
 
-    private _getMain(tags: any[], paths: any): any {
+    private _getMain(tags: any[], paths: any, def: any): any {
         return {
             swagger: '2.0',
             info: {
@@ -31,8 +31,15 @@ export class SwaggerGenerator {
             basePath: '/',
             tags: tags,
             schemes: [this._useSsl ? 'https' : 'http'],
-            paths: paths
+            paths: paths,
+            definitions: def
         };
+    }
+
+    private _getDefinition(name: string, schema: any): any {
+        let result = {};
+        result[name] = schema;
+        return result;
     }
 
     private _getTag(name: string, description: string): any {
@@ -83,11 +90,14 @@ export class SwaggerGenerator {
         let operations = Logic.Configuration.operationInfos;
         let tags = [];
         let paths = {};
+        let definitions = {};
 
         for (let i = 0; i < collections.length; i++) {
             let col = collections[i];
+
             tags.push(this._getTag(col.Name, ''));
             let validations = Logic.Configuration.validationInfos.filter((e) => e.Name === col.Name)[0];
+            definitions[col.Name] = validations.readJsonSchema;
             if (col.allow.indexOf('C') === 0) {
                 let createRequest = BaseTypes.type({
                     params: validations.CreateSchema
@@ -138,6 +148,6 @@ export class SwaggerGenerator {
             paths[`/operation/${op.Name}`] = this._getPath(`/operation/${op.Name}`, op.Name, operationRequest, operationResponse);
         }
 
-        return JSON.stringify(this._getMain(tags, paths));
+        return JSON.stringify(this._getMain(tags, paths, definitions));
     }
 }
