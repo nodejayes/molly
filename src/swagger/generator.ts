@@ -36,12 +36,6 @@ export class SwaggerGenerator {
         };
     }
 
-    private _getDefinition(name: string, schema: any): any {
-        let result = {};
-        result[name] = schema;
-        return result;
-    }
-
     private _getTag(name: string, description: string): any {
         return {
             name: name,
