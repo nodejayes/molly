@@ -16,66 +16,66 @@ const generatedFile = join(__dirname, '..', '..', 'src', 'serve', 'api.yml');
 describe('Swagger Generator Spec', () => {
     let server = null;
     let req = require('request-promise');
-
-    @collection({
-        allow: 'CXD',
-        index: () => {},
-        lookup: []
-    })
-    class Right {
-        @validation({type: BaseTypes.mongoDbObjectId})
-        _id: string;
-        @validation({type: BaseTypes.string})
-        key: string;
-        @validation({type: BaseTypes.bool})
-        active: boolean;
-    }
-
-    @collection({
-        allow: 'CUD',
-        index: () => {},
-        lookup: [
-            new MongoLookup('Right', 'rights', '_id', JoinType.ONEMANY)
-        ]
-    })
-    class Group {
-        @validation({type: BaseTypes.mongoDbObjectId})
-        _id: string;
-        @validation({type: BaseTypes.string})
-        name: string;
-        rights: Right;
-    }
-
-    @collection({
-        allow: 'CUD',
-        index: () => {},
-        lookup: [
-            new MongoLookup('Group', 'group', '_id', JoinType.ONEONE)
-        ]
-    })
-    class User {
-        @validation({type: BaseTypes.mongoDbObjectId})
-        _id: string;
-        @validation({type: BaseTypes.string.min(3)})
-        username: string;
-        @validation({type: BaseTypes.stringDefaultLength})
-        password: string;
-        @validation({type: BaseTypes.email})
-        email: string;
-        group: Group;
-    }
-
-    class Ops {
-        @operation
-        async countUser(inv: IRouteInvoker) {
-            let userList = await inv.read('User', {params:{}});
-            return userList.length;
-        }
-    }
     
     before(() => {
         server = new ExpressServer();
         server.clearConfiguration();
+
+        @collection({
+            allow: 'CXD',
+            index: () => {},
+            lookup: []
+        })
+        class Right {
+            @validation({type: BaseTypes.mongoDbObjectId})
+            _id: string;
+            @validation({type: BaseTypes.string})
+            key: string;
+            @validation({type: BaseTypes.bool})
+            active: boolean;
+        }
+    
+        @collection({
+            allow: 'CUD',
+            index: () => {},
+            lookup: [
+                new MongoLookup('Right', 'rights', '_id', JoinType.ONEMANY)
+            ]
+        })
+        class Group {
+            @validation({type: BaseTypes.mongoDbObjectId})
+            _id: string;
+            @validation({type: BaseTypes.string})
+            name: string;
+            rights: Right;
+        }
+    
+        @collection({
+            allow: 'CUD',
+            index: () => {},
+            lookup: [
+                new MongoLookup('Group', 'group', '_id', JoinType.ONEONE)
+            ]
+        })
+        class User {
+            @validation({type: BaseTypes.mongoDbObjectId})
+            _id: string;
+            @validation({type: BaseTypes.string.min(3)})
+            username: string;
+            @validation({type: BaseTypes.stringDefaultLength})
+            password: string;
+            @validation({type: BaseTypes.email})
+            email: string;
+            group: Group;
+        }
+    
+        class Ops {
+            @operation
+            async countUser(inv: IRouteInvoker) {
+                let userList = await inv.read('User', {params:{}});
+                return userList.length;
+            }
+        }
     });
 
     after(() => {
