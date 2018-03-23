@@ -134,7 +134,7 @@ describe('Websocket Spec', () => {
         });
 
         it('cascade with one socket', (done) => {
-            let expectError = false;
+            let expectError = -1;
             socket.on('message', (inc: string) => {
                 let d = <IWebsocketMessage>JSON.parse(inc);
                 switch(d.id) {
@@ -193,14 +193,26 @@ describe('Websocket Spec', () => {
                         break;
                     case 'delete_User':
                         assert.equal(d.data, true);
-                        expectError = true;
-                        socket.send('invalid');
+                        expectError = 0;
+                        socket.send(JSON.stringify({
+                            Action: 'create',
+                            Model: 'Invalid',
+                            Parameter: {
+                                params: {}
+                            }
+                        }));
                         break;
                     case 'ERROR':
-                        if (!expectError) {
-                            assert.fail(d.data);
-                        } else {
-                            assert.equal(d.data, 'Unexpected token i in JSON at position 0');
+                        switch(expectError) {
+                            case 0:
+                                assert.equal(d.data, 'no validation found for model Invalid');
+                                break;
+                            case 1:
+                                assert.equal(d.data, 'Unexpected token i in JSON at position 0');
+                                break;
+                            default:
+                                assert.fail(d.data);
+                                break;   
                         }
                         server.stop();
                         done();
