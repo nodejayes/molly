@@ -250,7 +250,7 @@ export class ExpressServer {
                 encoding: 'utf8'
             });
             let spectacle = promisify(exec);
-            await spectacle(join(__dirname, '..', '..', 'node_modules', '.bin', `spectacle -t ${join(__dirname, '..', '..', 'docs')} ${tmpFile}`));
+            await spectacle(join(__dirname, '..', '..', '..', 'node_modules', '.bin', `spectacle -t ${join(__dirname, '..', '..', '..', 'docs')} ${tmpFile}`));
             unlinkSync(tmpFile);
             let docApp = express();
             docApp.use(express.static('docs'));

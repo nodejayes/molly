@@ -7,7 +7,7 @@ import {
     IRequestModel,
     IWebsocketMessage,
     operation, collection, validation
-} from './../../src/index';
+} from 'index';
 import {assert} from 'chai';
 import 'mocha';
 import * as Websocket from 'ws';

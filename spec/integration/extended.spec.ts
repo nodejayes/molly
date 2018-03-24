@@ -2,7 +2,7 @@ import {
     ExpressServer,
     collection, validation,
     BaseTypes
-} from './../../src/index';
+} from 'index';
 import {assert} from 'chai';
 import 'mocha';
 

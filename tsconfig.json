@@ -16,11 +16,11 @@
             "node_modules/@types/**"
         ],
         "paths": {
-            "basic": ["basic/*"],
-            "decorators": ["decorators/*"],
-            "interfaces": ["interfaces/*"],
-            "models": ["models/*"],
-            "modules": ["modules/*"]
+            "basic/*": ["basic/*"],
+            "decorators/*": ["decorators/*"],
+            "interfaces/*": ["interfaces/*"],
+            "models/*": ["models/*"],
+            "modules/*": ["modules/*"]
         }
     },
     "include": [

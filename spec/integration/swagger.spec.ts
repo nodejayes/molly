@@ -5,7 +5,7 @@ import {
     MongoLookup,
     JoinType,
     IRouteInvoker
-} from './../../src/index';
+} from 'index';
 import {readFileSync, unlinkSync, writeFileSync} from 'fs';
 import {join} from 'path';
 import {assert} from 'chai';
