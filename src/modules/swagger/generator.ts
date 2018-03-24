@@ -1,5 +1,5 @@
-import {Logic} from './../logic';
-import { BaseTypes } from '..';
+import {Logic} from 'basic';
+import { BaseTypes } from 'index';
 
 /**
  * Joi Validation to JSON Schema

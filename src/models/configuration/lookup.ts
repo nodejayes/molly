@@ -1,3 +1,11 @@
+import { IMongoLookup } from 'interfaces/index';
+
+/**
+ * Mongo Lookup Join Type
+ * 
+ * @export
+ * @enum {number}
+ */
 export enum JoinType {
     ONEONE,
     ONEMANY
@@ -9,7 +17,7 @@ export enum JoinType {
  * @export
  * @class MongoLookup
  */
-export class MongoLookup {
+export class MongoLookup implements IMongoLookup {
     /**
      * Name of the Collection to look in
      * 

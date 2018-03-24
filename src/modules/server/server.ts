@@ -1,28 +1,21 @@
 import { Server as HttpServer } from 'http';
-import {createServer, Server as HttpsServer, ServerOptions} from 'https';
-import {readFileSync, existsSync, writeFileSync, unlinkSync} from 'fs';
+import { createServer, Server as HttpsServer, ServerOptions } from 'https';
+import { readFileSync, existsSync, writeFileSync, unlinkSync } from 'fs';
 import * as express from 'express';
-import {Server as WsServer} from 'ws';
+import { Server as WsServer } from 'ws';
 import * as helmet from 'helmet';
 import * as compress from 'compression';
 import * as statics from 'serve-static';
 import * as bodyParser from 'body-parser';
-import {keys} from 'lodash';
-import {promisify} from 'util';
-import {isAbsolute, join} from 'path';
-import {exec} from 'child_process';
+import { keys } from 'lodash';
+import { promisify } from 'util';
+import { isAbsolute, join } from 'path';
+import { exec } from 'child_process';
 
-import {MongoDb} from './../database/mongo_db';
-import {Routes} from './routes';
-import {RequestModel} from './../models/communicate/request';
-import {ResponseModel} from './../models/communicate/response';
-import {RouteInvoker} from './routeinvoker';
-import {WebsocketMessage} from '../models/communicate/websocketmessage';
-import {IRequestModel} from '..';
-import {ValidationRules} from './../decorators/register';
-import {IServerConfiguration} from './../interfaces/server_configuration';
-import { SwaggerGenerator } from '../swagger/generator';
-import { Logic } from '../logic';
+import { MongoDb, Routes, RouteInvoker, SwaggerGenerator } from 'modules';
+import { RequestModel, ResponseModel, WebsocketMessage } from 'models';
+import { IRequestModel, IServerConfiguration } from 'interfaces';
+import { ValidationRules, Logic } from 'basic';
 
 /**
  * implement a small Express Server

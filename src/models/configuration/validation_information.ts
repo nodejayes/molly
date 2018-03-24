@@ -1,7 +1,12 @@
-import {ObjectSchema, validate} from 'joi';
-import {BaseTypes} from './../../index';
+import { ObjectSchema, validate } from 'joi';
+import { BaseTypes } from 'index';
+import { IValidationInformation } from 'interfaces';
 
-const convert = require('joi-to-json-schema');
+/**
+ * Convert Joi to JSON Schema
+ * @const
+ */
+const CONVERT = require('joi-to-json-schema');
 
 /**
  * a Type Validation Info
@@ -9,7 +14,7 @@ const convert = require('joi-to-json-schema');
  * @export
  * @class ValidationInformation
  */
-export class ValidationInformation {
+export class ValidationInformation implements IValidationInformation {
     /**
      * the Name of the Model
      * 
@@ -71,7 +76,7 @@ export class ValidationInformation {
      */
     get createJsonSchema() {
         return this.CreateSchema ? 
-            convert(this.CreateSchema) : null;
+            CONVERT(this.CreateSchema) : null;
     }
 
     /**
@@ -81,7 +86,7 @@ export class ValidationInformation {
      * @memberof ValidationInformation
      */
     get readJsonSchema() {
-        return convert(this.ReadSchema);
+        return CONVERT(this.ReadSchema);
     }
 
     /**
@@ -92,7 +97,7 @@ export class ValidationInformation {
      */
     get updateJsonSchema() {
         return this.UpdateSchema ? 
-            convert(this.UpdateSchema) : null;
+            CONVERT(this.UpdateSchema) : null;
     }
 
     /**
@@ -103,7 +108,7 @@ export class ValidationInformation {
      */
     get deleteJsonSchema() {
         return this.DeleteSchema ? 
-            convert(this.DeleteSchema) : null;
+            CONVERT(this.DeleteSchema) : null;
     }
 
     /**

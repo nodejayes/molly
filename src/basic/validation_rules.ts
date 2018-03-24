@@ -1,53 +1,9 @@
-import {Logic} from './../logic';
-import {BaseTypes, JoinType} from './../index';
-import {ObjectSchema} from 'joi';
-import {clone} from 'lodash';
-import {CollectionInformation} from './../models/configuration/collection_information';
-import {OperationInformation} from './../models/configuration/operation_information';
-import {ValidationInformation} from './../models/configuration/validation_information';
-import {ICollectionProperties} from './../interfaces/collection_properties';
-import {IValidationProperties} from './../interfaces/validation_properties';
-
-/**
- * a temporary Pool for Validations
- * @const
- */
-const VALIDATION_POOL: IValidationProperties[] = [];
-
-/**
- * Validation Rule Interface
- * 
- * @export
- * @interface IValidationRules
- */
-export interface IValidationRules {
-    model: string;
-    allow: string;
-    validation: IValidationProperties[];
-}
-
-/**
- * Schema Information Interface
- * 
- * @interface ISchemaInfo
- */
-interface ISchemaInfo {
-    readSchema: ObjectSchema;
-    createSchema?: ObjectSchema;
-    updateSchema?: ObjectSchema;
-    deleteSchema?: ObjectSchema;
-}
-
-/**
- * Operation Parameter Interface
- * 
- * @export
- * @interface IOperationParameter
- */
-export interface IOperationParameter {
-    Description?: string;
-    Summary?: string;
-}
+import { ObjectSchema } from 'joi';
+import { JoinType, BaseTypes } from 'index';
+import { CollectionInformation, ValidationInformation } from 'models';
+import { clone } from 'lodash';
+import { Logic } from 'basic';
+import { IValidationRules, IValidationProperties, ISchemaInfo } from 'interfaces/index';
 
 /**
  * Combines Validation and Collection Informations to Validation Rules
@@ -56,6 +12,14 @@ export interface IOperationParameter {
  * @class ValidationRules
  */
 export class ValidationRules {
+    /**
+     * a temporary Pool for Validations
+     * 
+     * @static
+     * @type {IValidationProperties[]}
+     * @memberof ValidationRules
+     */
+    static readonly validationPool: IValidationProperties[] = [];
     /**
      * Pool of all Validation Rules
      * 
@@ -261,7 +225,7 @@ export class ValidationRules {
     }
 
     private static _readValidationRules(model: string, ci: CollectionInformation, allCis: CollectionInformation[]) {
-        let tmp = VALIDATION_POOL.filter((e) => {
+        let tmp = this.validationPool.filter((e) => {
             return e.classname === ci.Name;
         });
         if (tmp.length > 0) {
@@ -271,7 +235,7 @@ export class ValidationRules {
                 let subCi = allCis.filter((e) => {
                     return e.Name === proto;
                 })[0];
-                let protoValidations = VALIDATION_POOL.filter((e) => {
+                let protoValidations = this.validationPool.filter((e) => {
                     return e.classname === proto;
                 });
                 if (protoValidations && protoValidations.length > 0 && subCi) {
@@ -319,76 +283,4 @@ export class ValidationRules {
             );
         }
     }
-}
-
-/**
- * Decorate a Class with Collection Informations
- * 
- * @export
- * @param {ICollectionProperties} collectionProps 
- * @returns 
- */
-export function collection(collectionProps: ICollectionProperties) {
-    return function(constructor: Function) {
-        Logic.Configuration.collectionInfos.push(
-            new CollectionInformation(constructor.name, collectionProps.lookup, collectionProps.index, collectionProps.allow,
-                collectionProps.createDescription, collectionProps.createSummary,
-                collectionProps.readDescription, collectionProps.readSummary,
-                collectionProps.updateDescription, collectionProps.updateSummary,
-                collectionProps.deleteDescription, collectionProps.deleteSummary)
-        );
-    }
-}
-
-/**
- * read the Class Name
- * 
- * @param {*} obj 
- * @returns {string} 
- */
-function getClassName(obj: any): string {
-    var funcNameRegex = /function (.{1,})\(/;
-    var results = (funcNameRegex).exec(obj.constructor.toString());
-    return (results && results.length > 1) ? results[1] : "";
-}
-
-/**
- * decorate a Class Property with Validations
- * 
- * @export
- * @param {IValidationProperties} validationProps 
- * @returns 
- */
-export function validation(validationProps: IValidationProperties) {
-    return function(target, key: string) {
-        if (!validationProps.classname) {
-            validationProps.classname = target.constructor.name;
-        }
-        if (!validationProps.prototypes) {
-            validationProps.prototypes = [];
-            let look = Object.getPrototypeOf(target);
-            let tmp: string;
-            while((tmp = getClassName(look)) !== 'Object') {
-                validationProps.prototypes.push(tmp);
-                look = Object.getPrototypeOf(look);
-            }
-        }
-        validationProps.name = key;
-        VALIDATION_POOL.push(validationProps);
-    }
-}
-
-/**
- * Decorate a Class Method to be a Operation
- * 
- * @export
- * @param {IOperationParameter} props 
- * @returns 
- */
-export function operation(props: IOperationParameter) {
-    return function (target, key: string) {
-        Logic.Configuration.operationInfos.push(
-            new OperationInformation(key, target[key], props.Description, props.Summary)
-        );
-    };
 }

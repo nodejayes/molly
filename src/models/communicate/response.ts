@@ -1,4 +1,4 @@
-import {IResponseModel} from './../../interfaces/response_model';
+import { IResponseModel } from 'interfaces';
 
 /**
  * The Response Model

@@ -1,5 +1,6 @@
-import {MongoClient} from 'mongodb';
-import {MongoLookup} from './lookup';
+import { MongoClient } from 'mongodb';
+import { MongoLookup } from 'models/index';
+import { ICollectionInformation } from 'interfaces/index';
 
 /**
  * Collection Information
@@ -7,7 +8,7 @@ import {MongoLookup} from './lookup';
  * @export
  * @class CollectionInformation
  */
-export class CollectionInformation {
+export class CollectionInformation implements ICollectionInformation {
     /**
      * Collection Name
      * 

@@ -1,15 +1,9 @@
-import {Collection, ObjectId} from 'mongodb';
-import {hasIn, unset, keys} from 'lodash';
-import {IRequestModel} from './../interfaces/request_model';
-import {ResponseModel} from './../models/communicate/response';
-
-import {Logic} from './../logic';
-import { ValidationInformation } from '../models/configuration/validation_information';
-import {MongoDb} from './../database/mongo_db';
-import { CollectionStore } from '../models/configuration/collection_store';
-import {MongoLookup} from './../models/configuration/lookup';
-import { OperationInformation } from '../models/configuration/operation_information';
-import { RequestModel } from '../models/communicate/request';
+import { Collection, ObjectId } from 'mongodb';
+import { hasIn, unset, keys } from 'lodash';
+import { IRequestModel } from 'interfaces';
+import { ResponseModel, ValidationInformation, CollectionStore, OperationInformation, RequestModel, MongoLookup } from 'models';
+import { Logic } from 'basic';
+import { MongoDb } from 'modules';
 
 /**
  * holds all available Routes

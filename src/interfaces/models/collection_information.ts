@@ -1,14 +1,15 @@
-import {MongoLookup} from './../models/configuration/lookup';
+import { MongoLookup } from 'index';
 
 /**
- * Collection Informations
+ * Collection Information Interface
  * 
  * @export
- * @interface ICollectionProperties
+ * @interface ICollectionInformation
  */
-export interface ICollectionProperties {
-    lookup?: MongoLookup[];
-    index?: Function;
+export interface ICollectionInformation {
+    Name: string;
+    Joins: MongoLookup[];
+    setIndex: Function;
     allow: string;
     createDescription?: string;
     createSummary?: string;

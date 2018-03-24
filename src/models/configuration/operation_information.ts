@@ -1,5 +1,6 @@
 import { Collection } from "mongodb";
-import {RouteInvoker} from './../../serve/routeinvoker';
+import { RouteInvoker } from 'modules';
+import { IOperationInformation } from 'interfaces';
 
 /**
  * a Operation Information Definition
@@ -7,7 +8,7 @@ import {RouteInvoker} from './../../serve/routeinvoker';
  * @export
  * @class OperationInformation
  */
-export class OperationInformation {
+export class OperationInformation implements IOperationInformation {
     /**
      * a Route Invoker Instance
      * 

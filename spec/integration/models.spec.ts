@@ -13,11 +13,6 @@ const request = require('request-promise');
 
 describe('Molly Server Spec', () => {
     let server = new ExpressServer();
-    let customString = BaseTypes.custom.string();
-    let mongoDbObjectId = BaseTypes.mongoDbObjectId;
-    let array = BaseTypes.custom.array();
-    let bool = BaseTypes.bool;
-    let type = BaseTypes.type;
     let rights = [];
     let groups = [];
     let users = [];

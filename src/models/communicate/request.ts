@@ -1,7 +1,7 @@
-import {ObjectId} from 'mongodb';
-import {Request} from 'express';
-import {hasIn, keys, isObject, isString, isArray} from 'lodash';
-import {IRequestModel} from './../../interfaces/request_model';
+import { ObjectId } from 'mongodb';
+import { Request } from 'express';
+import { hasIn, keys, isObject, isString, isArray } from 'lodash';
+import { IRequestModel } from 'interfaces';
 
 /**
  * holds the Request Parameter
@@ -72,7 +72,7 @@ export class RequestModel implements IRequestModel {
      * @returns {*} 
      * @memberof RequestModel
      */
-    public static replaceStringIds(source: any): any {
+    static replaceStringIds(source: any): any {
         for (let key in source) {
             if (key === '_id') {
                 if (typeof source[key] === 'string' && source[key].length === 24) {
