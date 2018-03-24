@@ -1,5 +1,6 @@
 stages:
   - publish
+  - test
 
 # Use local Sonarscanner to analyse the Code
 
@@ -12,5 +13,15 @@ publish:
     - yarn build
     - yarn doc
     - yarn test
-    - sonar-scanner -Dsonar.inclusions=src/**/* -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
+    - sonar-scanner -Dsonar.projectKey=molly -Dsonar.inclusions=src/**/* -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
     - npm publish
+
+test:
+  stage: test
+  only:
+    - 1.4.0
+  script:
+    - yarn install
+    - yarn build
+    - yarn test
+    - sonar-scanner -Dsonar.projectKey=molly-dev -Dsonar.inclusions=src/**/* -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
