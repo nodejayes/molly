@@ -6,12 +6,13 @@ import {
     JoinType,
     IRouteInvoker
 } from './../../src/index';
-import {readFileSync, unlinkSync} from 'fs';
+import {readFileSync, unlinkSync, writeFileSync} from 'fs';
 import {join} from 'path';
 import {assert} from 'chai';
 import 'mocha';
 
-const generatedFile = join(__dirname, '..', '..', 'src', 'serve', 'api.yml');
+const EMPTY_PKG_FOLDER = join(__dirname, '..', 'assets');
+const EMPTY_PKG = join(EMPTY_PKG_FOLDER, 'package.json');
 
 describe('Swagger Generator Spec', () => {
     let server = null;
@@ -22,17 +23,19 @@ describe('Swagger Generator Spec', () => {
         server.clearConfiguration();
 
         @collection({
+            allow: 'XXX',
+            index: () => {},
+            lookup: []
+        })
+        class ReadOnly {
+            @validation({type: BaseTypes.string})
+            text: string;
+        }
+
+        @collection({
             allow: 'CXD',
             index: () => {},
             lookup: [],
-            createSummary: 'create a Right',
-            createDescription: 'Creates a new Right in Collection.',
-            readSummary: 'get Rights',
-            readDescription: 'Select Rights from Collection.',
-            updateSummary:'update a Right',
-            updateDescription: 'Update a Right in Collection.',
-            deleteSummary: 'deleta a Right',
-            deleteDescription: 'Remove a Right in Collection.'
         })
         class Right {
             @validation({type: BaseTypes.mongoDbObjectId})
@@ -53,8 +56,6 @@ describe('Swagger Generator Spec', () => {
             createDescription: 'Creates a new Group in Collection.',
             readSummary: 'get Groups',
             readDescription: 'Select Groups from Collection.',
-            updateSummary:'update a Group',
-            updateDescription: 'Update a Group in Collection.',
             deleteSummary: 'deleta a Group',
             deleteDescription: 'Remove a Group in Collection.'
         })
@@ -131,7 +132,48 @@ describe('Swagger Generator Spec', () => {
             mongoDatabase: 'test_molly',
             certFile: join(__dirname, '..', 'assets', 'server-crt.pem'),
             keyFile: join(__dirname, '..', 'assets', 'server-key.pem'),
-            caFile: join(__dirname, '..', 'assets', 'ca-crt.pem')
+            caFile: join(__dirname, '..', 'assets', 'ca-crt.pem'),
+        });
+        assert.equal(msg, 'server listen on https://localhost:8086/');
+        server.stop();
+    });
+
+    it('load empty package', async () => {
+        writeFileSync(EMPTY_PKG, JSON.stringify({}));
+
+        let msg = await server.start({
+            binding: 'localhost',
+            port: 8086,
+            documentationPort: 8087,
+            mongoUrl: 'mongodb://localhost:27017/',
+            mongoDatabase: 'test_molly',
+            certFile: join(__dirname, '..', 'assets', 'server-crt.pem'),
+            keyFile: join(__dirname, '..', 'assets', 'server-key.pem'),
+            caFile: join(__dirname, '..', 'assets', 'ca-crt.pem'),
+            packageFolder: EMPTY_PKG_FOLDER
+        });
+        assert.equal(msg, 'server listen on https://localhost:8086/');
+        server.stop();
+    });
+
+    it('load empty package author', async () => {
+        writeFileSync(EMPTY_PKG, JSON.stringify({
+            name: 'molly',
+            version: '1.0.0',
+            author: {
+                name: 'Author'
+            }
+        }));
+        let msg = await server.start({
+            binding: 'localhost',
+            port: 8086,
+            documentationPort: 8087,
+            mongoUrl: 'mongodb://localhost:27017/',
+            mongoDatabase: 'test_molly',
+            certFile: join(__dirname, '..', 'assets', 'server-crt.pem'),
+            keyFile: join(__dirname, '..', 'assets', 'server-key.pem'),
+            caFile: join(__dirname, '..', 'assets', 'ca-crt.pem'),
+            packageFolder: EMPTY_PKG_FOLDER
         });
         assert.equal(msg, 'server listen on https://localhost:8086/');
         server.stop();

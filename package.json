@@ -22,7 +22,8 @@
         "test:unit": "mocha -t 30000 --bail -r ts-node/register \"./spec/unit/**/*.spec.ts\"",
         "test:websocket": "mocha -t 30000 --bail -r ts-node/register \"./spec/integration/websockets.spec.ts\"",
         "test:swagger": "mocha -t 30000 --bail -r ts-node/register \"./spec/integration/swagger.spec.ts\"",
-        "release": "tsc && npm publish"
+        "release": "tsc && npm publish",
+        "sonar": "npm run test && node ./sonar.js"
     },
     "dependencies": {
         "body-parser": "^1.18.2",
@@ -33,7 +34,6 @@
         "joi-to-json-schema": "^3.2.0",
         "lodash": "^4.17.5",
         "mongodb": "^3.0.2",
-        "npm": "^5.7.1",
         "serve-static": "^1.13.2",
         "spectacle-docs": "^1.0.1",
         "ws": "^4.1.0"
@@ -48,7 +48,6 @@
         "@types/lodash": "^4.14.102",
         "@types/mocha": "^2.2.48",
         "@types/mongodb": "^3.0.5",
-        "@types/morgan": "^1.7.35",
         "@types/node": "^9.4.5",
         "@types/serve-static": "^1.13.1",
         "@types/ws": "^4.0.1",
@@ -60,6 +59,7 @@
         "ts-node": "^4.1.0",
         "tslint-config-airbnb": "^5.6.0",
         "typedoc": "^0.5.0",
-        "typescript": "^2.8.0-dev.20180318"
+        "typescript": "^2.8.0-dev.20180318",
+        "sonarqube-scanner": "^2.0.2"
     }
 }

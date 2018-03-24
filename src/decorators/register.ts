@@ -8,16 +8,29 @@ import {ValidationInformation} from './../models/configuration/validation_inform
 import {ICollectionProperties} from './../interfaces/collection_properties';
 import {IValidationProperties} from './../interfaces/validation_properties';
 
-const convert = require('joi-to-json-schema');
+/**
+ * a temporary Pool for Validations
+ * @const
+ */
+const VALIDATION_POOL: IValidationProperties[] = [];
 
-const validationPool: IValidationProperties[] = [];
-
+/**
+ * Validation Rule Interface
+ * 
+ * @export
+ * @interface IValidationRules
+ */
 export interface IValidationRules {
     model: string;
     allow: string;
     validation: IValidationProperties[];
 }
 
+/**
+ * Schema Information Interface
+ * 
+ * @interface ISchemaInfo
+ */
 interface ISchemaInfo {
     readSchema: ObjectSchema;
     createSchema?: ObjectSchema;
@@ -25,19 +38,56 @@ interface ISchemaInfo {
     deleteSchema?: ObjectSchema;
 }
 
+/**
+ * Operation Parameter Interface
+ * 
+ * @export
+ * @interface IOperationParameter
+ */
 export interface IOperationParameter {
     Description?: string;
     Summary?: string;
 }
 
+/**
+ * Combines Validation and Collection Informations to Validation Rules
+ * 
+ * @export
+ * @class ValidationRules
+ */
 export class ValidationRules {
+    /**
+     * Pool of all Validation Rules
+     * 
+     * @static
+     * @type {IValidationRules[]}
+     * @memberof ValidationRules
+     */
     static rules: IValidationRules[] = [];
 
+    /**
+     * get a Validation of a Model
+     * 
+     * @private
+     * @static
+     * @param {string} model 
+     * @returns {IValidationProperties[]} 
+     * @memberof ValidationRules
+     */
     private static _getValidations(model: string): IValidationProperties[] {
         let tmp = this.rules.filter((e) => e.model === model)[0];
         return tmp.validation;
     }
 
+    /**
+     * build Read Validation for a Model
+     * 
+     * @private
+     * @static
+     * @param {string} model 
+     * @returns {ObjectSchema} 
+     * @memberof ValidationRules
+     */
     private static _buildRead(model: string): ObjectSchema {
         let schema = null;
         let tmp = {};
@@ -56,6 +106,15 @@ export class ValidationRules {
         return schema;
     }
 
+    /**
+     * build create Validation for a Model
+     * 
+     * @private
+     * @static
+     * @param {string} model 
+     * @returns {ObjectSchema} 
+     * @memberof ValidationRules
+     */
     private static _buildCreate(model: string): ObjectSchema {
         let schema = null;
         let tmp = {};
@@ -82,6 +141,15 @@ export class ValidationRules {
         return schema;
     }
 
+    /**
+     * build update Validation for a Model
+     * 
+     * @private
+     * @static
+     * @param {string} model 
+     * @returns {ObjectSchema} 
+     * @memberof ValidationRules
+     */
     private static _buildUpdate(model: string): ObjectSchema {
         let schema: ObjectSchema = null;
         let tmp = {
@@ -110,6 +178,15 @@ export class ValidationRules {
         return schema;
     }
 
+    /**
+     * build delete Validation for a Model
+     * 
+     * @private
+     * @static
+     * @param {string} model 
+     * @returns {ObjectSchema} 
+     * @memberof ValidationRules
+     */
     private static _buildDelete(model: string): ObjectSchema {
         let schema: ObjectSchema = null;
         let tmp = {
@@ -126,6 +203,16 @@ export class ValidationRules {
         return schema;
     }
 
+    /**
+     * initiate Validation builds for CRUD Operations
+     * 
+     * @private
+     * @static
+     * @param {string} model 
+     * @param {string} allow 
+     * @returns {ISchemaInfo} 
+     * @memberof ValidationRules
+     */
     private static _buildValidation(model: string, allow: string): ISchemaInfo {
         let schemaRead = this._buildRead(model);
         let schemaCreate = null;
@@ -148,6 +235,15 @@ export class ValidationRules {
         };
     }
 
+    /**
+     * add Validations from joined Collections
+     * 
+     * @private
+     * @static
+     * @param {CollectionInformation} ci 
+     * @param {IValidationProperties[]} tmp 
+     * @memberof ValidationRules
+     */
     private static _addCollectionInfoValidations(ci: CollectionInformation, tmp: IValidationProperties[]): void {
         if (ci.Joins) {
             for (let i = 0; i < ci.Joins.length; i++) {
@@ -165,7 +261,7 @@ export class ValidationRules {
     }
 
     private static _readValidationRules(model: string, ci: CollectionInformation, allCis: CollectionInformation[]) {
-        let tmp = validationPool.filter((e) => {
+        let tmp = VALIDATION_POOL.filter((e) => {
             return e.classname === ci.Name;
         });
         if (tmp.length > 0) {
@@ -175,7 +271,7 @@ export class ValidationRules {
                 let subCi = allCis.filter((e) => {
                     return e.Name === proto;
                 })[0];
-                let protoValidations = validationPool.filter((e) => {
+                let protoValidations = VALIDATION_POOL.filter((e) => {
                     return e.classname === proto;
                 });
                 if (protoValidations && protoValidations.length > 0 && subCi) {
@@ -193,6 +289,13 @@ export class ValidationRules {
         }
     }
 
+    /**
+     * 
+     * 
+     * @private
+     * @static
+     * @memberof ValidationRules
+     */
     private static _fillValidationRules() {
         for (let i = 0; i < Logic.Configuration.collectionInfos.length; i++) {
             let ci = Logic.Configuration.collectionInfos[i];
@@ -200,6 +303,12 @@ export class ValidationRules {
         }
     }
 
+    /**
+     * generate Validations
+     * 
+     * @static
+     * @memberof ValidationRules
+     */
     static registerValidations() {
         this._fillValidationRules();
         for (let i = 0; i < this.rules.length; i++) {
@@ -212,6 +321,13 @@ export class ValidationRules {
     }
 }
 
+/**
+ * Decorate a Class with Collection Informations
+ * 
+ * @export
+ * @param {ICollectionProperties} collectionProps 
+ * @returns 
+ */
 export function collection(collectionProps: ICollectionProperties) {
     return function(constructor: Function) {
         Logic.Configuration.collectionInfos.push(
@@ -224,12 +340,25 @@ export function collection(collectionProps: ICollectionProperties) {
     }
 }
 
+/**
+ * read the Class Name
+ * 
+ * @param {*} obj 
+ * @returns {string} 
+ */
 function getClassName(obj: any): string {
     var funcNameRegex = /function (.{1,})\(/;
     var results = (funcNameRegex).exec(obj.constructor.toString());
     return (results && results.length > 1) ? results[1] : "";
 }
 
+/**
+ * decorate a Class Property with Validations
+ * 
+ * @export
+ * @param {IValidationProperties} validationProps 
+ * @returns 
+ */
 export function validation(validationProps: IValidationProperties) {
     return function(target, key: string) {
         if (!validationProps.classname) {
@@ -245,10 +374,17 @@ export function validation(validationProps: IValidationProperties) {
             }
         }
         validationProps.name = key;
-        validationPool.push(validationProps);
+        VALIDATION_POOL.push(validationProps);
     }
 }
 
+/**
+ * Decorate a Class Method to be a Operation
+ * 
+ * @export
+ * @param {IOperationParameter} props 
+ * @returns 
+ */
 export function operation(props: IOperationParameter) {
     return function (target, key: string) {
         Logic.Configuration.operationInfos.push(

@@ -1,20 +1,69 @@
 import {Logic} from './../logic';
 import { BaseTypes } from '..';
 
-const convert = require('joi-to-json-schema');
+/**
+ * Joi Validation to JSON Schema
+ * @const
+ */
+const CONVERT = require('joi-to-json-schema');
 
+/**
+ * generate Swagger Configuration from ValidationRules
+ * 
+ * @export
+ * @class SwaggerGenerator
+ */
 export class SwaggerGenerator {
+    /**
+     * Host of the API
+     * 
+     * @private
+     * @type {string}
+     * @memberof SwaggerGenerator
+     */
     private _host: string;
+    /**
+     * is HTTPS secure
+     * 
+     * @private
+     * @type {boolean}
+     * @memberof SwaggerGenerator
+     */
     private _useSsl: boolean;
+    /**
+     * Package Config Information
+     * 
+     * @private
+     * @type {*}
+     * @memberof SwaggerGenerator
+     */
     private _pack: any;
 
+    /**
+     * Creates an instance of SwaggerGenerator.
+     * @param {string} host 
+     * @param {boolean} useSsl 
+     * @param {*} pack 
+     * @memberof SwaggerGenerator
+     */
     constructor(host: string, useSsl: boolean, pack: any) {
         this._host = host;
         this._useSsl = useSsl;
         this._pack = pack;
     }
 
+    /**
+     * construct the Main Body of Configuration
+     * 
+     * @private
+     * @param {any[]} tags 
+     * @param {*} paths 
+     * @param {*} def 
+     * @returns {*} 
+     * @memberof SwaggerGenerator
+     */
     private _getMain(tags: any[], paths: any, def: any): any {
+        console.info(this._pack);
         return {
             swagger: '2.0',
             info: {
@@ -37,6 +86,15 @@ export class SwaggerGenerator {
         };
     }
 
+    /**
+     * construct a Tag Name
+     * 
+     * @private
+     * @param {string} name 
+     * @param {string} description 
+     * @returns {*} 
+     * @memberof SwaggerGenerator
+     */
     private _getTag(name: string, description: string): any {
         return {
             name: name,
@@ -44,14 +102,19 @@ export class SwaggerGenerator {
         };
     }
 
-    private _getObject(key: string, type: string) {
-        let result = {};
-        let typeTemplate = {
-            type: type
-        };
-        return result[key] = typeTemplate;
-    }
-
+    /**
+     * construct a Path for Paths Section
+     * 
+     * @private
+     * @param {string} path 
+     * @param {string} tag 
+     * @param {*} requestProps 
+     * @param {*} resultProps 
+     * @param {string} sum 
+     * @param {string} des 
+     * @returns {*} 
+     * @memberof SwaggerGenerator
+     */
     private _getPath(path: string, tag: string, requestProps: any, resultProps: any, sum: string, des: string): any {
         return {
             post: {
@@ -67,19 +130,25 @@ export class SwaggerGenerator {
                         name: 'body',
                         description: '',
                         required: true,
-                        schema: convert(requestProps)
+                        schema: CONVERT(requestProps)
                     }
                 ],
                 responses: {
                     200: {
                         description: '',
-                        schema: convert(resultProps)
+                        schema: CONVERT(resultProps)
                     }
                 }
             }
         };
     }
 
+    /**
+     * start the generation and Output the JSON String
+     * 
+     * @returns {*} 
+     * @memberof SwaggerGenerator
+     */
     toString(): any {
         let collections = Logic.Configuration.collectionInfos;
         let operations = Logic.Configuration.operationInfos;

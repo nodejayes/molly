@@ -16,4 +16,5 @@ export interface IServerConfiguration {
     caFile?: string;
     staticFiles?: string;
     documentationPort?: number;
+    packageFolder?: string;
 }

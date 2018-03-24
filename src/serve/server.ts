@@ -244,9 +244,12 @@ export class ExpressServer {
             }
         }
         if (cfg.documentationPort > 0) {
-            let useSsl = cfg.certFile ? true : false;
+            let useSsl = cfg.certFile !== undefined;
             let address = `${cfg.binding}:${cfg.port}`;
-            let pack = require(join(process.cwd(), 'package.json'));
+            let pack = JSON.parse(
+                readFileSync(join(cfg.packageFolder || process.cwd(), 'package.json'))
+                    .toString('utf8')
+            );
             let gen = new SwaggerGenerator(address, useSsl, pack);
             let code = gen.toString();
             let tmpFile = join(__dirname, 'tmpapi.json');
