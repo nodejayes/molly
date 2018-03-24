@@ -63,7 +63,6 @@ export class SwaggerGenerator {
      * @memberof SwaggerGenerator
      */
     private _getMain(tags: any[], paths: any, def: any): any {
-        console.info(this._pack);
         return {
             swagger: '2.0',
             info: {

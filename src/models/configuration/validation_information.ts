@@ -58,7 +58,7 @@ export class ValidationInformation {
     constructor(name: string, createSchema?: ObjectSchema, readSchema?: ObjectSchema, updateSchema?: ObjectSchema, deleteSchema?: ObjectSchema) {
         this.Name = name;
         this.CreateSchema = createSchema ? createSchema : null;
-        this.ReadSchema = readSchema ? readSchema : null;
+        this.ReadSchema = readSchema;
         this.UpdateSchema = updateSchema ? updateSchema : null;
         this.DeleteSchema = deleteSchema ? deleteSchema : null;
     }
@@ -81,8 +81,7 @@ export class ValidationInformation {
      * @memberof ValidationInformation
      */
     get readJsonSchema() {
-        return this.ReadSchema ? 
-            convert(this.ReadSchema) : null;
+        return convert(this.ReadSchema);
     }
 
     /**
