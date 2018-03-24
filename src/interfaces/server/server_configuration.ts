@@ -17,4 +17,5 @@ export interface IServerConfiguration {
     staticFiles?: string;
     documentationPort?: number;
     packageFolder?: string;
+    authentication?: Function;
 }

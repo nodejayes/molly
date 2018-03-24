@@ -65,6 +65,14 @@ export class ExpressServer {
      * @memberof ExpressServer
      */
     private _invoker: RouteInvoker;
+    /**
+     * 
+     * 
+     * @private
+     * @type {Function}
+     * @memberof ExpressServer
+     */
+    private _authenticate: Function;
 
     /**
      * the Express Server Instance
@@ -192,6 +200,11 @@ export class ExpressServer {
             return;
         }
         try {
+            if (this._authenticate instanceof Function && this._authenticate() !== true) {
+                res.status(403);
+                res.end();
+                return;
+            }
             let data = new RequestModel(req, this._routeNames);
             let result = <ResponseModel>(await Routes[data.Action](data));
             res.status(200);
@@ -226,6 +239,7 @@ export class ExpressServer {
             cfg.mongoUrl += '/';
         }
         ValidationRules.registerValidations();
+        this._authenticate = cfg.authentication;
         let options: ServerOptions = null;
         if (existsSync(cfg.certFile) && existsSync(cfg.keyFile)) {
             options = {

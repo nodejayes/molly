@@ -235,6 +235,41 @@ describe('Molly Server Spec', () => {
         });
     });
 
+    describe('', () => {
+        before(async () => {
+            await server.start({
+                binding: 'localhost',
+                port: 8086,
+                mongoUrl: 'mongodb://localhost:27017/',
+                mongoDatabase: 'test_molly',
+                clear: true,
+                authentication: (req) => {
+                    return false;
+                }
+            });
+        });
+
+        it('send unauthorized', async () => {
+            try {
+                await request({
+                    method: 'POST',
+                    uri: 'http://localhost:8086/read/Right',
+                    body: {
+                        params: {}
+                    },
+                    json: true
+                });
+                assert.fail('no error thrown');
+            } catch (err) {
+                assert.equal(err.message, '403 - undefined');
+            }
+        });
+
+        after(() => {
+            server.stop();
+        });
+    });
+
     describe('Model CRUD check', () => {
         before(async () => {
             rights = [];
@@ -246,7 +281,10 @@ describe('Molly Server Spec', () => {
                 port: 8086,
                 mongoUrl: 'mongodb://localhost:27017/',
                 mongoDatabase: 'test_molly',
-                clear: true
+                clear: true,
+                authentication: (req) => {
+                    return true;
+                }
             });
         });
 
