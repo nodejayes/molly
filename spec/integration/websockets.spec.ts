@@ -14,11 +14,6 @@ import * as Websocket from 'ws';
 
 describe('Websocket Spec', () => {
     let server = new ExpressServer();
-    let customString = BaseTypes.custom.string();
-    let mongoDbObjectId = BaseTypes.mongoDbObjectId;
-    let array = BaseTypes.custom.array();
-    let bool = BaseTypes.bool;
-    let type = BaseTypes.type;
     let user = {};
     let socket = null;
     
@@ -134,7 +129,7 @@ describe('Websocket Spec', () => {
         });
 
         it('cascade with one socket', (done) => {
-            let expectError = -1;
+            let expectError = false;
             socket.on('message', (inc: string) => {
                 let d = <IWebsocketMessage>JSON.parse(inc);
                 switch(d.id) {
@@ -193,26 +188,14 @@ describe('Websocket Spec', () => {
                         break;
                     case 'delete_User':
                         assert.equal(d.data, true);
-                        expectError = 0;
-                        socket.send(JSON.stringify({
-                            Action: 'create',
-                            Model: 'Invalid',
-                            Parameter: {
-                                params: {}
-                            }
-                        }));
+                        expectError = true;
+                        socket.send('invalid');
                         break;
                     case 'ERROR':
-                        switch(expectError) {
-                            case 0:
-                                assert.equal(d.data, 'no validation found for model Invalid');
-                                break;
-                            case 1:
-                                assert.equal(d.data, 'Unexpected token i in JSON at position 0');
-                                break;
-                            default:
-                                assert.fail(d.data);
-                                break;   
+                        if (!expectError) {
+                            assert.fail(d.data);
+                        } else {
+                            assert.equal(d.data, 'Unexpected token i in JSON at position 0');
                         }
                         server.stop();
                         done();
