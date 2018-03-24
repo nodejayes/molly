@@ -28,6 +28,7 @@ The goal of Molly is to create services that are as flexible and easy to configu
 
 * automatic API Documentation with spectacle
 * clear all Configurations with Method clearConfiguration
+* add a custom Function to implement authentication
 
 1.3.2
 
