@@ -144,7 +144,12 @@ export class ExpressServer {
      * @memberof ExpressServer
      */
     private _registerWebsocket(): void {
-        this._WsServer = new WsServer({server: this._server});
+        this._WsServer = new WsServer({
+            server: this._server,
+            verifyClient: (info) => {
+                return this._authenticate(info);
+            }
+        });
         this._WsServer.on('connection', (ws) => {
             ws.on('message', async (msg: string) => {
                 let tmp = null;
@@ -200,7 +205,7 @@ export class ExpressServer {
             return;
         }
         try {
-            if (this._authenticate instanceof Function && this._authenticate() !== true) {
+            if (this._authenticate instanceof Function && this._authenticate(req) !== true) {
                 res.status(403);
                 res.end();
                 return;
