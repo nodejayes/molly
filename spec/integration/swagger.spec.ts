@@ -24,8 +24,6 @@ describe('Swagger Generator Spec', () => {
 
         @collection({
             allow: 'XXX',
-            index: () => {},
-            lookup: []
         })
         class ReadOnly {
             @validation({type: BaseTypes.string})
@@ -34,8 +32,6 @@ describe('Swagger Generator Spec', () => {
 
         @collection({
             allow: 'CXD',
-            index: () => {},
-            lookup: [],
         })
         class Right {
             @validation({type: BaseTypes.mongoDbObjectId})

@@ -7,8 +7,8 @@ import {MongoLookup} from './../models/configuration/lookup';
  * @interface ICollectionProperties
  */
 export interface ICollectionProperties {
-    lookup: MongoLookup[];
-    index: Function;
+    lookup?: MongoLookup[];
+    index?: Function;
     allow: string;
     createDescription?: string;
     createSummary?: string;

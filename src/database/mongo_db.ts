@@ -75,9 +75,7 @@ export class MongoDb {
             if (clear && names.length > 0) {
                 await db.dropCollection(info.Name);
             }
-            let newCollection = await db.createCollection(info.Name, {
-
-            });
+            let newCollection = await db.createCollection(info.Name, {});
             if (info.setIndex) {
                 info.setIndex(newCollection);
             }
@@ -129,6 +127,7 @@ export class MongoDb {
     static close() {
         if (this._client !== null) {
             this._client.close();
+            this._client = null;
         }
     }
 }

@@ -47,8 +47,6 @@ describe('Molly Server Spec', () => {
         before(async () => {
             @collection({
                 allow: 'CUD',
-                index: () => {},
-                lookup: []
             })
             class NoValidation {
                 title: string

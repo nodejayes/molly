@@ -19,8 +19,6 @@ describe('schema Spec', () => {
         
         @collection({
             allow: 'CUD',
-            index: () => {},
-            lookup: []
         })
         class Demo {
             @validation({type: BaseTypes.postgresDbId})
