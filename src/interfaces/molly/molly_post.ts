@@ -1,4 +1,4 @@
-import { ISwaggerParameter, ISwaggerMollyResponse } from 'interfaces';
+import { ISwaggerParameter, ISwaggerMollyResponse } from '..';
 
 export interface ISwaggerMollyPost {
     tags: string[];

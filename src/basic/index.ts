@@ -1,3 +1,3 @@
-export * from 'basic/base_types';
-export * from 'basic/logic';
-export * from 'basic/validation_rules';
+export * from './base_types';
+export * from './logic';
+export * from './validation_rules';

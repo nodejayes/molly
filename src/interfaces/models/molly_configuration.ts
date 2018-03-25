@@ -1,6 +1,4 @@
-import { CollectionInformation } from 'models';
-import { ValidationInformation } from 'models';
-import { OperationInformation } from 'models';
+import { OperationInformation, CollectionInformation, ValidationInformation } from '../../models';
 
 /**
  * Molly Configuration Interface

@@ -12,10 +12,10 @@ import { promisify } from 'util';
 import { isAbsolute, join } from 'path';
 import { exec } from 'child_process';
 
-import { MongoDb, Routes, RouteInvoker, SwaggerGenerator } from 'modules';
-import { RequestModel, ResponseModel, WebsocketMessage } from 'models';
-import { IRequestModel, IServerConfiguration } from 'interfaces';
-import { ValidationRules, Logic } from 'basic';
+import { MongoDb, Routes, RouteInvoker, SwaggerGenerator } from '../../modules';
+import { RequestModel, ResponseModel, WebsocketMessage } from '../../models';
+import { IRequestModel, IServerConfiguration } from '../../interfaces';
+import { ValidationRules, Logic } from '../../basic';
 
 /**
  * implement a small Express Server

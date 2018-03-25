@@ -1,4 +1,4 @@
-import {MongoLookup} from 'models/index';
+import {MongoLookup} from '../../models';
 
 /**
  * Collection Informations

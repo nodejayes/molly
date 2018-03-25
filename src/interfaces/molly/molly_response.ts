@@ -1,4 +1,4 @@
-import { ISwaggerResponse } from 'interfaces';
+import { ISwaggerResponse } from '..';
 
 export interface ISwaggerMollyResponse {
     200: ISwaggerResponse

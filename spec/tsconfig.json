@@ -12,15 +12,6 @@
         ],
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "baseUrl": "./../src",
-        "paths": {
-            "basic/*": ["basic/*"],
-            "decorators/*": ["decorators/*"],
-            "enums/*": ["enums/*"],
-            "interfaces/*": ["interfaces/*"],
-            "models/*": ["models/*"],
-            "modules/*": ["modules/*"]
-        },
         "moduleResolution": "node"
     }
 }

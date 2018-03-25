@@ -1,7 +1,6 @@
 {
     "compileOnSave": true,
     "compilerOptions": {
-        "baseUrl": "src",
         "charset": "utf8",
         "module": "commonjs",
         "target": "es5",
@@ -15,14 +14,6 @@
         "typeRoots": [
             "node_modules/@types/**"
         ],
-        "paths": {
-            "basic/*": ["basic/*"],
-            "decorators/*": ["decorators/*"],
-            "enums/*": ["enums/*"],
-            "interfaces/*": ["interfaces/*"],
-            "models/*": ["models/*"],
-            "modules/*": ["modules/*"]
-        },
         "moduleResolution": "node"
     },
     "include": [

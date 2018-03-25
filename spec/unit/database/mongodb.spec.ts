@@ -1,6 +1,6 @@
 import {
     MongoDb
-} from 'modules';
+} from '../../../src/modules';
 import {assert} from 'chai';
 import 'mocha'
 

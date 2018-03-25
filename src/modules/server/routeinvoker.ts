@@ -1,6 +1,6 @@
-import { Routes } from 'modules';
-import { RequestModel } from 'models';
-import { IRouteInvoker } from 'interfaces';
+import { Routes } from '..';
+import { RequestModel } from '../../models';
+import { IRouteInvoker } from '../../interfaces';
 
 /**
  * invoke the Standard CRUD and Operation Routes

@@ -1,7 +1,7 @@
-import { Logic } from 'basic';
-import { BaseTypes } from 'index';
-import { ISwaggerDocument, ISwaggerTag, ISwaggerMollyPath } from 'interfaces';
-import { SwaggerDocumentVersion } from 'enums';
+import { Logic } from '../../basic';
+import { BaseTypes } from '../../index';
+import { ISwaggerDocument, ISwaggerTag, ISwaggerMollyPath } from '../../interfaces';
+import { SwaggerDocumentVersion } from '../../enums';
 
 /**
  * Joi Validation to JSON Schema

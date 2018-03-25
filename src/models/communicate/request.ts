@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { Request } from 'express';
 import { hasIn, keys, isObject, isString, isArray } from 'lodash';
-import { IRequestModel } from 'interfaces';
+import { IRequestModel } from '../../interfaces';
 
 /**
  * holds the Request Parameter

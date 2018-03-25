@@ -1,6 +1,6 @@
-import { IOperationParameter } from 'interfaces';
-import { Logic } from 'basic';
-import { OperationInformation } from 'models';
+import { IOperationParameter } from '../interfaces';
+import { Logic } from '../basic';
+import { OperationInformation } from '../models';
 
 /**
  * Decorate a Class Method to be a Operation

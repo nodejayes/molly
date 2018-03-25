@@ -1,5 +1,5 @@
 import {Schema} from 'joi';
-import {JoinType} from 'index';
+import {JoinType} from '../..';
 
 /**
  * Validation Informations

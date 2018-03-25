@@ -1,4 +1,4 @@
-import { IWebsocketMessage } from 'interfaces';
+import { IWebsocketMessage } from '../../interfaces';
 
 /**
  * Websocket Message

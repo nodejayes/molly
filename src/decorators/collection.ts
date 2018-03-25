@@ -1,6 +1,6 @@
-import { ICollectionProperties } from 'interfaces';
-import { CollectionInformation } from 'models';
-import { Logic } from 'basic';
+import { ICollectionProperties } from '../interfaces';
+import { CollectionInformation } from '../models';
+import { Logic } from '../basic';
 
 /**
  * Decorate a Class with Collection Informations

@@ -1,5 +1,5 @@
-import { CollectionInformation, ValidationInformation, OperationInformation } from 'models/index';
-import { IMollyConfiguration } from 'interfaces/index';
+import { CollectionInformation, ValidationInformation, OperationInformation } from '..';
+import { IMollyConfiguration } from '../../interfaces';
 
 /**
  * Configuration Object

@@ -1,3 +1,3 @@
-export * from 'decorators/collection';
-export * from 'decorators/operation';
-export * from 'decorators/validation';
+export * from './collection';
+export * from './operation';
+export * from './validation';

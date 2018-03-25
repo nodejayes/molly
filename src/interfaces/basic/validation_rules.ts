@@ -1,4 +1,4 @@
-import { IValidationProperties } from 'interfaces';
+import { IValidationProperties } from '..';
 
 /**
  * Validation Rule Interface

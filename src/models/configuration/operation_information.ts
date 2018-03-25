@@ -1,6 +1,6 @@
-import { Collection } from "mongodb";
-import { RouteInvoker } from 'modules';
-import { IOperationInformation } from 'interfaces';
+import { Collection } from 'mongodb';
+import { RouteInvoker } from '../../modules';
+import { IOperationInformation } from '../../interfaces';
 
 /**
  * a Operation Information Definition

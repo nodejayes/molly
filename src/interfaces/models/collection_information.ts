@@ -1,4 +1,4 @@
-import { MongoLookup } from 'index';
+import { MongoLookup } from '../..';
 
 /**
  * Collection Information Interface

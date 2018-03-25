@@ -1,5 +1,5 @@
-import { SwaggerDocumentVersion } from 'enums';
-import { ISwaggerDocumentInfo, ISwaggerTag } from 'interfaces';
+import { SwaggerDocumentVersion } from '../../enums';
+import { ISwaggerDocumentInfo, ISwaggerTag } from '..';
 
 /**
  * Swagger Document Structure

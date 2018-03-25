@@ -1,4 +1,4 @@
-import { JoinType } from 'models';
+import { JoinType } from '../../models';
 
 /**
  * Mongo Lookup Interface

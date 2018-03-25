@@ -1,4 +1,4 @@
-import {MongoLookup, JoinType} from 'index';
+import {MongoLookup, JoinType} from '../../../../src';
 import {assert} from 'chai';
 import 'mocha'
 

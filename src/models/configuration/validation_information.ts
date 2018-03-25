@@ -1,6 +1,6 @@
 import { ObjectSchema, validate } from 'joi';
-import { BaseTypes } from 'index';
-import { IValidationInformation } from 'interfaces';
+import { BaseTypes } from '../..';
+import { IValidationInformation } from '../../interfaces';
 
 /**
  * Convert Joi to JSON Schema

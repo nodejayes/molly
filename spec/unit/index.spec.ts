@@ -6,7 +6,7 @@ import {
     collection,
     validation,
     operation,
-} from 'index';
+} from '../../src';
 import {assert} from 'chai';
 import 'mocha'
 

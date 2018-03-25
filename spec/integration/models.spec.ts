@@ -5,7 +5,7 @@ import {
     JoinType,
     MongoLookup,
     collection, operation, validation
-} from 'index';
+} from '../../src';
 import {assert} from 'chai';
 import 'mocha';
 
