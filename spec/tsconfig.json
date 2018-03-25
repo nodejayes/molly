@@ -1,20 +1,18 @@
 {
-    "compileOnSave": true,
     "compilerOptions": {
-        "baseUrl": "src",
         "charset": "utf8",
         "module": "commonjs",
         "target": "es5",
         "removeComments": true,
         "sourceMap": true,
         "outDir": "dist",
-        "declaration": true,
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
         "lib": ["es2015"],
         "typeRoots": [
-            "node_modules/@types/**"
+            "./../node_modules/@types/**"
         ],
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "baseUrl": "./../src",
         "paths": {
             "basic/*": ["basic/*"],
             "decorators/*": ["decorators/*"],
@@ -24,11 +22,5 @@
             "modules/*": ["modules/*"]
         },
         "moduleResolution": "node"
-    },
-    "include": [
-        "src/**/*"
-    ],
-    "exclude": [
-        "node_modules"
-    ]
+    }
 }
