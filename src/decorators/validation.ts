@@ -1,5 +1,5 @@
-import { IValidationProperties } from 'interfaces';
-import { ValidationRules } from 'basic';
+import { IValidationProperties } from '../interfaces';
+import { ValidationRules } from '../basic';
 
 /**
  * read the Class Name

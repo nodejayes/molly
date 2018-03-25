@@ -1,4 +1,4 @@
-import { ISwaggerMollyPost } from 'interfaces';
+import { ISwaggerMollyPost } from '..';
 
 export interface ISwaggerMollyPath {
     post: ISwaggerMollyPost

@@ -1,5 +1,5 @@
-import { IMongoLookup } from 'interfaces/index';
-import { JoinType } from 'enums';
+import { IMongoLookup } from '../../interfaces';
+import { JoinType } from '../../enums';
 
 /**
  * Lookup Definition

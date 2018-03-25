@@ -1,4 +1,4 @@
-import {ExpressServer} from 'index';
+import {ExpressServer} from '../../../src';
 import {assert} from 'chai';
 import 'mocha'
 

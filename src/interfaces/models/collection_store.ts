@@ -1,5 +1,5 @@
 import { Collection } from 'mongodb';
-import { MongoLookup } from 'index';
+import { MongoLookup } from '../..';
 
 /**
  * Collection Store Interface

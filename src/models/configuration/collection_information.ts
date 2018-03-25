@@ -1,6 +1,6 @@
 import { MongoClient } from 'mongodb';
-import { MongoLookup } from 'models/index';
-import { ICollectionInformation } from 'interfaces/index';
+import { MongoLookup } from '..';
+import { ICollectionInformation } from '../../interfaces';
 
 /**
  * Collection Information

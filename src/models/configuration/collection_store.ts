@@ -1,6 +1,6 @@
 import { Collection } from 'mongodb';
-import { MongoLookup } from 'models/index';
-import { ICollectionStore } from 'interfaces/index';
+import { MongoLookup } from '..';
+import { ICollectionStore } from '../../interfaces';
 
 /**
  * Collection Store Wrapper

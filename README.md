@@ -24,6 +24,10 @@ The goal of Molly is to create services that are as flexible and easy to configu
 
 ## Release Notes
 
+1.4.4
+
+* change Module Resolution
+
 1.4.3
 
 * add tsconfi.json in publish package

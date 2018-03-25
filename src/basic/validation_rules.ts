@@ -1,9 +1,9 @@
 import { ObjectSchema } from 'joi';
-import { JoinType, BaseTypes } from 'index';
-import { CollectionInformation, ValidationInformation } from 'models';
+import { JoinType, BaseTypes } from '..';
+import { CollectionInformation, ValidationInformation } from '../models';
 import { clone } from 'lodash';
-import { Logic } from 'basic';
-import { IValidationRules, IValidationProperties, ISchemaInfo } from 'interfaces/index';
+import { Logic } from '.';
+import { IValidationRules, IValidationProperties, ISchemaInfo } from '../interfaces';
 
 /**
  * Combines Validation and Collection Informations to Validation Rules

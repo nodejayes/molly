@@ -1,9 +1,9 @@
 import { Collection, ObjectId } from 'mongodb';
 import { hasIn, unset, keys } from 'lodash';
-import { IRequestModel } from 'interfaces';
-import { ResponseModel, ValidationInformation, CollectionStore, OperationInformation, RequestModel, MongoLookup } from 'models';
-import { Logic } from 'basic';
-import { MongoDb } from 'modules';
+import { IRequestModel } from '../../interfaces';
+import { ResponseModel, ValidationInformation, CollectionStore, OperationInformation, RequestModel, MongoLookup } from '../../models';
+import { Logic } from '../../basic';
+import { MongoDb } from '..';
 
 /**
  * holds all available Routes

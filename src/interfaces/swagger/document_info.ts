@@ -1,4 +1,4 @@
-import { ISwaggerContact, ISwaggerLicense } from 'interfaces';
+import { ISwaggerContact, ISwaggerLicense } from '..';
 
 /**
  * Swagger Main Info

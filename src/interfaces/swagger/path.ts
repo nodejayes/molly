@@ -1,4 +1,4 @@
-import { ISwaggerParameter, ISwaggerResponse } from 'interfaces';
+import { ISwaggerParameter, ISwaggerResponse } from '..';
 
 export interface ISwaggerPath {
     tags: string[];

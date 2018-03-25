@@ -1,7 +1,7 @@
 import { MongoClient, Collection } from 'mongodb';
-import { Logic } from 'basic';
-import { CollectionInformation } from 'models';
-import { CollectionStore } from 'models';
+import { Logic } from '../../basic';
+import { CollectionInformation } from '../../models';
+import { CollectionStore } from '../../models';
 
 /**
  * a MongoDb Instance
