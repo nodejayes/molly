@@ -20,6 +20,7 @@ export class ValidationRules {
      * @memberof ValidationRules
      */
     static readonly validationPool: IValidationProperties[] = [];
+
     /**
      * Pool of all Validation Rules
      * 
@@ -224,7 +225,17 @@ export class ValidationRules {
         }
     }
 
-    private static _readValidationRules(model: string, ci: CollectionInformation, allCis: CollectionInformation[]) {
+    /**
+     * 
+     * 
+     * @private
+     * @static
+     * @param {string} model 
+     * @param {CollectionInformation} ci 
+     * @param {CollectionInformation[]} allCis 
+     * @memberof ValidationRules
+     */
+    private static _readValidationRules(model: string, ci: CollectionInformation, allCis: CollectionInformation[]): void {
         let tmp = this.validationPool.filter((e) => {
             return e.classname === ci.Name;
         });
@@ -260,7 +271,7 @@ export class ValidationRules {
      * @static
      * @memberof ValidationRules
      */
-    private static _fillValidationRules() {
+    private static _fillValidationRules(): void {
         for (let i = 0; i < Logic.Configuration.collectionInfos.length; i++) {
             let ci = Logic.Configuration.collectionInfos[i];
             this._readValidationRules(ci.Name, ci, Logic.Configuration.collectionInfos);
@@ -273,7 +284,7 @@ export class ValidationRules {
      * @static
      * @memberof ValidationRules
      */
-    static registerValidations() {
+    static registerValidations(): void {
         this._fillValidationRules();
         for (let i = 0; i < this.rules.length; i++) {
             let rule = this.rules[i];
