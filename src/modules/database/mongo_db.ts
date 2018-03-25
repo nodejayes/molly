@@ -11,6 +11,16 @@ import { CollectionStore } from 'models';
  */
 export class MongoDb {
     /**
+     * 
+     * 
+     * @private
+     * @static
+     * @type {boolean}
+     * @memberof MongoDb
+     */
+    private static _archiveCollections: boolean;
+
+    /**
      * Database Name
      * 
      * @private
@@ -58,6 +68,26 @@ export class MongoDb {
      */
     static get Collections() {
         return this._collectionList;
+    }
+
+    /**
+     * get Delete on Collection was archieved
+     * 
+     * @static
+     * @memberof MongoDb
+     */
+    static get Archive() {
+        return this._archiveCollections;
+    }
+
+    /**
+     * set Delete on Collection was archieved
+     * 
+     * @static
+     * @memberof MongoDb
+     */
+    static set Archive(v) {
+        this._archiveCollections = v;
     }
 
     /**

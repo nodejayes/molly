@@ -41,6 +41,7 @@ export class ExpressServer {
      * @memberof ExpressServer
      */
     private _server: HttpServer | HttpsServer;
+
     /**
      * Node Service Instance for Documentation
      * 
@@ -49,6 +50,7 @@ export class ExpressServer {
      * @memberof ExpressServer
      */
     private _docServer: HttpServer | HttpsServer;
+
     /**
      * Websocket Server
      * 
@@ -57,6 +59,7 @@ export class ExpressServer {
      * @memberof ExpressServer
      */
     private _WsServer: WsServer;
+
     /**
      * Route Invoker
      * 
@@ -65,6 +68,7 @@ export class ExpressServer {
      * @memberof ExpressServer
      */
     private _invoker: RouteInvoker;
+
     /**
      * 
      * 
@@ -323,6 +327,7 @@ export class ExpressServer {
         this._fixParameter(cfg);
         ValidationRules.registerValidations();
         this._authenticate = cfg.authentication;
+        MongoDb.Archive = cfg.archive === true;
         let options: ServerOptions = this._readCertificateInfo(cfg.certFile, cfg.keyFile, cfg.caFile);
         await this._buildDocumentation(options, cfg);
         await MongoDb.connect(`${cfg.mongoUrl}${cfg.mongoDatabase}`, cfg.mongoDatabase);
