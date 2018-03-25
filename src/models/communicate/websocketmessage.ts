@@ -1,4 +1,4 @@
-import { IWebsocketMessage } from './../../interfaces/websocket_message';
+import { IWebsocketMessage } from 'interfaces';
 
 /**
  * Websocket Message
@@ -15,6 +15,7 @@ export class WebsocketMessage implements IWebsocketMessage {
      * @memberof WebsocketMessage
      */
     id: string;
+    
     /**
      * Data that comes from the Event
      * 

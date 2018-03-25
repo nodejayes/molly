@@ -1,5 +1,6 @@
-import {Collection} from 'mongodb';
-import {MongoLookup} from './lookup';
+import { Collection } from 'mongodb';
+import { MongoLookup } from 'models/index';
+import { ICollectionStore } from 'interfaces/index';
 
 /**
  * Collection Store Wrapper
@@ -7,7 +8,7 @@ import {MongoLookup} from './lookup';
  * @export
  * @class CollectionStore
  */
-export class CollectionStore {
+export class CollectionStore implements ICollectionStore {
     /**
      * the MongoDb Collection Instance
      * 
@@ -15,6 +16,7 @@ export class CollectionStore {
      * @memberof CollectionStore
      */
     collection: Collection<any>;
+    
     /**
      * The Lookups for the Collection based on the Lookups that registred on Molly
      * 

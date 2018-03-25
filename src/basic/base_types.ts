@@ -180,10 +180,10 @@ export class BaseTypes {
      * 
      * @static
      * @param {any} schema 
-     * @returns 
+     * @returns {JOI.ObjectSchema} 
      * @memberof BaseTypes
      */
-    static type(schema) {
+    static type(schema): JOI.ObjectSchema {
         return JOI.object().keys(schema);
     };
     /**
@@ -191,10 +191,10 @@ export class BaseTypes {
      * 
      * @static
      * @param {any} schema 
-     * @returns 
+     * @returns {JOI.ArraySchema} 
      * @memberof BaseTypes
      */
-    static typeArray(schema) {
+    static typeArray(schema): JOI.ArraySchema {
         return BaseTypes.array.items(schema);
     };
     /**

@@ -1,4 +1,4 @@
-import {IResponseModel} from './../../interfaces/response_model';
+import { IResponseModel } from 'interfaces';
 
 /**
  * The Response Model
@@ -15,6 +15,7 @@ export class ResponseModel implements IResponseModel {
      * @memberof ResponseModel
      */
     data: any;
+
     /**
      * Errors that are thrown by Action
      * 
@@ -42,10 +43,10 @@ export class ResponseModel implements IResponseModel {
     /**
      * convert the ResponseModel to a JSON String
      * 
-     * @returns 
+     * @returns {string}
      * @memberof ResponseModel
      */
-    toString() {
+    toString(): string {
         return JSON.stringify(this);
     }
 }

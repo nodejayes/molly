@@ -2,7 +2,7 @@ import {
     ExpressServer,
     collection, validation,
     BaseTypes
-} from './../../src/index';
+} from 'index';
 import {assert} from 'chai';
 import 'mocha';
 
@@ -41,8 +41,6 @@ describe('extended Classes Spec', () => {
 
         @collection({
             allow: 'CUD',
-            index: () => {},
-            lookup: []
         })
         class Field extends BaseProperties implements IField {
             @validation({type: BaseTypes.mongoDbObjectId})
@@ -55,8 +53,6 @@ describe('extended Classes Spec', () => {
 
         @collection({
             allow: 'CUD',
-            index: () => {},
-            lookup: []
         })
         class SampleField extends Field implements ISampleField {
             @validation({type: BaseTypes.mongoDbObjectId})

@@ -1,7 +1,7 @@
-import {MongoClient, Collection} from 'mongodb';
-import {Logic} from '../logic';
-import {CollectionInformation} from '../models/configuration/collection_information';
-import {CollectionStore} from '../models/configuration/collection_store';
+import { MongoClient, Collection } from 'mongodb';
+import { Logic } from 'basic';
+import { CollectionInformation } from 'models';
+import { CollectionStore } from 'models';
 
 /**
  * a MongoDb Instance
@@ -11,6 +11,16 @@ import {CollectionStore} from '../models/configuration/collection_store';
  */
 export class MongoDb {
     /**
+     * 
+     * 
+     * @private
+     * @static
+     * @type {boolean}
+     * @memberof MongoDb
+     */
+    private static _archiveCollections: boolean;
+
+    /**
      * Database Name
      * 
      * @private
@@ -19,6 +29,7 @@ export class MongoDb {
      * @memberof MongoDb
      */
     private static _db: string;
+
     /**
      * Database Instance
      * 
@@ -28,6 +39,7 @@ export class MongoDb {
      * @memberof MongoDb
      */
     private static _client: MongoClient;
+
     /**
      * Database Collections
      * 
@@ -36,15 +48,16 @@ export class MongoDb {
      * @memberof MongoDb
      */
     private static _existCollections = new Array<Collection<any>>();
+    
     /**
      * Collection List as CollectionStore Element
      * 
      * @private
      * @static
-     * @type {Array<CollectionStore>}
+     * @type {CollectionStore[]}
      * @memberof MongoDb
      */
-    private static _collectionList: Array<CollectionStore>;
+    private static _collectionList: CollectionStore[];
 
     /**
      * Refer an CollectionList
@@ -58,15 +71,36 @@ export class MongoDb {
     }
 
     /**
+     * get Delete on Collection was archieved
+     * 
+     * @static
+     * @memberof MongoDb
+     */
+    static get Archive() {
+        return this._archiveCollections;
+    }
+
+    /**
+     * set Delete on Collection was archieved
+     * 
+     * @static
+     * @memberof MongoDb
+     */
+    static set Archive(v) {
+        this._archiveCollections = v;
+    }
+
+    /**
      * create Collection that not exists
      * 
      * @private
      * @static
      * @param {CollectionInformation} info 
      * @param {boolean} clear 
+     * @returns {Promise<void>} 
      * @memberof MongoDb
      */
-    private static async _createCollection(info: CollectionInformation, clear: boolean) {
+    private static async _createCollection(info: CollectionInformation, clear: boolean): Promise<void> {
         let names = this._existCollections.filter((col: Collection<any>) => {
             return col.collectionName === info.Name;
         });
@@ -75,9 +109,7 @@ export class MongoDb {
             if (clear && names.length > 0) {
                 await db.dropCollection(info.Name);
             }
-            let newCollection = await db.createCollection(info.Name, {
-
-            });
+            let newCollection = await db.createCollection(info.Name, {});
             if (info.setIndex) {
                 info.setIndex(newCollection);
             }
@@ -92,9 +124,10 @@ export class MongoDb {
      * 
      * @static
      * @param {boolean} clear 
+     * @returns {Promise<void>} 
      * @memberof MongoDb
      */
-    static async createCollections(clear: boolean) {
+    static async createCollections(clear: boolean): Promise<void> {
         this._collectionList = new Array<CollectionStore>();
         this._existCollections = await this._client.db(this._db).collections();
         for (let i = 0; i < Logic.Configuration.collectionInfos.length; i++) {
@@ -109,9 +142,10 @@ export class MongoDb {
      * @static
      * @param {any} url 
      * @param {any} database 
+     * @returns {Promise<void>} 
      * @memberof MongoDb
      */
-    static async connect(url, database) {
+    static async connect(url, database): Promise<void> {
         this._db = database;
         this._client = await MongoClient.connect(`${url}${database}`, {
             appname: 'Molly',
@@ -126,9 +160,10 @@ export class MongoDb {
      * @static
      * @memberof MongoDb
      */
-    static close() {
+    static close(): void {
         if (this._client !== null) {
             this._client.close();
+            this._client = null;
         }
     }
 }

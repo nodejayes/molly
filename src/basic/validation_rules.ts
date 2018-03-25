@@ -1,38 +1,58 @@
-import {Logic} from './../logic';
-import {BaseTypes, JoinType} from './../index';
-import {ObjectSchema} from 'joi';
-import {clone} from 'lodash';
-import {CollectionInformation} from './../models/configuration/collection_information';
-import {OperationInformation} from './../models/configuration/operation_information';
-import {ValidationInformation} from './../models/configuration/validation_information';
-import {ICollectionProperties} from './../interfaces/collection_properties';
-import {IValidationProperties} from './../interfaces/validation_properties';
+import { ObjectSchema } from 'joi';
+import { JoinType, BaseTypes } from 'index';
+import { CollectionInformation, ValidationInformation } from 'models';
+import { clone } from 'lodash';
+import { Logic } from 'basic';
+import { IValidationRules, IValidationProperties, ISchemaInfo } from 'interfaces/index';
 
-const convert = require('joi-to-json-schema');
-
-const validationPool: IValidationProperties[] = [];
-
-export interface IValidationRules {
-    model: string;
-    allow: string;
-    validation: IValidationProperties[];
-}
-
-interface ISchemaInfo {
-    readSchema: ObjectSchema;
-    createSchema?: ObjectSchema;
-    updateSchema?: ObjectSchema;
-    deleteSchema?: ObjectSchema;
-}
-
+/**
+ * Combines Validation and Collection Informations to Validation Rules
+ * 
+ * @export
+ * @class ValidationRules
+ */
 export class ValidationRules {
+    /**
+     * a temporary Pool for Validations
+     * 
+     * @static
+     * @type {IValidationProperties[]}
+     * @memberof ValidationRules
+     */
+    static readonly validationPool: IValidationProperties[] = [];
+
+    /**
+     * Pool of all Validation Rules
+     * 
+     * @static
+     * @type {IValidationRules[]}
+     * @memberof ValidationRules
+     */
     static rules: IValidationRules[] = [];
 
+    /**
+     * get a Validation of a Model
+     * 
+     * @private
+     * @static
+     * @param {string} model 
+     * @returns {IValidationProperties[]} 
+     * @memberof ValidationRules
+     */
     private static _getValidations(model: string): IValidationProperties[] {
         let tmp = this.rules.filter((e) => e.model === model)[0];
         return tmp.validation;
     }
 
+    /**
+     * build Read Validation for a Model
+     * 
+     * @private
+     * @static
+     * @param {string} model 
+     * @returns {ObjectSchema} 
+     * @memberof ValidationRules
+     */
     private static _buildRead(model: string): ObjectSchema {
         let schema = null;
         let tmp = {};
@@ -51,6 +71,15 @@ export class ValidationRules {
         return schema;
     }
 
+    /**
+     * build create Validation for a Model
+     * 
+     * @private
+     * @static
+     * @param {string} model 
+     * @returns {ObjectSchema} 
+     * @memberof ValidationRules
+     */
     private static _buildCreate(model: string): ObjectSchema {
         let schema = null;
         let tmp = {};
@@ -77,6 +106,15 @@ export class ValidationRules {
         return schema;
     }
 
+    /**
+     * build update Validation for a Model
+     * 
+     * @private
+     * @static
+     * @param {string} model 
+     * @returns {ObjectSchema} 
+     * @memberof ValidationRules
+     */
     private static _buildUpdate(model: string): ObjectSchema {
         let schema: ObjectSchema = null;
         let tmp = {
@@ -105,6 +143,15 @@ export class ValidationRules {
         return schema;
     }
 
+    /**
+     * build delete Validation for a Model
+     * 
+     * @private
+     * @static
+     * @param {string} model 
+     * @returns {ObjectSchema} 
+     * @memberof ValidationRules
+     */
     private static _buildDelete(model: string): ObjectSchema {
         let schema: ObjectSchema = null;
         let tmp = {
@@ -121,6 +168,16 @@ export class ValidationRules {
         return schema;
     }
 
+    /**
+     * initiate Validation builds for CRUD Operations
+     * 
+     * @private
+     * @static
+     * @param {string} model 
+     * @param {string} allow 
+     * @returns {ISchemaInfo} 
+     * @memberof ValidationRules
+     */
     private static _buildValidation(model: string, allow: string): ISchemaInfo {
         let schemaRead = this._buildRead(model);
         let schemaCreate = null;
@@ -143,6 +200,15 @@ export class ValidationRules {
         };
     }
 
+    /**
+     * add Validations from joined Collections
+     * 
+     * @private
+     * @static
+     * @param {CollectionInformation} ci 
+     * @param {IValidationProperties[]} tmp 
+     * @memberof ValidationRules
+     */
     private static _addCollectionInfoValidations(ci: CollectionInformation, tmp: IValidationProperties[]): void {
         if (ci.Joins) {
             for (let i = 0; i < ci.Joins.length; i++) {
@@ -159,8 +225,18 @@ export class ValidationRules {
         }
     }
 
-    private static _readValidationRules(model: string, ci: CollectionInformation, allCis: CollectionInformation[]) {
-        let tmp = validationPool.filter((e) => {
+    /**
+     * 
+     * 
+     * @private
+     * @static
+     * @param {string} model 
+     * @param {CollectionInformation} ci 
+     * @param {CollectionInformation[]} allCis 
+     * @memberof ValidationRules
+     */
+    private static _readValidationRules(model: string, ci: CollectionInformation, allCis: CollectionInformation[]): void {
+        let tmp = this.validationPool.filter((e) => {
             return e.classname === ci.Name;
         });
         if (tmp.length > 0) {
@@ -170,7 +246,7 @@ export class ValidationRules {
                 let subCi = allCis.filter((e) => {
                     return e.Name === proto;
                 })[0];
-                let protoValidations = validationPool.filter((e) => {
+                let protoValidations = this.validationPool.filter((e) => {
                     return e.classname === proto;
                 });
                 if (protoValidations && protoValidations.length > 0 && subCi) {
@@ -188,14 +264,27 @@ export class ValidationRules {
         }
     }
 
-    private static _fillValidationRules() {
+    /**
+     * 
+     * 
+     * @private
+     * @static
+     * @memberof ValidationRules
+     */
+    private static _fillValidationRules(): void {
         for (let i = 0; i < Logic.Configuration.collectionInfos.length; i++) {
             let ci = Logic.Configuration.collectionInfos[i];
             this._readValidationRules(ci.Name, ci, Logic.Configuration.collectionInfos);
         }
     }
 
-    static registerValidations() {
+    /**
+     * generate Validations
+     * 
+     * @static
+     * @memberof ValidationRules
+     */
+    static registerValidations(): void {
         this._fillValidationRules();
         for (let i = 0; i < this.rules.length; i++) {
             let rule = this.rules[i];
@@ -205,43 +294,4 @@ export class ValidationRules {
             );
         }
     }
-}
-
-export function collection(collectionProps: ICollectionProperties) {
-    return function(constructor: Function) {
-        Logic.Configuration.collectionInfos.push(
-            new CollectionInformation(constructor.name, collectionProps.lookup, collectionProps.index, collectionProps.allow)
-        );
-    }
-}
-
-function getClassName(obj: any): string {
-    var funcNameRegex = /function (.{1,})\(/;
-    var results = (funcNameRegex).exec(obj.constructor.toString());
-    return (results && results.length > 1) ? results[1] : "";
-}
-
-export function validation(validationProps: IValidationProperties) {
-    return function(target, key: string) {
-        if (!validationProps.classname) {
-            validationProps.classname = target.constructor.name;
-        }
-        if (!validationProps.prototypes) {
-            validationProps.prototypes = [];
-            let look = Object.getPrototypeOf(target);
-            let tmp: string;
-            while((tmp = getClassName(look)) !== 'Object') {
-                validationProps.prototypes.push(tmp);
-                look = Object.getPrototypeOf(look);
-            }
-        }
-        validationProps.name = key;
-        validationPool.push(validationProps);
-    }
-}
-
-export function operation(target, key: string) {
-    Logic.Configuration.operationInfos.push(
-        new OperationInformation(key, target[key])
-    );
 }

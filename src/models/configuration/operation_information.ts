@@ -1,5 +1,6 @@
 import { Collection } from "mongodb";
-import {RouteInvoker} from './../../serve/routeinvoker';
+import { RouteInvoker } from 'modules';
+import { IOperationInformation } from 'interfaces';
 
 /**
  * a Operation Information Definition
@@ -7,7 +8,7 @@ import {RouteInvoker} from './../../serve/routeinvoker';
  * @export
  * @class OperationInformation
  */
-export class OperationInformation {
+export class OperationInformation implements IOperationInformation {
     /**
      * a Route Invoker Instance
      * 
@@ -16,6 +17,7 @@ export class OperationInformation {
      * @memberof OperationInformation
      */
     private _invoker: RouteInvoker;
+
     /**
      * Name of the Operation in the Route
      * 
@@ -23,6 +25,7 @@ export class OperationInformation {
      * @memberof OperationInformation
      */
     Name: string;
+
     /**
      * the Function to Operate
      * 
@@ -32,14 +35,32 @@ export class OperationInformation {
     Call: Function;
 
     /**
+     * a Description
+     * 
+     * @type {string}
+     * @memberof OperationInformation
+     */
+    Description: string;
+    
+    /**
+     * a Summary
+     * 
+     * @type {string}
+     * @memberof OperationInformation
+     */
+    Summary: string;
+
+    /**
      * Creates an instance of OperationInformation.
      * @param {string} name 
      * @param {Function} call 
      * @memberof OperationInformation
      */
-    constructor(name: string, call: Function) {
+    constructor(name: string, call: Function, des?: string, sum?: string) {
         this.Name = name;
         this.Call = call;
+        this.Description = des || '';
+        this.Summary = sum || '';
         this._invoker = new RouteInvoker();
     }
 

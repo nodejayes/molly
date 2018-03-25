@@ -1,15 +1,9 @@
-import {Collection, ObjectId} from 'mongodb';
-import {hasIn, unset, keys} from 'lodash';
-import {IRequestModel} from './../interfaces/request_model';
-import {ResponseModel} from './../models/communicate/response';
-
-import {Logic} from './../logic';
-import { ValidationInformation } from '../models/configuration/validation_information';
-import {MongoDb} from './../database/mongo_db';
-import { CollectionStore } from '../models/configuration/collection_store';
-import {MongoLookup} from './../models/configuration/lookup';
-import { OperationInformation } from '../models/configuration/operation_information';
-import { RequestModel } from '../models/communicate/request';
+import { Collection, ObjectId } from 'mongodb';
+import { hasIn, unset, keys } from 'lodash';
+import { IRequestModel } from 'interfaces';
+import { ResponseModel, ValidationInformation, CollectionStore, OperationInformation, RequestModel, MongoLookup } from 'models';
+import { Logic } from 'basic';
+import { MongoDb } from 'modules';
 
 /**
  * holds all available Routes
@@ -23,14 +17,15 @@ export class Routes {
      * 
      * @readonly
      * @static
-     * @type {Array<string>}
+     * @type {string[]}
      * @memberof Routes
      */
-    static get Names(): Array<string> {
+    static get Names(): string[] {
         return [
             'create', 'read', 'update', 'delete', 'operation', 'schema'
         ];
     }
+
     /**
      * Get the Operation based on Request
      * 
@@ -50,6 +45,7 @@ export class Routes {
         }
         return op[0];
     }
+
     /**
      * get the Validation based on Request
      * 
@@ -69,6 +65,7 @@ export class Routes {
         }
         return validations[0];
     }
+
     /**
      * get Collection for Model based on Request
      * 
@@ -84,17 +81,18 @@ export class Routes {
         });
         return collections[0];
     }
+
     /**
      * get the Pipeline for Read
      * 
      * @private
      * @static
-     * @param {Array<MongoLookup>} joins 
+     * @param {MongoLookup[]} joins 
      * @param {IRequestModel} data 
-     * @returns {Array<Object>} 
+     * @returns {Object[]} 
      * @memberof Routes
      */
-    private static _getPipeline(joins: Array<MongoLookup>, data: IRequestModel): Array<Object> {
+    private static _getPipeline(joins: MongoLookup[], data: IRequestModel): Object[] {
         let restrictions = null;
         let params = RequestModel.replaceStringIds(data.Parameter);
         let hasRestrictions = hasIn(params, 'RESTRICTIONS');
