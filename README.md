@@ -26,7 +26,7 @@ The goal of Molly is to create services that are as flexible and easy to configu
 
 1.4.3
 
-
+* add tsconfi.json in publish package
 
 1.4.2
 
