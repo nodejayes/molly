@@ -1,15 +1,5 @@
 import { IMongoLookup } from 'interfaces/index';
-
-/**
- * Mongo Lookup Join Type
- * 
- * @export
- * @enum {number}
- */
-export enum JoinType {
-    ONEONE,
-    ONEMANY
-}
+import { JoinType } from 'enums';
 
 /**
  * Lookup Definition

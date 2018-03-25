@@ -1,5 +1,7 @@
-import {Logic} from 'basic';
+import { Logic } from 'basic';
 import { BaseTypes } from 'index';
+import { ISwaggerDocument, ISwaggerTag, ISwaggerMollyPath } from 'interfaces';
+import { SwaggerDocumentVersion } from 'enums';
 
 /**
  * Joi Validation to JSON Schema
@@ -22,6 +24,7 @@ export class SwaggerGenerator {
      * @memberof SwaggerGenerator
      */
     private _host: string;
+
     /**
      * is HTTPS secure
      * 
@@ -30,6 +33,7 @@ export class SwaggerGenerator {
      * @memberof SwaggerGenerator
      */
     private _useSsl: boolean;
+
     /**
      * Package Config Information
      * 
@@ -56,15 +60,15 @@ export class SwaggerGenerator {
      * construct the Main Body of Configuration
      * 
      * @private
-     * @param {any[]} tags 
+     * @param {ISwaggerTag[]} tags 
      * @param {*} paths 
      * @param {*} def 
-     * @returns {*} 
+     * @returns {ISwaggerDocument} 
      * @memberof SwaggerGenerator
      */
-    private _getMain(tags: any[], paths: any, def: any): any {
+    private _getMain(tags: ISwaggerTag[], paths: any, def: any): ISwaggerDocument {
         return {
-            swagger: '2.0',
+            swagger: SwaggerDocumentVersion.V2,
             info: {
                 description: this._pack.description || '',
                 version: this._pack.version || '',
@@ -91,10 +95,10 @@ export class SwaggerGenerator {
      * @private
      * @param {string} name 
      * @param {string} description 
-     * @returns {*} 
+     * @returns {ISwaggerTag} 
      * @memberof SwaggerGenerator
      */
-    private _getTag(name: string, description: string): any {
+    private _getTag(name: string, description: string): ISwaggerTag {
         return {
             name: name,
             description: description
@@ -111,10 +115,10 @@ export class SwaggerGenerator {
      * @param {*} resultProps 
      * @param {string} sum 
      * @param {string} des 
-     * @returns {*} 
+     * @returns {ISwaggerMollyPath} 
      * @memberof SwaggerGenerator
      */
-    private _getPath(path: string, tag: string, requestProps: any, resultProps: any, sum: string, des: string): any {
+    private _getPath(path: string, tag: string, requestProps: any, resultProps: any, sum: string, des: string): ISwaggerMollyPath {
         return {
             post: {
                 tags: [tag],
@@ -145,10 +149,10 @@ export class SwaggerGenerator {
     /**
      * start the generation and Output the JSON String
      * 
-     * @returns {*} 
+     * @returns {string} 
      * @memberof SwaggerGenerator
      */
-    toString(): any {
+    toString(): string {
         let collections = Logic.Configuration.collectionInfos;
         let operations = Logic.Configuration.operationInfos;
         let tags = [];

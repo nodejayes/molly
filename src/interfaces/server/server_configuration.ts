@@ -18,4 +18,5 @@ export interface IServerConfiguration {
     documentationPort?: number;
     packageFolder?: string;
     authentication?: Function;
+    archive?: boolean;
 }

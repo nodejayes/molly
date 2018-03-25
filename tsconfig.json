@@ -18,6 +18,7 @@
         "paths": {
             "basic/*": ["basic/*"],
             "decorators/*": ["decorators/*"],
+            "enums/*": ["enums/*"],
             "interfaces/*": ["interfaces/*"],
             "models/*": ["models/*"],
             "modules/*": ["modules/*"]

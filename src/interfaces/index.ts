@@ -17,3 +17,16 @@ export * from 'interfaces/models/molly_configuration';
 
 export * from 'interfaces/server/route_invoker';
 export * from 'interfaces/server/server_configuration';
+
+export * from 'interfaces/molly/molly_path';
+export * from 'interfaces/molly/molly_response';
+export * from 'interfaces/molly/molly_post';
+
+export * from 'interfaces/swagger/license';
+export * from 'interfaces/swagger/contact';
+export * from 'interfaces/swagger/document_info';
+export * from 'interfaces/swagger/tag';
+export * from 'interfaces/swagger/path';
+export * from 'interfaces/swagger/parameter';
+export * from 'interfaces/swagger/response';
+export * from 'interfaces/swagger/document';
