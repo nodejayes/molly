@@ -15,10 +15,10 @@ export class RouteInvoker implements IRouteInvoker {
      * 
      * @param {string} model 
      * @param {*} params 
-     * @returns {Promise<Array<object>>} 
+     * @returns {Promise<Object[]>} 
      * @memberof RouteInvoker
      */
-    async create(model: string, params: any): Promise<Array<object>> {
+    async create(model: string, params: any): Promise<Object[]> {
         let res = await Routes.create({
             Action: 'create',
             Model: model,
@@ -30,16 +30,17 @@ export class RouteInvoker implements IRouteInvoker {
         }
         return res.data
     }
+
     /**
      * invoke Read
      * 
      * @param {string} model 
      * @param {*} params 
      * @param {*} [props] 
-     * @returns {Promise<Array<object>>} 
+     * @returns {Promise<Object[]>} 
      * @memberof RouteInvoker
      */
-    async read(model: string, params: any, props?: any): Promise<Array<object>> {
+    async read(model: string, params: any, props?: any): Promise<Object[]> {
         let res = await Routes.read({
             Action: 'read',
             Model: model,
@@ -51,6 +52,7 @@ export class RouteInvoker implements IRouteInvoker {
         }
         return res.data;
     }
+
     /**
      * invoke Update
      * 
@@ -71,6 +73,7 @@ export class RouteInvoker implements IRouteInvoker {
         }
         return res.data;
     }
+
     /**
      * invoke Delete
      * 
@@ -91,6 +94,7 @@ export class RouteInvoker implements IRouteInvoker {
         }
         return res.data;
     }
+    
     /**
      * invoke Operation
      * 
