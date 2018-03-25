@@ -1,4 +1,4 @@
-import { Server as HttpServer } from 'http';
+import { Server as HttpServer, Server } from 'http';
 import { createServer, Server as HttpsServer, ServerOptions } from 'https';
 import { readFileSync, existsSync, writeFileSync, unlinkSync } from 'fs';
 import * as express from 'express';
@@ -104,7 +104,7 @@ export class ExpressServer {
      * @returns 
      * @memberof ExpressServer
      */
-    private _shouldCompress(req, res) {
+    private _shouldCompress(req, res): boolean {
         if (req.headers['x-no-compression']) {
           return false
         }
@@ -144,12 +144,18 @@ export class ExpressServer {
      * @memberof ExpressServer
      */
     private _registerWebsocket(): void {
-        this._WsServer = new WsServer({
-            server: this._server,
-            verifyClient: (info) => {
-                return this._authenticate(info);
-            }
-        });
+        if (this._authenticate instanceof Function) {
+            this._WsServer = new WsServer({
+                server: this._server,
+                verifyClient: (info) => {
+                    return this._authenticate(info);
+                }
+            });
+        } else {
+            this._WsServer = new WsServer({
+                server: this._server,
+            });
+        }
         this._WsServer.on('connection', (ws) => {
             ws.on('message', async (msg: string) => {
                 let tmp = null;
@@ -227,34 +233,20 @@ export class ExpressServer {
      * @param {boolean} clear 
      * @memberof ExpressServer
      */
-    private async _buildSchema(clear: boolean) {
+    private async _buildSchema(clear: boolean): Promise<void> {
         await MongoDb.createCollections.bind(MongoDb, clear)();
     }
 
     /**
-     * start the Express Server
+     * generate the Spectacle Documentation
      * 
-     * @param {string} binding
-     * @param {number} port
-     * @returns {Promise<string>} 
-     * @memberof Server
+     * @private
+     * @param {ServerOptions} options 
+     * @param {IServerConfiguration} cfg 
+     * @returns {Promise<void>} 
+     * @memberof ExpressServer
      */
-    async start(cfg: IServerConfiguration): Promise<string> {
-        if (cfg.mongoUrl[cfg.mongoUrl.length - 1] !== '/') {
-            cfg.mongoUrl += '/';
-        }
-        ValidationRules.registerValidations();
-        this._authenticate = cfg.authentication;
-        let options: ServerOptions = null;
-        if (existsSync(cfg.certFile) && existsSync(cfg.keyFile)) {
-            options = {
-                cert: readFileSync(cfg.certFile),
-                key: readFileSync(cfg.keyFile)
-            };
-            if (existsSync(cfg.caFile)) {
-                options.ca = readFileSync(cfg.caFile);
-            }
-        }
+    private async _buildDocumentation(options: ServerOptions, cfg: IServerConfiguration): Promise<void> {
         if (cfg.documentationPort > 0) {
             let useSsl = cfg.certFile !== undefined;
             let address = `${cfg.binding}:${cfg.port}`;
@@ -273,12 +265,66 @@ export class ExpressServer {
             unlinkSync(tmpFile);
             let docApp = express();
             docApp.use(express.static('docs'));
-            if (existsSync(cfg.certFile) && existsSync(cfg.keyFile)) {
+            if (options !== null) {
                 this._docServer = createServer(options, docApp).listen(cfg.documentationPort, cfg.binding);
             } else {
                 this._docServer = docApp.listen(cfg.documentationPort, cfg.binding);
             }
         }
+    }
+
+    /**
+     * read the Certificate Files and build a ServerOptions Object
+     * 
+     * @private
+     * @param {string} certFile 
+     * @param {string} keyFile 
+     * @param {string} caFile 
+     * @returns {ServerOptions} 
+     * @memberof ExpressServer
+     */
+    private _readCertificateInfo(certFile: string, keyFile: string, caFile: string): ServerOptions {
+        let options: ServerOptions = null;
+        if (existsSync(certFile) && existsSync(keyFile)) {
+            options = {
+                cert: readFileSync(certFile),
+                key: readFileSync(keyFile)
+            };
+            if (existsSync(caFile)) {
+                options.ca = readFileSync(caFile);
+            }
+        }
+        return options;
+    }
+
+    /**
+     * set defaults of the Configuration Parameter
+     * 
+     * @private
+     * @param {IServerConfiguration} cfg 
+     * @memberof ExpressServer
+     */
+    private _fixParameter(cfg: IServerConfiguration): void {
+        if (cfg.mongoUrl[cfg.mongoUrl.length - 1] !== '/') {
+            cfg.mongoUrl += '/';
+        }
+        cfg.archive = cfg.archive === true;
+    }
+
+    /**
+     * start the Express Server
+     * 
+     * @param {string} binding
+     * @param {number} port
+     * @returns {Promise<string>} 
+     * @memberof Server
+     */
+    async start(cfg: IServerConfiguration): Promise<string> {
+        this._fixParameter(cfg);
+        ValidationRules.registerValidations();
+        this._authenticate = cfg.authentication;
+        let options: ServerOptions = this._readCertificateInfo(cfg.certFile, cfg.keyFile, cfg.caFile);
+        await this._buildDocumentation(options, cfg);
         await MongoDb.connect(`${cfg.mongoUrl}${cfg.mongoDatabase}`, cfg.mongoDatabase);
         await this._buildSchema(cfg.clear);
         return new Promise<string>((resolve, reject) => {
@@ -305,7 +351,7 @@ export class ExpressServer {
      * 
      * @memberof ExpressServer
      */
-    clearConfiguration() {
+    clearConfiguration(): void {
         Logic.Configuration.collectionInfos = [];
         Logic.Configuration.operationInfos = [];
         Logic.Configuration.validationInfos = [];
@@ -316,7 +362,7 @@ export class ExpressServer {
      * 
      * @memberof ExpressServer
      */
-    stop() {
+    stop(): void {
         if (this._server !== null) {
             this._server.close();
             this._server = null;
