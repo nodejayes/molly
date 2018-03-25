@@ -8,3 +8,5 @@ export * from 'models/configuration/lookup';
 export * from 'models/configuration/molly_configuration';
 export * from 'models/configuration/operation_information';
 export * from 'models/configuration/validation_information';
+
+export * from 'enums/models/join_type';
