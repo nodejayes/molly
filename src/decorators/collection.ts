@@ -10,7 +10,7 @@ import { Logic } from 'basic';
  * @returns 
  */
 export function collection(collectionProps: ICollectionProperties) {
-    return function(constructor: Function) {
+    return function(constructor: Function): void {
         Logic.Configuration.collectionInfos.push(
             new CollectionInformation(constructor.name, collectionProps.lookup, collectionProps.index, collectionProps.allow,
                 collectionProps.createDescription, collectionProps.createSummary,

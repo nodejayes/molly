@@ -21,7 +21,7 @@ function getClassName(obj: any): string {
  * @returns 
  */
 export function validation(validationProps: IValidationProperties) {
-    return function(target, key: string) {
+    return function(target, key: string): void {
         if (!validationProps.classname) {
             validationProps.classname = target.constructor.name;
         }

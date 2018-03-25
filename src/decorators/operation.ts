@@ -10,7 +10,7 @@ import { OperationInformation } from 'models';
  * @returns 
  */
 export function operation(props: IOperationParameter) {
-    return function (target, key: string) {
+    return function (target, key: string): void {
         Logic.Configuration.operationInfos.push(
             new OperationInformation(key, target[key], props.Description, props.Summary)
         );
