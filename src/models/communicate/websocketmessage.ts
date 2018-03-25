@@ -15,6 +15,7 @@ export class WebsocketMessage implements IWebsocketMessage {
      * @memberof WebsocketMessage
      */
     id: string;
+    
     /**
      * Data that comes from the Event
      * 

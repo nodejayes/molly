@@ -17,6 +17,7 @@ export class OperationInformation implements IOperationInformation {
      * @memberof OperationInformation
      */
     private _invoker: RouteInvoker;
+
     /**
      * Name of the Operation in the Route
      * 
@@ -24,6 +25,7 @@ export class OperationInformation implements IOperationInformation {
      * @memberof OperationInformation
      */
     Name: string;
+
     /**
      * the Function to Operate
      * 
@@ -31,6 +33,7 @@ export class OperationInformation implements IOperationInformation {
      * @memberof OperationInformation
      */
     Call: Function;
+
     /**
      * a Description
      * 
@@ -38,6 +41,7 @@ export class OperationInformation implements IOperationInformation {
      * @memberof OperationInformation
      */
     Description: string;
+    
     /**
      * a Summary
      * 

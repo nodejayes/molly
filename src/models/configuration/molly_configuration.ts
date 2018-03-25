@@ -15,24 +15,27 @@ export class MollyConfiguration implements IMollyConfiguration {
     /**
      * List of Collection Informations
      * 
-     * @type {Array<CollectionInformation>}
+     * @type {CollectionInformation[]}
      * @memberof MollyConfiguration
      */
-    collectionInfos: Array<CollectionInformation>;
+    collectionInfos: CollectionInformation[];
+
     /**
      * List of Validation Informations
      * 
-     * @type {Array<ValidationInformation>}
+     * @type {ValidationInformation[]}
      * @memberof MollyConfiguration
      */
-    validationInfos: Array<ValidationInformation>;
+    validationInfos: ValidationInformation[];
+
     /**
      * List of Operation Informations
      * 
-     * @type {Array<OperationInformation>}
+     * @type {OperationInformation[]}
      * @memberof MollyConfiguration
      */
-    operationInfos: Array<OperationInformation>;
+    operationInfos: OperationInformation[];
+
 
     /**
      * Creates an instance of MollyConfiguration.

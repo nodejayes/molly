@@ -22,6 +22,7 @@ export class ValidationInformation implements IValidationInformation {
      * @memberof ValidationInformation
      */
     Name: string;
+
     /**
      * the Create Validation
      * 
@@ -29,6 +30,7 @@ export class ValidationInformation implements IValidationInformation {
      * @memberof ValidationInformation
      */
     CreateSchema: ObjectSchema;
+
     /**
      * the Read Validation
      * 
@@ -36,6 +38,7 @@ export class ValidationInformation implements IValidationInformation {
      * @memberof ValidationInformation
      */
     ReadSchema: ObjectSchema;
+
     /**
      * the Update Validation
      * 
@@ -43,6 +46,7 @@ export class ValidationInformation implements IValidationInformation {
      * @memberof ValidationInformation
      */
     UpdateSchema: ObjectSchema;
+
     /**
      * the Delete Validation
      * 
@@ -74,7 +78,7 @@ export class ValidationInformation implements IValidationInformation {
      * @readonly
      * @memberof ValidationInformation
      */
-    get createJsonSchema() {
+    get createJsonSchema(): any {
         return this.CreateSchema ? 
             CONVERT(this.CreateSchema) : null;
     }
@@ -85,7 +89,7 @@ export class ValidationInformation implements IValidationInformation {
      * @readonly
      * @memberof ValidationInformation
      */
-    get readJsonSchema() {
+    get readJsonSchema(): any {
         return CONVERT(this.ReadSchema);
     }
 
@@ -95,7 +99,7 @@ export class ValidationInformation implements IValidationInformation {
      * @readonly
      * @memberof ValidationInformation
      */
-    get updateJsonSchema() {
+    get updateJsonSchema(): any {
         return this.UpdateSchema ? 
             CONVERT(this.UpdateSchema) : null;
     }
@@ -106,7 +110,7 @@ export class ValidationInformation implements IValidationInformation {
      * @readonly
      * @memberof ValidationInformation
      */
-    get deleteJsonSchema() {
+    get deleteJsonSchema(): any {
         return this.DeleteSchema ? 
             CONVERT(this.DeleteSchema) : null;
     }

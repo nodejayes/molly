@@ -16,6 +16,7 @@ export class CollectionInformation implements ICollectionInformation {
      * @memberof CollectionInformation
      */
     Name: string;
+
     /**
      * Lookups for the current Collection
      * 
@@ -23,6 +24,7 @@ export class CollectionInformation implements ICollectionInformation {
      * @memberof CollectionInformation
      */
     Joins: Array<MongoLookup>;
+
     /**
      * Indexes of the current Collection
      * 
@@ -30,6 +32,7 @@ export class CollectionInformation implements ICollectionInformation {
      * @memberof CollectionInformation
      */
     setIndex: Function;
+
     /**
      * allow Create Update or Delete
      * Syntax: CUD CXD CXX XUD XXD
@@ -38,6 +41,7 @@ export class CollectionInformation implements ICollectionInformation {
      * @memberof CollectionInformation
      */
     allow: string;
+
     /**
      * a Description for create Route
      * 
@@ -45,6 +49,7 @@ export class CollectionInformation implements ICollectionInformation {
      * @memberof CollectionInformation
      */
     createDescription?: string;
+
     /**
      * a Summary for create Route
      * 
@@ -52,6 +57,7 @@ export class CollectionInformation implements ICollectionInformation {
      * @memberof CollectionInformation
      */
     createSummary?: string;
+
     /**
      * a Description for read Route
      * 
@@ -59,6 +65,7 @@ export class CollectionInformation implements ICollectionInformation {
      * @memberof CollectionInformation
      */
     readDescription?: string;
+
     /**
      * a Summary for read Route
      * 
@@ -66,6 +73,7 @@ export class CollectionInformation implements ICollectionInformation {
      * @memberof CollectionInformation
      */
     readSummary?: string;
+
     /**
      * a Description for update Route
      * 
@@ -73,6 +81,7 @@ export class CollectionInformation implements ICollectionInformation {
      * @memberof CollectionInformation
      */
     updateDescription?: string;
+
     /**
      * a Summary for update Route
      * 
@@ -80,6 +89,7 @@ export class CollectionInformation implements ICollectionInformation {
      * @memberof CollectionInformation
      */
     updateSummary?: string;
+
     /**
      * a Description for delete Route
      * 
@@ -87,6 +97,7 @@ export class CollectionInformation implements ICollectionInformation {
      * @memberof CollectionInformation
      */
     deleteDescription?: string;
+    
     /**
      * a Summary for delete Route
      * 

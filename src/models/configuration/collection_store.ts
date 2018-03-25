@@ -16,6 +16,7 @@ export class CollectionStore implements ICollectionStore {
      * @memberof CollectionStore
      */
     collection: Collection<any>;
+    
     /**
      * The Lookups for the Collection based on the Lookups that registred on Molly
      * 

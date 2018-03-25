@@ -15,6 +15,7 @@ export class MongoLookup implements IMongoLookup {
      * @memberof MongoLookup
      */
     From: string;
+
     /**
      * Name of the Property in the master Collection
      * 
@@ -22,6 +23,7 @@ export class MongoLookup implements IMongoLookup {
      * @memberof MongoLookup
      */
     LocalField: string;
+
     /**
      * Name of the Property in the Foreign Collection
      * 
@@ -29,6 +31,7 @@ export class MongoLookup implements IMongoLookup {
      * @memberof MongoLookup
      */
     ForeignField: string;
+
     /**
      * The Type of the Join
      * 
@@ -64,10 +67,10 @@ export class MongoLookup implements IMongoLookup {
     /**
      * get the MongoDb Aggregate based on the JoinType
      * 
-     * @returns {Array<Object>} 
+     * @returns {Object[]} 
      * @memberof MongoLookup
      */
-    getAggregate(): Array<Object> {
+    getAggregate(): Object[] {
         switch(this.Type) {
             case JoinType.ONEONE:
                 return [

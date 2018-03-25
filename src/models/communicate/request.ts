@@ -18,6 +18,7 @@ export class RequestModel implements IRequestModel {
      * @memberof RequestModel
      */
     Action: string;
+
     /**
      * the Model where the Action is executed
      * 
@@ -25,6 +26,7 @@ export class RequestModel implements IRequestModel {
      * @memberof RequestModel
      */
     Model: string;
+
     /**
      * the Parameters for the Action
      * 
@@ -32,6 +34,7 @@ export class RequestModel implements IRequestModel {
      * @memberof RequestModel
      */
     Parameter: any;
+
     /**
      * the Return Filter for the Read Operation of the Model
      * 
@@ -43,10 +46,10 @@ export class RequestModel implements IRequestModel {
     /**
      * parse a Express Request and create a IRequestModel Object
      * @param {Request} req 
-     * @param {Array<string>} routeNames 
+     * @param {string[]} routeNames 
      * @memberof RequestModel
      */
-    constructor(req: Request, routeNames: Array<string>) {
+    constructor(req: Request, routeNames: string[]) {
         let tmp = req.path.split('/').filter((e) => { return e.length > 0; });
         if (tmp.length !== 2 || routeNames.indexOf(tmp[0]) === -1) {
             throw new Error(`invalid route ${req.path}`);
