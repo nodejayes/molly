@@ -5,7 +5,7 @@ import {
     JoinType,
     MongoLookup,
     collection, operation, validation
-} from './../../src/index';
+} from 'index';
 import {assert} from 'chai';
 import 'mocha';
 
@@ -13,14 +13,13 @@ const request = require('request-promise');
 
 describe('Molly Server Spec', () => {
     let server = new ExpressServer();
-    let customString = BaseTypes.custom.string();
-    let mongoDbObjectId = BaseTypes.mongoDbObjectId;
-    let array = BaseTypes.custom.array();
-    let bool = BaseTypes.bool;
-    let type = BaseTypes.type;
     let rights = [];
     let groups = [];
     let users = [];
+
+    before(() => {
+        server.clearConfiguration();
+    });
 
     describe('main server functionallity', () => {
         it('start server', async () => {
@@ -41,17 +40,13 @@ describe('Molly Server Spec', () => {
 
     describe('incomplete Schema', () => {
         before(async () => {
-            class Right {
-                @validation({type: BaseTypes.mongoDbObjectId})
-                _id: string;
-
-                @validation({type: BaseTypes.stringDefaultLength})
-                key: string;
-
-                @validation({type: BaseTypes.bool})
-                active: boolean;
+            @collection({
+                allow: 'CUD',
+            })
+            class NoValidation {
+                title: string
             }
-            
+
             await server.start({
                 binding: 'localhost',
                 port: 8086,
@@ -61,49 +56,27 @@ describe('Molly Server Spec', () => {
             });
         });
 
-        it('catch create rights', async () => {
-            let rightData = [
-                {
-                    key: 'CAN_DO_SOMETHING',
-                    active: true
-                },
-                {
-                    key: 'CAN_DO_ANOTHER',
-                    active: true
-                },
-                {
-                    key: 'CAN_DO_ALL',
-                    active: true
-                },
-                {
-                    key: 'CAN_LOGIN',
-                    active: true
-                },
-                {
-                    key: 'CAN_REQUEST_USER',
-                    active: true
-                }
-            ];
+        it('catch create NoValidation', async () => {
             try {
                 let resRights = await request({
                     method: 'POST',
-                    uri: `http://localhost:8086/create/Right`,
+                    uri: `http://localhost:8086/create/NoValidation`,
                     body: {
-                        params: rightData[0]
+                        params: {title: 'something'}
                     },
                     json: true
                 });
                 assert.fail('no error thrown');
             } catch (err) {
-                assert.equal(err.message, '500 - {"data":null,"errors":"no validation found for model Right"}');   
+                assert.equal(err.message, '500 - {"data":null,"errors":"no validation found for model NoValidation"}');   
             }
         });
 
-        it('catch read rights', async () => {
+        it('catch read NoValidation', async () => {
             try {
                 let resRights = await request({
                     method: 'POST',
-                    uri: 'http://localhost:8086/read/Right',
+                    uri: 'http://localhost:8086/read/NoValidation',
                     body: {
                         params: {}
                     },
@@ -111,20 +84,20 @@ describe('Molly Server Spec', () => {
                 });
                 assert.fail('no error thrown');
             } catch (err) {
-                assert.equal(err.message, '500 - {"data":null,"errors":"no validation found for model Right"}');
+                assert.equal(err.message, '500 - {"data":null,"errors":"no validation found for model NoValidation"}');
             }
         });
 
-        it('catch update rights', async () => {
+        it('catch update NoValidation', async () => {
             try {
                 let resRights = await request({
                     method: 'POST',
-                    uri: 'http://localhost:8086/update/Right',
+                    uri: 'http://localhost:8086/update/NoValidation',
                     body: {
                         params: {
                             id: '5aa517d30ebd980e2e52a250',
                             updateSet: {
-                                key: 'UPDATE'
+                                title: 'UPDATE'
                             }
                         }
                     },
@@ -132,15 +105,15 @@ describe('Molly Server Spec', () => {
                 });
                 assert.fail('no error thrown');
             } catch (err) {
-                assert.equal(err.message, '500 - {"data":null,"errors":"no validation found for model Right"}');
+                assert.equal(err.message, '500 - {"data":null,"errors":"no validation found for model NoValidation"}');
             }
         });
 
-        it('catch delete rights', async () => {
+        it('catch delete NoValidation', async () => {
             try {
                 let resRights = await request({
                     method: 'POST',
-                    uri: 'http://localhost:8086/delete/Right',
+                    uri: 'http://localhost:8086/delete/NoValidation',
                     body: {
                         params: {
                             id: '5aa517d30ebd980e2e52a250'
@@ -150,7 +123,7 @@ describe('Molly Server Spec', () => {
                 });
                 assert.fail('no error thrown');
             } catch (err) {
-                assert.equal(err.message, '500 - {"data":null,"errors":"no validation found for model Right"}');
+                assert.equal(err.message, '500 - {"data":null,"errors":"no validation found for model NoValidation"}');
             }
         });
         
@@ -158,7 +131,7 @@ describe('Molly Server Spec', () => {
             try {
                 await request({
                     method: 'POST',
-                    uri: 'http://localhost:8086/schema/Right',
+                    uri: 'http://localhost:8086/schema/NoValidation',
                     body: {
                         params: {
                             type: 'read'
@@ -168,7 +141,7 @@ describe('Molly Server Spec', () => {
                 });
                 assert.fail('no error thrown');
             } catch (err) {
-                assert.equal(err.message, '500 - {"data":null,"errors":"no validation found for model Right"}');
+                assert.equal(err.message, '500 - {"data":null,"errors":"no validation found for model NoValidation"}');
             }
         });
 
@@ -262,6 +235,41 @@ describe('Molly Server Spec', () => {
         });
     });
 
+    describe('', () => {
+        before(async () => {
+            await server.start({
+                binding: 'localhost',
+                port: 8086,
+                mongoUrl: 'mongodb://localhost:27017/',
+                mongoDatabase: 'test_molly',
+                clear: true,
+                authentication: (req) => {
+                    return false;
+                }
+            });
+        });
+
+        it('send unauthorized', async () => {
+            try {
+                await request({
+                    method: 'POST',
+                    uri: 'http://localhost:8086/read/Right',
+                    body: {
+                        params: {}
+                    },
+                    json: true
+                });
+                assert.fail('no error thrown');
+            } catch (err) {
+                assert.equal(err.message, '403 - undefined');
+            }
+        });
+
+        after(() => {
+            server.stop();
+        });
+    });
+
     describe('Model CRUD check', () => {
         before(async () => {
             rights = [];
@@ -273,7 +281,10 @@ describe('Molly Server Spec', () => {
                 port: 8086,
                 mongoUrl: 'mongodb://localhost:27017/',
                 mongoDatabase: 'test_molly',
-                clear: true
+                clear: true,
+                authentication: (req) => {
+                    return true;
+                }
             });
         });
 
@@ -681,13 +692,13 @@ describe('Molly Server Spec', () => {
 
         it('register some operation', () => {
             class Ops {
-                @operation
+                @operation({})
                 async countUser(inv: IRouteInvoker) {
                     let user = await inv.read('User', {});
                     return user.length;
                 }
 
-                @operation
+                @operation({})
                 async passParameter(inv: IRouteInvoker, params: any) {
                     return params;
                 }

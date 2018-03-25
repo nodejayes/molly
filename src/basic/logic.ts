@@ -1,4 +1,4 @@
-import { MollyConfiguration } from "./models/configuration/molly_configuration";
+import { MollyConfiguration } from 'models/index';
 
 /**
  * holds the registred Collection, Validation and Operation Logic

@@ -7,21 +7,20 @@ import {
     IRequestModel,
     IWebsocketMessage,
     operation, collection, validation
-} from './../../src/index';
+} from 'index';
 import {assert} from 'chai';
 import 'mocha';
 import * as Websocket from 'ws';
 
-let server = new ExpressServer();
-let customString = BaseTypes.custom.string();
-let mongoDbObjectId = BaseTypes.mongoDbObjectId;
-let array = BaseTypes.custom.array();
-let bool = BaseTypes.bool;
-let type = BaseTypes.type;
-let user = {};
-let socket = null;
-
 describe('Websocket Spec', () => {
+    let server = new ExpressServer();
+    let user = {};
+    let socket = null;
+    
+    before(() => {
+        server.clearConfiguration();
+    });
+
     describe('Define Schema', () => {
         it('setup user schema', async () => {
             @collection({
@@ -106,7 +105,7 @@ describe('Websocket Spec', () => {
             }
 
             class Ops {
-                @operation
+                @operation({})
                 async countUser(inv: IRouteInvoker, params: any) {
                     let u = await inv.read('User', {}, {_id: true});
                     return u.length;

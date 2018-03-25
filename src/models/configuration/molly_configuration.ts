@@ -1,6 +1,5 @@
-import {CollectionInformation} from './collection_information';
-import {ValidationInformation} from './validation_information';
-import {OperationInformation} from './operation_information';
+import { CollectionInformation, ValidationInformation, OperationInformation } from 'models/index';
+import { IMollyConfiguration } from 'interfaces/index';
 
 /**
  * Configuration Object
@@ -12,28 +11,31 @@ import {OperationInformation} from './operation_information';
  * @property collectionInfo a Array of Collection definitions
  * @property validationInfo a Array of Validations for Types
  */
-export class MollyConfiguration {
+export class MollyConfiguration implements IMollyConfiguration {
     /**
      * List of Collection Informations
      * 
-     * @type {Array<CollectionInformation>}
+     * @type {CollectionInformation[]}
      * @memberof MollyConfiguration
      */
-    collectionInfos: Array<CollectionInformation>;
+    collectionInfos: CollectionInformation[];
+
     /**
      * List of Validation Informations
      * 
-     * @type {Array<ValidationInformation>}
+     * @type {ValidationInformation[]}
      * @memberof MollyConfiguration
      */
-    validationInfos: Array<ValidationInformation>;
+    validationInfos: ValidationInformation[];
+
     /**
      * List of Operation Informations
      * 
-     * @type {Array<OperationInformation>}
+     * @type {OperationInformation[]}
      * @memberof MollyConfiguration
      */
-    operationInfos: Array<OperationInformation>;
+    operationInfos: OperationInformation[];
+
 
     /**
      * Creates an instance of MollyConfiguration.

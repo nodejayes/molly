@@ -1,7 +1,5 @@
-export enum JoinType {
-    ONEONE,
-    ONEMANY
-}
+import { IMongoLookup } from 'interfaces/index';
+import { JoinType } from 'enums';
 
 /**
  * Lookup Definition
@@ -9,7 +7,7 @@ export enum JoinType {
  * @export
  * @class MongoLookup
  */
-export class MongoLookup {
+export class MongoLookup implements IMongoLookup {
     /**
      * Name of the Collection to look in
      * 
@@ -17,6 +15,7 @@ export class MongoLookup {
      * @memberof MongoLookup
      */
     From: string;
+
     /**
      * Name of the Property in the master Collection
      * 
@@ -24,6 +23,7 @@ export class MongoLookup {
      * @memberof MongoLookup
      */
     LocalField: string;
+
     /**
      * Name of the Property in the Foreign Collection
      * 
@@ -31,6 +31,7 @@ export class MongoLookup {
      * @memberof MongoLookup
      */
     ForeignField: string;
+
     /**
      * The Type of the Join
      * 
@@ -66,10 +67,10 @@ export class MongoLookup {
     /**
      * get the MongoDb Aggregate based on the JoinType
      * 
-     * @returns {Array<Object>} 
+     * @returns {Object[]} 
      * @memberof MongoLookup
      */
-    getAggregate(): Array<Object> {
+    getAggregate(): Object[] {
         switch(this.Type) {
             case JoinType.ONEONE:
                 return [

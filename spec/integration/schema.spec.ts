@@ -5,28 +5,36 @@ import {
     JoinType,
     MongoLookup,
     collection, operation, validation
-} from './../../src/index';
+} from 'index';
 import {assert} from 'chai';
 import 'mocha';
 
 const req = require('request-promise');
 
-let server = new ExpressServer();
-
-@collection({
-    allow: 'CUD',
-    index: () => {},
-    lookup: []
-})
-class Demo {
-    @validation({type: BaseTypes.postgresDbId})
-    id: number;
-    @validation({type: BaseTypes.string})
-    name: string;
-}
-
 describe('schema Spec', () => {
+    let server = new ExpressServer();
+
     before(async () => {
+        server.clearConfiguration();
+        
+        @collection({
+            allow: 'CUD',
+        })
+        class Demo {
+            @validation({type: BaseTypes.postgresDbId})
+            id: number;
+            @validation({type: BaseTypes.string})
+            name: string;
+        }
+
+        @collection({
+            allow: 'XXX'
+        })
+        class ReadOnly {
+            @validation({type: BaseTypes.string})
+            text: string;
+        }
+
         await server.start({
             binding: 'localhost',
             port: 8086,
@@ -171,6 +179,51 @@ describe('schema Spec', () => {
             },
             type: 'object'
         });
+    });
+
+    it('catch create readonly', async () => {
+        let msg = await req({
+            method: 'POST',
+            uri: 'http://localhost:8086/schema/ReadOnly',
+            body: {
+                params: {
+                    type: 'create'
+                }
+            },
+            json: true
+        });
+        assert.isNull(msg.errors);
+        assert.isNull(msg.data);
+    });
+
+    it('catch update readonly', async () => {
+        let msg = await req({
+            method: 'POST',
+            uri: 'http://localhost:8086/schema/ReadOnly',
+            body: {
+                params: {
+                    type: 'update'
+                }
+            },
+            json: true
+        });
+        assert.isNull(msg.errors);
+        assert.isNull(msg.data);
+    });
+    
+    it('catch delete readonly', async () => {
+        let msg = await req({
+            method: 'POST',
+            uri: 'http://localhost:8086/schema/ReadOnly',
+            body: {
+                params: {
+                    type: 'delete'
+                }
+            },
+            json: true
+        });
+        assert.isNull(msg.errors);
+        assert.isNull(msg.data);
     });
 
     it('catch invalid type', async () => {

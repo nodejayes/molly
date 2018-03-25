@@ -1,7 +1,12 @@
-import {ObjectSchema, validate} from 'joi';
-import {BaseTypes} from './../../index';
+import { ObjectSchema, validate } from 'joi';
+import { BaseTypes } from 'index';
+import { IValidationInformation } from 'interfaces';
 
-const convert = require('joi-to-json-schema');
+/**
+ * Convert Joi to JSON Schema
+ * @const
+ */
+const CONVERT = require('joi-to-json-schema');
 
 /**
  * a Type Validation Info
@@ -9,7 +14,7 @@ const convert = require('joi-to-json-schema');
  * @export
  * @class ValidationInformation
  */
-export class ValidationInformation {
+export class ValidationInformation implements IValidationInformation {
     /**
      * the Name of the Model
      * 
@@ -17,6 +22,7 @@ export class ValidationInformation {
      * @memberof ValidationInformation
      */
     Name: string;
+
     /**
      * the Create Validation
      * 
@@ -24,6 +30,7 @@ export class ValidationInformation {
      * @memberof ValidationInformation
      */
     CreateSchema: ObjectSchema;
+
     /**
      * the Read Validation
      * 
@@ -31,6 +38,7 @@ export class ValidationInformation {
      * @memberof ValidationInformation
      */
     ReadSchema: ObjectSchema;
+
     /**
      * the Update Validation
      * 
@@ -38,6 +46,7 @@ export class ValidationInformation {
      * @memberof ValidationInformation
      */
     UpdateSchema: ObjectSchema;
+
     /**
      * the Delete Validation
      * 
@@ -58,7 +67,7 @@ export class ValidationInformation {
     constructor(name: string, createSchema?: ObjectSchema, readSchema?: ObjectSchema, updateSchema?: ObjectSchema, deleteSchema?: ObjectSchema) {
         this.Name = name;
         this.CreateSchema = createSchema ? createSchema : null;
-        this.ReadSchema = readSchema ? readSchema : null;
+        this.ReadSchema = readSchema;
         this.UpdateSchema = updateSchema ? updateSchema : null;
         this.DeleteSchema = deleteSchema ? deleteSchema : null;
     }
@@ -69,9 +78,9 @@ export class ValidationInformation {
      * @readonly
      * @memberof ValidationInformation
      */
-    get createJsonSchema() {
+    get createJsonSchema(): any {
         return this.CreateSchema ? 
-            convert(this.CreateSchema) : null;
+            CONVERT(this.CreateSchema) : null;
     }
 
     /**
@@ -80,9 +89,8 @@ export class ValidationInformation {
      * @readonly
      * @memberof ValidationInformation
      */
-    get readJsonSchema() {
-        return this.ReadSchema ? 
-            convert(this.ReadSchema) : null;
+    get readJsonSchema(): any {
+        return CONVERT(this.ReadSchema);
     }
 
     /**
@@ -91,9 +99,9 @@ export class ValidationInformation {
      * @readonly
      * @memberof ValidationInformation
      */
-    get updateJsonSchema() {
+    get updateJsonSchema(): any {
         return this.UpdateSchema ? 
-            convert(this.UpdateSchema) : null;
+            CONVERT(this.UpdateSchema) : null;
     }
 
     /**
@@ -102,9 +110,9 @@ export class ValidationInformation {
      * @readonly
      * @memberof ValidationInformation
      */
-    get deleteJsonSchema() {
+    get deleteJsonSchema(): any {
         return this.DeleteSchema ? 
-            convert(this.DeleteSchema) : null;
+            CONVERT(this.DeleteSchema) : null;
     }
 
     /**
