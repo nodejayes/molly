@@ -1,9 +1,14 @@
 {
     "name": "molly",
     "description": "dynamic model library for MongoDb which allows to provide an HTTP API based on models",
-    "version": "1.4.0",
+    "version": "1.4.1",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
+    "keywords": [
+        "mongodb",
+        "api",
+        "models"
+    ],
     "repository": "https://gitlab.sw-gis.de/root/molly.git",
     "bugs": {
         "email": "markusgilg@outlook.de",
