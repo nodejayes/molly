@@ -24,6 +24,10 @@ The goal of Molly is to create services that are as flexible and easy to configu
 
 ## Release Notes
 
+1.4.2
+
+* fix export bug
+
 1.4.1
 
 * fix Error in dist Folder Structure
