@@ -1,7 +1,7 @@
 {
     "name": "molly",
     "description": "dynamic model library for MongoDb which allows to provide an HTTP API based on models",
-    "version": "1.4.4",
+    "version": "1.4.5",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "keywords": [
@@ -22,16 +22,18 @@
     "scripts": {
         "build": "tsc",
         "doc": "./node_modules/.bin/typedoc --mode file --module commonjs --target ES6 --readme ./README.md --ignoreCompilerErrors --out ./doc ./src",
-        "test": "nyc mocha -t 30000 --bail --recursive -r ts-node/register -r tsconfig-paths/register \"./spec/**/*.spec.ts\"",
-        "test:integration": "mocha -t 30000 --bail -r ts-node/register -r tsconfig-paths/register \"./spec/integration/**/*.spec.ts\"",
-        "test:unit": "mocha -t 30000 --bail -r ts-node/register -r tsconfig-paths/register \"./spec/unit/**/*.spec.ts\"",
-        "test:websocket": "mocha -t 30000 --bail -r ts-node/register -r tsconfig-paths/register \"./spec/integration/websockets.spec.ts\"",
-        "test:swagger": "mocha -t 30000 --bail -r ts-node/register -r tsconfig-paths/register \"./spec/integration/swagger.spec.ts\"",
+        "test": "nyc mocha -t 30000 --bail --recursive -r ts-node/register \"./spec/**/*.spec.ts\"",
+        "test:integration": "mocha -t 30000 --bail -r ts-node/register \"./spec/integration/**/*.spec.ts\"",
+        "test:unit": "mocha -t 30000 --bail -r ts-node/register \"./spec/unit/**/*.spec.ts\"",
+        "test:websocket": "mocha -t 30000 --bail -r ts-node/register \"./spec/integration/websockets.spec.ts\"",
+        "test:swagger": "mocha -t 30000 --bail -r ts-node/register \"./spec/integration/swagger.spec.ts\"",
         "release": "tsc && npm publish",
         "sonar": "npm run test && node ./sonar.js"
     },
     "dependencies": {
+        "@types/commander": "^2.12.2",
         "body-parser": "^1.18.2",
+        "commander": "^2.15.1",
         "compression": "^1.7.2",
         "express": "^4.16.2",
         "helmet": "^3.11.0",
@@ -62,7 +64,6 @@
         "request": "^2.83.0",
         "request-promise": "^4.2.2",
         "ts-node": "^4.1.0",
-        "tsconfig-paths": "^3.1.3",
         "tslint-config-airbnb": "^5.6.0",
         "typedoc": "^0.5.0",
         "typescript": "^2.8.0-dev.20180318"

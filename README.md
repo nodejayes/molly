@@ -24,6 +24,12 @@ The goal of Molly is to create services that are as flexible and easy to configu
 
 ## Release Notes
 
+1.4.5
+
+* fix spectacle not found error
+* fix tsc error async modifier
+* change Swagger Documentation
+
 1.4.4
 
 * change Module Resolution
@@ -43,9 +49,7 @@ The goal of Molly is to create services that are as flexible and easy to configu
 1.4.0
 
 * automatic API Documentation with spectacle
-
 * clear all Configurations with Method clearConfiguration
-
 * add a custom Function to implement authentication
 
 1.3.2
@@ -59,13 +63,9 @@ The goal of Molly is to create services that are as flexible and easy to configu
 1.3.0
 
 * add schema Route to get JSON Schema from Models
-
 * support extended Classes
-
 * add gzip to Server
-
 * add static File support for Server
-
 * fix Joi validation
 
 1.2.0

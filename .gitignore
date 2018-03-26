@@ -5,7 +5,7 @@
 coverage/**
 node_modules/**
 dist/**
-docs/**
+api-doc/swagger.json
 doc/**
 scripts/**
     

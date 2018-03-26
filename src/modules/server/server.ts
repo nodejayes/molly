@@ -10,12 +10,14 @@ import * as bodyParser from 'body-parser';
 import { keys } from 'lodash';
 import { promisify } from 'util';
 import { isAbsolute, join } from 'path';
-import { exec } from 'child_process';
+import * as Program from 'commander';
 
 import { MongoDb, Routes, RouteInvoker, SwaggerGenerator } from '../../modules';
 import { RequestModel, ResponseModel, WebsocketMessage } from '../../models';
 import { IRequestModel, IServerConfiguration } from '../../interfaces';
 import { ValidationRules, Logic } from '../../basic';
+
+const SPECTACLE = require('spectacle-docs');
 
 /**
  * implement a small Express Server
@@ -260,15 +262,13 @@ export class ExpressServer {
             );
             let gen = new SwaggerGenerator(address, useSsl, pack);
             let code = gen.toString();
-            let tmpFile = join(__dirname, 'tmpapi.json');
+            let tmpFile = join(__dirname, '..', '..', '..', 'api-doc', 'swagger.json');
             writeFileSync(tmpFile, code, {
                 encoding: 'utf8'
             });
-            let spectacle = promisify(exec);
-            await spectacle(join(__dirname, '..', '..', '..', 'node_modules', '.bin', `spectacle -t ${join(__dirname, '..', '..', '..', 'docs')} ${tmpFile}`));
-            unlinkSync(tmpFile);
+            
             let docApp = express();
-            docApp.use(express.static('docs'));
+            docApp.use(express.static(join(__dirname, '..', '..', '..', 'api-doc')));
             if (options !== null) {
                 this._docServer = createServer(options, docApp).listen(cfg.documentationPort, cfg.binding);
             } else {

@@ -12,7 +12,6 @@ src/**
 .gitignore
 .gitlab-ci.yml
 .nycrc
-tsconfig.json
 package-lock.json
 tslint.json
 yarn.lock
