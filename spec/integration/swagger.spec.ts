@@ -111,11 +111,11 @@ describe('Swagger Generator Spec', () => {
             binding: 'localhost',
             port: 8086,
             documentationPort: 8087,
-            mongoUrl: 'mongodb://localhost:27017/',
+            mongoUrl: 'mongodb://192.168.99.75:6604/',
             mongoDatabase: 'test_molly'
         });
         let rs = await req('http://localhost:8087/');
-        assert.equal(rs.indexOf('<body id="spectacle">') > -1, true);
+        assert.equal(rs.indexOf('<title>Swagger UI</title>') > -1, true);
         server.stop();
     });
 
@@ -124,7 +124,7 @@ describe('Swagger Generator Spec', () => {
             binding: 'localhost',
             port: 8086,
             documentationPort: 8087,
-            mongoUrl: 'mongodb://localhost:27017/',
+            mongoUrl: 'mongodb://192.168.99.75:6604/',
             mongoDatabase: 'test_molly',
             certFile: join(__dirname, '..', 'assets', 'server-crt.pem'),
             keyFile: join(__dirname, '..', 'assets', 'server-key.pem'),
@@ -141,7 +141,7 @@ describe('Swagger Generator Spec', () => {
             binding: 'localhost',
             port: 8086,
             documentationPort: 8087,
-            mongoUrl: 'mongodb://localhost:27017/',
+            mongoUrl: 'mongodb://192.168.99.75:6604/',
             mongoDatabase: 'test_molly',
             certFile: join(__dirname, '..', 'assets', 'server-crt.pem'),
             keyFile: join(__dirname, '..', 'assets', 'server-key.pem'),
@@ -164,7 +164,7 @@ describe('Swagger Generator Spec', () => {
             binding: 'localhost',
             port: 8086,
             documentationPort: 8087,
-            mongoUrl: 'mongodb://localhost:27017/',
+            mongoUrl: 'mongodb://192.168.99.75:6604/',
             mongoDatabase: 'test_molly',
             certFile: join(__dirname, '..', 'assets', 'server-crt.pem'),
             keyFile: join(__dirname, '..', 'assets', 'server-key.pem'),
