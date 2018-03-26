@@ -268,7 +268,7 @@ export class ExpressServer {
             });
             
             let docApp = express();
-            docApp.use(express.static('api-doc'));
+            docApp.use(express.static(join(__dirname, '..', '..', '..', 'api-doc')));
             if (options !== null) {
                 this._docServer = createServer(options, docApp).listen(cfg.documentationPort, cfg.binding);
             } else {
