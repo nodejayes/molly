@@ -9,7 +9,6 @@ import * as bodyParser from 'body-parser';
 import { keys } from 'lodash';
 import { promisify } from 'util';
 import { isAbsolute, join } from 'path';
-import * as Program from 'commander';
 
 import { MongoDb, Routes, RouteInvoker, SwaggerGenerator } from '../../modules';
 import { RequestModel, ResponseModel, WebsocketMessage } from '../../models';
