@@ -24,6 +24,11 @@ The goal of Molly is to create services that are as flexible and easy to configu
 
 ## Release Notes
 
+1.4.6
+
+* fix TS1040 error
+* remove insecure dependencies
+
 1.4.5
 
 * fix spectacle not found error
