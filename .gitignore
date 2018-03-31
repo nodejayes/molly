@@ -8,4 +8,6 @@ dist/**
 api-doc/swagger.json
 doc/**
 scripts/**
+yarn.lock
+package-lock.json
     
