@@ -182,6 +182,10 @@ class User {
 ```
 ## Release Notes
 
+1.5.1
+
+* fix travis ci missing build
+
 1.5.0
 
 * move Project to GitHub
