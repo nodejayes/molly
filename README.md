@@ -182,6 +182,13 @@ class User {
 ```
 ## Release Notes
 
+1.5.0
+
+* move Project to GitHub
+* add Documentation in the RADME.md
+* add NPM Badges
+* setup Travis CI and Coveralls
+
 1.4.6
 
 * fix TS1040 error

@@ -1,7 +1,7 @@
 {
     "name": "molly",
     "description": "dynamic model library for MongoDb which allows to provide an HTTP API based on models",
-    "version": "1.4.6",
+    "version": "1.5.0",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "keywords": [

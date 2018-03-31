@@ -7,3 +7,11 @@ jobs:
   include:
   - stage: test
     script: npm run coverage
+deploy:
+  provider: npm
+  email: markusgilg@outlook.de
+  api_key:
+    secure: sE1uBa2IJHWjfyU61G6fwOYwkhe51GDZv22Q2FS9aF9vSJugk4RY979GkYdhaXQKB8yvWDGjzsT4WnZC8Ajej/kDOTpVZU4KZGf4/uf2uxTmUmatCuEsqgh70Uia4NsXyPb3ZPCPcMH95wLCQ37EdPRp43ev7jh10HE0ylQ5w3v2usxQwoKLdWYmh7+NqpcizUulnHFU0KDPuruJAc5Aa6VkJApyADgaixZgUQq8LhVsJLnaPoWeS82fA6DHLLAuHVDTSaOBwKcqofsS4QHuoLKVcrHGHWUigkrcnmSNdaxlREv+CVODL0ZEhr93d2MUiYpQ1I1Zt8aR/OrarjKDMc/f3cklZPNkGGBvV4iU0puyLN1I6zElJci9AY/wnvkP6fMJwmje9v95+ZCQVyqnhhvftf6zhWDUN2UAy2M7gUKeSiUDifHd1j8MTy5wl9oDJWFz8aGUtlgumXbTHQWus2FjSXBQHD5DtIB/UM7Labmb4uD8FjJN5iQiMiwo8cd/4qIiN0/+MXuQNQhqlbad6eUGJf+Wtehw7J5EnJi9y4yJ6tiHPkb9OTR5BjAvtw/nXP0OaeOL4I8feWgZ2HzuFY7xhbpujirs16q0pwKBkk/+CEj/2RM0qlRWcpmDqvfm3yOkySh5rEsoVWRWukrBztlsBCdDleChvw2uCzwveN8=
+  on:
+    repo: nodejayes/molly
+    branch: master
