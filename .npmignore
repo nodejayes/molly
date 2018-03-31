@@ -9,6 +9,8 @@ node_modules/**
 scripts/**
 spec/**
 src/**
+.coveralls.yml
+.travis.yml
 .gitignore
 .gitlab-ci.yml
 .nycrc
