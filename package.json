@@ -9,10 +9,10 @@
         "api",
         "models"
     ],
-    "repository": "https://gitlab.sw-gis.de/root/molly.git",
+    "repository": "https://github.com/nodejayes/molly.git",
     "bugs": {
         "email": "markusgilg@outlook.de",
-        "url": "https://gitlab.sw-gis.de/root/molly/issues"
+        "url": "https://github.com/nodejayes/molly/issues"
     },
     "author": {
         "name": "Markus Gilg",
@@ -28,7 +28,8 @@
         "test:websocket": "mocha -t 30000 --bail -r ts-node/register \"./spec/integration/websockets.spec.ts\"",
         "test:swagger": "mocha -t 30000 --bail -r ts-node/register \"./spec/integration/swagger.spec.ts\"",
         "release": "tsc && npm publish",
-        "sonar": "npm run test && node ./sonar.js"
+        "sonar": "npm run test && node ./sonar.js",
+        "coverage": "nyc mocha -t 30000 --bail --recursive -r ts-node/register -r tsconfig-paths/register \"./spec/**/*.spec.ts\" && nyc report --reporter=text-lcov | coveralls"
     },
     "dependencies": {
         "body-parser": "^1.18.2",

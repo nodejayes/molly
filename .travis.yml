@@ -1,0 +1,9 @@
+language: node_js
+node_js:
+- '8'
+notifications:
+  email: markusgilg@outlook.de
+jobs:
+  include:
+  - stage: test
+    script: npm run coverage

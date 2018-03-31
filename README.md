@@ -1,27 +1,185 @@
+[![Build Status](https://travis-ci.org/nodejayes/molly.svg?branch=master)](https://travis-ci.org/nodejayes/molly)
+[![Coverage Status](https://coveralls.io/repos/github/nodejayes/molly/badge.svg?branch=master)](https://coveralls.io/github/nodejayes/molly?branch=master)
+[![devDependency Status](https://david-dm.org/nodejayes/molly/dev-status.svg)](https://david-dm.org/nodejayes/molly#info=devDependencies)
+[![npm version](https://badge.fury.io/js/molly.svg)](https://badge.fury.io/js/molly)
+![npm](https://img.shields.io/npm/l/molly.svg)
+![npm](https://img.shields.io/npm/dt/molly.svg)
+![npm](https://img.shields.io/npm/dw/molly.svg)
+![npm](https://img.shields.io/npm/dm/molly.svg)
+![npm](https://img.shields.io/npm/dy/molly.svg)
+
 # Molly
 
 The goal of Molly is to create services that are as flexible and easy to configure as possible. Based on the schemata of models, a service will be created which will allow you to save, read, edit and delete these models. By adding further freely definable functions, a higher flexibility is achieved. The application possibilities of Molly Services are manifold and range from monolithic service to microservice architecture.
 
+## What is needed?
+
+* You need an installed MongoDb instance to connect to
+
 ## Features
 
-* standalone Server
-* Websockets
-* automatic Collection creation
-* Validation
-* Collection Lookup
+| Feature               | Description                                                |
+|-----------------------|------------------------------------------------------------|
+| Class Decorators      | Description of collections based on classes                |
+| Subclasses            | Nested objects                                             |
+| Class extension       | support for inherited classes                              |
+| Collection Setup      | automatic creation of non-existing collections in MongoDb  |
+| predefined Types      | some Datatype Validations                                  |
+| Websocket Support     | Use of Websockets or Request/Responses                     |
+| Swagger Documentation | automatic generation of swagger definition at server start |
 
-## Howtos
 
-[Setup Server](https://gitlab.sw-gis.de/root/molly/wikis/setup-server)
+## Documentation
 
-[Define some Models](https://gitlab.sw-gis.de/root/molly/wikis/how-to-define-models)
+* Setup a simple Server at http://localhost:8086
 
-[Call the CRUD Operations over Request](https://gitlab.sw-gis.de/root/molly/wikis/call-over-request)
+```Typescript
+import { ExpressServer } from 'molly';
 
-[Call over Websockets](https://gitlab.sw-gis.de/root/molly/wikis/use-websockets)
+let server = new ExpressServer();
+server.start({
+    binding: 'localhost',
+    port: 8086,
+    mongoUrl: 'mongodb://localhost:27017/',
+    mongoDatabase: 'test_molly'
+});
+```
 
-[Define Custom Operations](https://gitlab.sw-gis.de/root/molly/wikis/custom-operations)
+* create a Model User that can Create, Read, Update and Delete
 
+```Typescript
+import { collection, validation, BaseTypes } from 'molly';
+
+@collection({
+    allow: 'CUD'
+})
+class User {
+    @validation({type: BaseTypes.mongoDbObjectId})
+    _id?: string;
+    @validation({type: BaseTypes.stringDefaultLength})
+    username: string;
+    @validation({type: BaseTypes.hexadecimal})
+    password: string;
+    @validation({type: BaseTypes.email})
+    email: string;
+}
+```
+
+    This definition creates a MongoDb Collection named User. All objects of type User are stored in this collection. The "allow" attribute of the collection decorator determines whether the object can be created, modified or deleted. For example,'CXD' only allows you to create or delete,'CXX' only allows you to create and'XXX' only allows you to read.
+
+    In the validate decorator, a type is specified for which the property is validated. If the validation fails, an appropriate message is returned in the API.
+
+* create a unique Index on username
+
+```Typescript
+import { collection, validation, BaseTypes } from 'molly';
+
+@collection({
+    allow: 'CUD',
+    index: async (coll) => {
+        coll.setIndex({
+            username: 1
+        }, {
+            background: true,
+            unique: true
+        });
+    }
+})
+class User {
+    @validation({type: BaseTypes.mongoDbObjectId})
+    _id?: string;
+    @validation({type: BaseTypes.stringDefaultLength})
+    username: string;
+    @validation({type: BaseTypes.hexadecimal})
+    password: string;
+    @validation({type: BaseTypes.email})
+    email: string;
+}
+```
+
+* use Group as nested Object
+
+```Typescript
+import { collection, validation, BaseTypes, JoinType, MongoLookup } from 'molly';
+
+@collection({
+    allow: 'CUD'
+})
+class Group {
+    @validation({type: BaseTypes.mongoDbObjectId})
+    _id?: string;
+    @validation({type: BaseTypes.stringDefaultLength})
+    name: string;
+}
+
+@collection({
+    allow: 'CUD',
+    index: async (coll) => {
+        coll.setIndex({
+            username: 1
+        }, {
+            background: true,
+            unique: true
+        });
+    },
+    lookup: [
+        new MongoLookup('Group', 'group', '_id', JoinType.ONEONE)
+    ]
+})
+class User {
+    @validation({type: BaseTypes.mongoDbObjectId})
+    _id?: string;
+    @validation({type: BaseTypes.stringDefaultLength})
+    username: string;
+    @validation({type: BaseTypes.hexadecimal})
+    password: string;
+    @validation({type: BaseTypes.email})
+    email: string;
+    group: Group;
+}
+```
+
+* example with multiple nested Groups
+
+```Typescript
+import { collection, validation, BaseTypes, JoinType, MongoLookup } from 'molly';
+
+@collection({
+    allow: 'CUD'
+})
+class Group {
+    @validation({type: BaseTypes.mongoDbObjectId})
+    _id?: string;
+    @validation({type: BaseTypes.stringDefaultLength})
+    name: string;
+}
+
+@collection({
+    allow: 'CUD',
+    index: async (coll) => {
+        coll.setIndex({
+            username: 1
+        }, {
+            background: true,
+            unique: true
+        });
+    },
+    lookup: [
+        new MongoLookup('Group', 'groups', '_id', JoinType.ONEMANY)
+    ]
+})
+class User {
+    @validation({type: BaseTypes.mongoDbObjectId})
+    _id?: string;
+    @validation({type: BaseTypes.stringDefaultLength})
+    username: string;
+    @validation({type: BaseTypes.hexadecimal})
+    password: string;
+    @validation({type: BaseTypes.email})
+    email: string;
+    groups: Group[];
+}
+```
 ## Release Notes
 
 1.4.6
