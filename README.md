@@ -181,6 +181,10 @@ class User {
 }
 ```
 ## Release Notes
+1.5.3
+
+* update Dependencies
+* fix Deprecated usage of MongoDb Driver URL Parser
 
 1.5.1
 
