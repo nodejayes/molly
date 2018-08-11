@@ -5,14 +5,14 @@ import { CollectionStore } from '../../models';
 
 /**
  * a MongoDb Instance
- * 
+ *
  * @export
  * @class MongoDb
  */
 export class MongoDb {
     /**
-     * 
-     * 
+     *
+     *
      * @private
      * @static
      * @type {boolean}
@@ -22,7 +22,7 @@ export class MongoDb {
 
     /**
      * Database Name
-     * 
+     *
      * @private
      * @static
      * @type {string}
@@ -32,7 +32,7 @@ export class MongoDb {
 
     /**
      * Database Instance
-     * 
+     *
      * @private
      * @static
      * @type {MongoClient}
@@ -42,16 +42,16 @@ export class MongoDb {
 
     /**
      * Database Collections
-     * 
+     *
      * @private
      * @static
      * @memberof MongoDb
      */
     private static _existCollections = new Array<Collection<any>>();
-    
+
     /**
      * Collection List as CollectionStore Element
-     * 
+     *
      * @private
      * @static
      * @type {CollectionStore[]}
@@ -61,7 +61,7 @@ export class MongoDb {
 
     /**
      * Refer an CollectionList
-     * 
+     *
      * @readonly
      * @static
      * @memberof MongoDb
@@ -72,7 +72,7 @@ export class MongoDb {
 
     /**
      * get Delete on Collection was archieved
-     * 
+     *
      * @static
      * @memberof MongoDb
      */
@@ -82,7 +82,7 @@ export class MongoDb {
 
     /**
      * set Delete on Collection was archieved
-     * 
+     *
      * @static
      * @memberof MongoDb
      */
@@ -92,12 +92,12 @@ export class MongoDb {
 
     /**
      * create Collection that not exists
-     * 
+     *
      * @private
      * @static
-     * @param {CollectionInformation} info 
-     * @param {boolean} clear 
-     * @returns {Promise<void>} 
+     * @param {CollectionInformation} info
+     * @param {boolean} clear
+     * @returns {Promise<void>}
      * @memberof MongoDb
      */
     private static async _createCollection(info: CollectionInformation, clear: boolean): Promise<void> {
@@ -121,10 +121,10 @@ export class MongoDb {
 
     /**
      * create Collection that not exists
-     * 
+     *
      * @static
-     * @param {boolean} clear 
-     * @returns {Promise<void>} 
+     * @param {boolean} clear
+     * @returns {Promise<void>}
      * @memberof MongoDb
      */
     static async createCollections(clear: boolean): Promise<void> {
@@ -138,11 +138,11 @@ export class MongoDb {
 
     /**
      * connect to Database
-     * 
+     *
      * @static
-     * @param {any} url 
-     * @param {any} database 
-     * @returns {Promise<void>} 
+     * @param {any} url
+     * @param {any} database
+     * @returns {Promise<void>}
      * @memberof MongoDb
      */
     static async connect(url, database): Promise<void> {
@@ -150,13 +150,14 @@ export class MongoDb {
         this._client = await MongoClient.connect(`${url}${database}`, {
             appname: 'Molly',
             autoReconnect: true,
-            poolSize: 25
+            poolSize: 25,
+            useNewUrlParser: true,
         });
     }
 
     /**
      * close the Connection to Database
-     * 
+     *
      * @static
      * @memberof MongoDb
      */
