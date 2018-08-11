@@ -16,7 +16,7 @@ describe('schema Spec', () => {
 
     before(async () => {
         server.clearConfiguration();
-        
+
         @collection({
             allow: 'CUD',
         })
@@ -120,7 +120,6 @@ describe('schema Spec', () => {
             patterns: [],
             properties: {
                 id: {
-                    enum: [null],
                     type: [
                         'array',
                         'boolean',
@@ -166,7 +165,6 @@ describe('schema Spec', () => {
             patterns: [],
             properties: {
                 id: {
-                    enum: [null],
                     type: [
                         'array',
                         'boolean',
@@ -210,7 +208,7 @@ describe('schema Spec', () => {
         assert.isNull(msg.errors);
         assert.isNull(msg.data);
     });
-    
+
     it('catch delete readonly', async () => {
         let msg = await req({
             method: 'POST',
