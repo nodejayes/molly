@@ -1,4 +1,4 @@
-
+.idea/**
 .nyc_output/**
 .scannerwork/**
 .sonarlint/**
@@ -10,4 +10,3 @@ doc/**
 scripts/**
 yarn.lock
 package-lock.json
-    
