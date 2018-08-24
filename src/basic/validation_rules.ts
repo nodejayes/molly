@@ -1,20 +1,20 @@
 import { ObjectSchema } from 'joi';
 import { JoinType, BaseTypes } from '..';
 import { CollectionInformation, ValidationInformation } from '../models';
-import { clone } from 'lodash';
+import { clone, includes } from 'lodash';
 import { Logic } from '.';
 import { IValidationRules, IValidationProperties, ISchemaInfo } from '../interfaces';
 
 /**
  * Combines Validation and Collection Informations to Validation Rules
- * 
+ *
  * @export
  * @class ValidationRules
  */
 export class ValidationRules {
     /**
      * a temporary Pool for Validations
-     * 
+     *
      * @static
      * @type {IValidationProperties[]}
      * @memberof ValidationRules
@@ -23,7 +23,7 @@ export class ValidationRules {
 
     /**
      * Pool of all Validation Rules
-     * 
+     *
      * @static
      * @type {IValidationRules[]}
      * @memberof ValidationRules
@@ -32,11 +32,11 @@ export class ValidationRules {
 
     /**
      * get a Validation of a Model
-     * 
+     *
      * @private
      * @static
-     * @param {string} model 
-     * @returns {IValidationProperties[]} 
+     * @param {string} model
+     * @returns {IValidationProperties[]}
      * @memberof ValidationRules
      */
     private static _getValidations(model: string): IValidationProperties[] {
@@ -46,15 +46,16 @@ export class ValidationRules {
 
     /**
      * build Read Validation for a Model
-     * 
+     *
      * @private
      * @static
-     * @param {string} model 
-     * @returns {ObjectSchema} 
+     * @param {string} model
+     * @param {string[]} existing
+     * @returns {ObjectSchema}
      * @memberof ValidationRules
      */
-    private static _buildRead(model: string): ObjectSchema {
-        let schema = null;
+    private static _buildRead(model: string, existing: string[]): ObjectSchema {
+        let schema: ObjectSchema;
         let tmp = {};
         let props = this._getValidations(model);
         for (let i = 0; i < props.length; i++) {
@@ -62,9 +63,14 @@ export class ValidationRules {
             if (p.type) {
                 tmp[p.name] = p.type;
             } else if (p.existType) {
-                tmp[p.name] = p.join === JoinType.ONEONE ? 
-                    this._buildRead(p.existType) : 
-                    BaseTypes.typeArray(this._buildRead(p.existType));
+                existing.push(model);
+                if (includes(existing, p.existType)) {
+                    tmp[p.name] = null;
+                } else {
+                    tmp[p.name] = p.join === JoinType.ONEONE ?
+                        this._buildRead(p.existType, existing) :
+                        BaseTypes.typeArray(this._buildRead(p.existType, existing));
+                }
             }
         }
         schema = BaseTypes.type(tmp);
@@ -73,15 +79,15 @@ export class ValidationRules {
 
     /**
      * build create Validation for a Model
-     * 
+     *
      * @private
      * @static
-     * @param {string} model 
-     * @returns {ObjectSchema} 
+     * @param {string} model
+     * @returns {ObjectSchema}
      * @memberof ValidationRules
      */
     private static _buildCreate(model: string): ObjectSchema {
-        let schema = null;
+        let schema: ObjectSchema;
         let tmp = {};
         let props = this._getValidations(model);
         for (let i = 0; i < props.length; i++) {
@@ -108,15 +114,15 @@ export class ValidationRules {
 
     /**
      * build update Validation for a Model
-     * 
+     *
      * @private
      * @static
-     * @param {string} model 
-     * @returns {ObjectSchema} 
+     * @param {string} model
+     * @returns {ObjectSchema}
      * @memberof ValidationRules
      */
     private static _buildUpdate(model: string): ObjectSchema {
-        let schema: ObjectSchema = null;
+        let schema: ObjectSchema;
         let tmp = {
             id: null,
             updateSet: {}
@@ -145,15 +151,15 @@ export class ValidationRules {
 
     /**
      * build delete Validation for a Model
-     * 
+     *
      * @private
      * @static
-     * @param {string} model 
-     * @returns {ObjectSchema} 
+     * @param {string} model
+     * @returns {ObjectSchema}
      * @memberof ValidationRules
      */
     private static _buildDelete(model: string): ObjectSchema {
-        let schema: ObjectSchema = null;
+        let schema: ObjectSchema;
         let tmp = {
             id: null
         };
@@ -170,16 +176,16 @@ export class ValidationRules {
 
     /**
      * initiate Validation builds for CRUD Operations
-     * 
+     *
      * @private
      * @static
-     * @param {string} model 
-     * @param {string} allow 
-     * @returns {ISchemaInfo} 
+     * @param {string} model
+     * @param {string} allow
+     * @returns {ISchemaInfo}
      * @memberof ValidationRules
      */
     private static _buildValidation(model: string, allow: string): ISchemaInfo {
-        let schemaRead = this._buildRead(model);
+        let schemaRead = this._buildRead(model, []);
         let schemaCreate = null;
         let schemaUpdate = null;
         let schemaDelete = null;
@@ -202,11 +208,11 @@ export class ValidationRules {
 
     /**
      * add Validations from joined Collections
-     * 
+     *
      * @private
      * @static
-     * @param {CollectionInformation} ci 
-     * @param {IValidationProperties[]} tmp 
+     * @param {CollectionInformation} ci
+     * @param {IValidationProperties[]} tmp
      * @memberof ValidationRules
      */
     private static _addCollectionInfoValidations(ci: CollectionInformation, tmp: IValidationProperties[]): void {
@@ -226,13 +232,13 @@ export class ValidationRules {
     }
 
     /**
-     * 
-     * 
+     *
+     *
      * @private
      * @static
-     * @param {string} model 
-     * @param {CollectionInformation} ci 
-     * @param {CollectionInformation[]} allCis 
+     * @param {string} model
+     * @param {CollectionInformation} ci
+     * @param {CollectionInformation[]} allCis
      * @memberof ValidationRules
      */
     private static _readValidationRules(model: string, ci: CollectionInformation, allCis: CollectionInformation[]): void {
@@ -240,7 +246,7 @@ export class ValidationRules {
             return e.classname === ci.Name;
         });
         if (tmp.length > 0) {
-            this._addCollectionInfoValidations(ci, tmp);            
+            this._addCollectionInfoValidations(ci, tmp);
             for (let j = 0; j < tmp[0].prototypes.length; j++) {
                 let proto = tmp[0].prototypes[j];
                 let subCi = allCis.filter((e) => {
@@ -265,8 +271,8 @@ export class ValidationRules {
     }
 
     /**
-     * 
-     * 
+     *
+     *
      * @private
      * @static
      * @memberof ValidationRules
@@ -280,7 +286,7 @@ export class ValidationRules {
 
     /**
      * generate Validations
-     * 
+     *
      * @static
      * @memberof ValidationRules
      */
