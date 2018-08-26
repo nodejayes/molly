@@ -1,9 +1,10 @@
 import {
     ExpressServer
-} from '../../src';
-import {assert} from 'chai';
+}                    from '../../src';
+import {assert}      from 'chai';
 import 'mocha';
-import {join} from 'path';
+import {join}        from 'path';
+import {MONGODB_URL} from '../config';
 
 let server = new ExpressServer();
 
@@ -12,7 +13,7 @@ describe('Https Spec', () => {
         let msg = await server.start({
             binding: 'localhost',
             port: 8086,
-            mongoUrl: 'mongodb://localhost:27017',
+            mongoUrl: MONGODB_URL,
             mongoDatabase: 'test_molly',
             certFile: join(__dirname, '..', 'assets', 'server-crt.pem'),
             keyFile: join(__dirname, '..', 'assets', 'server-key.pem'),
@@ -29,7 +30,7 @@ describe('Https Spec', () => {
         let msg = await server.start({
             binding: 'localhost',
             port: 8086,
-            mongoUrl: 'mongodb://localhost:27017',
+            mongoUrl: MONGODB_URL,
             mongoDatabase: 'test_molly',
             certFile: join(__dirname, '..', 'assets', 'server-crt.pem'),
             keyFile: join(__dirname, '..', 'assets', 'server-key.pem'),
@@ -45,7 +46,7 @@ describe('Https Spec', () => {
         let msg = await server.start({
             binding: 'localhost',
             port: 8086,
-            mongoUrl: 'mongodb://localhost:27017',
+            mongoUrl: MONGODB_URL,
             mongoDatabase: 'test_molly',
             certFile: '',
             keyFile: ''

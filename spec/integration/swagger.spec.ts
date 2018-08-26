@@ -5,11 +5,12 @@ import {
     MongoLookup,
     JoinType,
     IRouteInvoker
-} from '../../src';
+}                                                from '../../src';
 import {readFileSync, unlinkSync, writeFileSync} from 'fs';
-import {join} from 'path';
-import {assert} from 'chai';
+import {join}                                    from 'path';
+import {assert}                                  from 'chai';
 import 'mocha';
+import {MONGODB_URL}                             from '../config';
 
 const EMPTY_PKG_FOLDER = join(__dirname, '..', 'assets');
 const EMPTY_PKG = join(EMPTY_PKG_FOLDER, 'package.json');
@@ -17,7 +18,7 @@ const EMPTY_PKG = join(EMPTY_PKG_FOLDER, 'package.json');
 describe('Swagger Generator Spec', () => {
     let server = null;
     let req = require('request-promise');
-    
+
     before(() => {
         server = new ExpressServer();
         server.clearConfiguration();
@@ -41,7 +42,7 @@ describe('Swagger Generator Spec', () => {
             @validation({type: BaseTypes.bool})
             active: boolean;
         }
-    
+
         @collection({
             allow: 'CUD',
             index: () => {},
@@ -62,7 +63,7 @@ describe('Swagger Generator Spec', () => {
             name: string;
             rights: Right;
         }
-    
+
         @collection({
             allow: 'CUD',
             index: () => {},
@@ -89,7 +90,7 @@ describe('Swagger Generator Spec', () => {
             email: string;
             group: Group;
         }
-    
+
         class Ops {
             @operation({
                 Description: 'Get the Users from the User Collection and count them.',
@@ -111,7 +112,7 @@ describe('Swagger Generator Spec', () => {
             binding: 'localhost',
             port: 8086,
             documentationPort: 8087,
-            mongoUrl: 'mongodb://localhost:27017/',
+            mongoUrl: MONGODB_URL,
             mongoDatabase: 'test_molly'
         });
         let rs = await req('http://localhost:8087/');
@@ -124,7 +125,7 @@ describe('Swagger Generator Spec', () => {
             binding: 'localhost',
             port: 8086,
             documentationPort: 8087,
-            mongoUrl: 'mongodb://localhost:27017/',
+            mongoUrl: MONGODB_URL,
             mongoDatabase: 'test_molly',
             certFile: join(__dirname, '..', 'assets', 'server-crt.pem'),
             keyFile: join(__dirname, '..', 'assets', 'server-key.pem'),
@@ -141,7 +142,7 @@ describe('Swagger Generator Spec', () => {
             binding: 'localhost',
             port: 8086,
             documentationPort: 8087,
-            mongoUrl: 'mongodb://localhost:27017/',
+            mongoUrl: MONGODB_URL,
             mongoDatabase: 'test_molly',
             certFile: join(__dirname, '..', 'assets', 'server-crt.pem'),
             keyFile: join(__dirname, '..', 'assets', 'server-key.pem'),
@@ -164,7 +165,7 @@ describe('Swagger Generator Spec', () => {
             binding: 'localhost',
             port: 8086,
             documentationPort: 8087,
-            mongoUrl: 'mongodb://localhost:27017/',
+            mongoUrl: MONGODB_URL,
             mongoDatabase: 'test_molly',
             certFile: join(__dirname, '..', 'assets', 'server-crt.pem'),
             keyFile: join(__dirname, '..', 'assets', 'server-key.pem'),

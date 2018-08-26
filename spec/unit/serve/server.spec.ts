@@ -1,6 +1,7 @@
 import {ExpressServer} from '../../../src';
-import {assert} from 'chai';
+import {assert}        from 'chai';
 import 'mocha'
+import {MONGODB_URL}   from '../../config';
 
 const request = require('request-promise');
 
@@ -9,9 +10,9 @@ describe('Server Spec', () => {
 
     it('start server', async () => {
         let msg = await server.start({
-            binding: 'localhost', 
+            binding: 'localhost',
             port: 8086,
-            mongoUrl: 'mongodb://localhost:27017',
+            mongoUrl: MONGODB_URL,
             mongoDatabase: 'test_molly',
             clear: true
         });

@@ -1,22 +1,23 @@
 import {
-    ExpressServer, 
-    BaseTypes, 
-    IRouteInvoker, 
-    JoinType, 
+    ExpressServer,
+    BaseTypes,
+    IRouteInvoker,
+    JoinType,
     MongoLookup,
     IRequestModel,
     IWebsocketMessage,
     operation, collection, validation
-} from '../../src';
-import {assert} from 'chai';
+}                     from '../../src';
+import {assert}       from 'chai';
 import 'mocha';
 import * as Websocket from 'ws';
+import {MONGODB_URL}  from '../config';
 
 describe('Websocket Spec', () => {
     let server = new ExpressServer();
     let user = {};
     let socket = null;
-    
+
     before(() => {
         server.clearConfiguration();
     });
@@ -42,7 +43,7 @@ describe('Websocket Spec', () => {
             class User {
                 @validation({type: BaseTypes.mongoDbObjectId})
                 _id: string;
-                
+
                 @validation({type: BaseTypes.stringDefaultLength})
                 username: string;
 
@@ -119,7 +120,7 @@ describe('Websocket Spec', () => {
             let msg = await server.start({
                 binding: 'localhost',
                 port: 8087,
-                mongoUrl: 'mongodb://localhost:27017/',
+                mongoUrl: MONGODB_URL,
                 mongoDatabase: 'test_molly',
                 clear: true,
                 useWebsocket: true

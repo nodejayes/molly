@@ -2,9 +2,10 @@ import {
     ExpressServer,
     collection, validation,
     BaseTypes
-} from '../../src';
-import {assert} from 'chai';
+}                    from '../../src';
+import {assert}      from 'chai';
 import 'mocha';
+import {MONGODB_URL} from '../config';
 
 const req = require('request-promise');
 
@@ -71,7 +72,7 @@ describe('extended Classes Spec', () => {
             binding: 'localhost',
             port: 8086,
             clear: true,
-            mongoUrl: 'mongodb://localhost:27017',
+            mongoUrl: MONGODB_URL,
             mongoDatabase: 'test_molly'
         });
 
