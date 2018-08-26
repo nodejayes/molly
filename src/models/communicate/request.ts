@@ -5,7 +5,7 @@ import { IRequestModel } from '../../interfaces';
 
 /**
  * holds the Request Parameter
- * 
+ *
  * @export
  * @class RequestModel
  * @implements {IRequestModel}
@@ -13,7 +13,7 @@ import { IRequestModel } from '../../interfaces';
 export class RequestModel implements IRequestModel {
     /**
      * the Action of the Request
-     * 
+     *
      * @type {string}
      * @memberof RequestModel
      */
@@ -21,7 +21,7 @@ export class RequestModel implements IRequestModel {
 
     /**
      * the Model where the Action is executed
-     * 
+     *
      * @type {string}
      * @memberof RequestModel
      */
@@ -29,7 +29,7 @@ export class RequestModel implements IRequestModel {
 
     /**
      * the Parameters for the Action
-     * 
+     *
      * @type {*}
      * @memberof RequestModel
      */
@@ -37,7 +37,7 @@ export class RequestModel implements IRequestModel {
 
     /**
      * the Return Filter for the Read Operation of the Model
-     * 
+     *
      * @type {*}
      * @memberof RequestModel
      */
@@ -45,17 +45,17 @@ export class RequestModel implements IRequestModel {
 
     /**
      * parse a Express Request and create a IRequestModel Object
-     * @param {Request} req 
-     * @param {string[]} routeNames 
+     * @param {Request} req
+     * @param {string[]} routeNames
      * @memberof RequestModel
      */
     constructor(req: Request, routeNames: string[]) {
         let tmp = req.path.split('/').filter((e) => { return e.length > 0; });
-        if (tmp.length !== 2 || routeNames.indexOf(tmp[0]) === -1) {
+        if (tmp.length < 1 || routeNames.indexOf(tmp[0]) === -1) {
             throw new Error(`invalid route ${req.path}`);
         }
         this.Action = tmp[0];
-        this.Model = tmp[1];
+        this.Model = tmp.length > 1 ? tmp[1] : null;
         if (!hasIn(req.body, 'params')) {
             throw new Error(`invalid request body ${req.body}`);
         }
@@ -69,10 +69,10 @@ export class RequestModel implements IRequestModel {
 
     /**
      * replace the String MongoDb Object ids with ObjectId
-     * 
+     *
      * @static
-     * @param {*} source 
-     * @returns {*} 
+     * @param {*} source
+     * @returns {*}
      * @memberof RequestModel
      */
     static replaceStringIds(source: any): any {

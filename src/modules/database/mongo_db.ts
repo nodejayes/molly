@@ -40,6 +40,8 @@ export class MongoDb {
      */
     private static _client: MongoClient;
 
+    private static _session;
+
     /**
      * Database Collections
      *
@@ -134,6 +136,33 @@ export class MongoDb {
             let ci = Logic.Configuration.collectionInfos[i];
             await this._createCollection.bind(this)(ci, clear);
         }
+    }
+
+    /**
+     * start a transaction Session
+     */
+    static beginTransaction() {
+        this._session = this._client.startSession();
+        this._session.startTransaction();
+        return this._session;
+    }
+
+    /**
+     * commit a Transaction Session
+     */
+    static async commitTransaction() {
+        await this._session.commitTransaction();
+        this._session.endSession();
+        this._session = null;
+    }
+
+    /**
+     * abort a Transaction Session
+     */
+    static async rollbackTransaction() {
+        await this._session.abortTransaction();
+        this._session.endSession();
+        this._session = null;
     }
 
     /**
