@@ -4,6 +4,7 @@ import { CollectionInformation, ValidationInformation } from '../models';
 import { clone, includes } from 'lodash';
 import { Logic } from '.';
 import { IValidationRules, IValidationProperties, ISchemaInfo } from '../interfaces';
+import * as Joi from 'joi';
 
 /**
  * Combines Validation and Collection Informations to Validation Rules
@@ -64,12 +65,12 @@ export class ValidationRules {
                 tmp[p.name] = p.type;
             } else if (p.existType) {
                 existing.push(model);
-                if (includes(existing, p.existType)) {
-                    tmp[p.name] = null;
-                } else {
+                if (!includes(existing, p.existType)) {
                     tmp[p.name] = p.join === JoinType.ONEONE ?
                         this._buildRead(p.existType, existing) :
                         BaseTypes.typeArray(this._buildRead(p.existType, existing));
+                } else {
+                    tmp[p.name] = Joi.any().allow(null);
                 }
             }
         }
