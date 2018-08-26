@@ -17,14 +17,14 @@ import { ValidationRules, Logic } from '../../basic';
 
 /**
  * implement a small Express Server
- * 
+ *
  * @export
  * @class ExpressServer
  */
 export class ExpressServer {
     /**
      * a Array of all Route Names
-     * 
+     *
      * @private
      * @type {Array<string>}
      * @memberof Server
@@ -33,7 +33,7 @@ export class ExpressServer {
 
     /**
      * running Node Server Instance
-     * 
+     *
      * @private
      * @type {Server}
      * @memberof ExpressServer
@@ -42,7 +42,7 @@ export class ExpressServer {
 
     /**
      * Node Service Instance for Documentation
-     * 
+     *
      * @private
      * @type {(HttpServer | HttpsServer)}
      * @memberof ExpressServer
@@ -51,7 +51,7 @@ export class ExpressServer {
 
     /**
      * Websocket Server
-     * 
+     *
      * @private
      * @type {WsServer}
      * @memberof ExpressServer
@@ -60,7 +60,7 @@ export class ExpressServer {
 
     /**
      * Route Invoker
-     * 
+     *
      * @private
      * @type {RouteInvoker}
      * @memberof ExpressServer
@@ -68,8 +68,8 @@ export class ExpressServer {
     private _invoker: RouteInvoker;
 
     /**
-     * 
-     * 
+     *
+     *
      * @private
      * @type {Function}
      * @memberof ExpressServer
@@ -78,14 +78,14 @@ export class ExpressServer {
 
     /**
      * the Express Server Instance
-     * 
+     *
      * @type {express.Application}
      * @memberof Server
      */
     App: express.Application;
 
     /**
-     * Creates an instance of Server. 
+     * Creates an instance of Server.
      * @memberof Server
      */
     constructor() {
@@ -99,11 +99,11 @@ export class ExpressServer {
 
     /**
      * Custom Compression Filter
-     * 
+     *
      * @private
-     * @param {any} req 
-     * @param {any} res 
-     * @returns 
+     * @param {any} req
+     * @param {any} res
+     * @returns
      * @memberof ExpressServer
      */
     private _shouldCompress(req, res): boolean {
@@ -115,7 +115,7 @@ export class ExpressServer {
 
     /**
      * map all Routes to the Express App
-     * 
+     *
      * @private
      * @memberof Server
      */
@@ -141,7 +141,7 @@ export class ExpressServer {
 
     /**
      * create the Events for Websockets
-     * 
+     *
      * @private
      * @memberof ExpressServer
      */
@@ -181,6 +181,8 @@ export class ExpressServer {
                         case 'operation':
                             tmp = await this._invoker.operation(data.Model, data.Parameter);
                             break;
+                        case 'transaction':
+                            tmp = await this._invoker.transaction(data);
                     }
                     result = new WebsocketMessage(`${data.Action}_${data.Model}`, tmp);
                 } catch (err) {
@@ -196,19 +198,19 @@ export class ExpressServer {
 
     /**
      * check the incoming Request and Request the Route
-     * 
+     *
      * @private
-     * @param {express.Request} req 
-     * @param {express.Response} res 
-     * @param {express.NextFunction} next 
-     * @returns {void} 
+     * @param {express.Request} req
+     * @param {express.Response} res
+     * @param {express.NextFunction} next
+     * @returns {void}
      * @memberof Server
      */
     private async _filterRequest(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
         if (req.method !== 'POST') {
             res.status(405);
             res.send(new ResponseModel(
-                `not supported method ${req.method}`, 
+                `not supported method ${req.method}`,
                 true).toString());
             return;
         }
@@ -230,9 +232,9 @@ export class ExpressServer {
 
     /**
      * start the Schema Build in MongoDb
-     * 
+     *
      * @private
-     * @param {boolean} clear 
+     * @param {boolean} clear
      * @memberof ExpressServer
      */
     private async _buildSchema(clear: boolean): Promise<void> {
@@ -241,11 +243,11 @@ export class ExpressServer {
 
     /**
      * generate the Spectacle Documentation
-     * 
+     *
      * @private
-     * @param {ServerOptions} options 
-     * @param {IServerConfiguration} cfg 
-     * @returns {Promise<void>} 
+     * @param {ServerOptions} options
+     * @param {IServerConfiguration} cfg
+     * @returns {Promise<void>}
      * @memberof ExpressServer
      */
     private async _buildDocumentation(options: ServerOptions, cfg: IServerConfiguration): Promise<void> {
@@ -262,7 +264,7 @@ export class ExpressServer {
             writeFileSync(tmpFile, code, {
                 encoding: 'utf8'
             });
-            
+
             let docApp = express();
             docApp.use(express.static(join(__dirname, '..', '..', '..', 'api-doc')));
             if (options !== null) {
@@ -275,12 +277,12 @@ export class ExpressServer {
 
     /**
      * read the Certificate Files and build a ServerOptions Object
-     * 
+     *
      * @private
-     * @param {string} certFile 
-     * @param {string} keyFile 
-     * @param {string} caFile 
-     * @returns {ServerOptions} 
+     * @param {string} certFile
+     * @param {string} keyFile
+     * @param {string} caFile
+     * @returns {ServerOptions}
      * @memberof ExpressServer
      */
     private _readCertificateInfo(certFile: string, keyFile: string, caFile: string): ServerOptions {
@@ -299,9 +301,9 @@ export class ExpressServer {
 
     /**
      * set defaults of the Configuration Parameter
-     * 
+     *
      * @private
-     * @param {IServerConfiguration} cfg 
+     * @param {IServerConfiguration} cfg
      * @memberof ExpressServer
      */
     private _fixParameter(cfg: IServerConfiguration): void {
@@ -313,10 +315,10 @@ export class ExpressServer {
 
     /**
      * start the Express Server
-     * 
+     *
      * @param {string} binding
      * @param {number} port
-     * @returns {Promise<string>} 
+     * @returns {Promise<string>}
      * @memberof Server
      */
     async start(cfg: IServerConfiguration): Promise<string> {
@@ -339,7 +341,7 @@ export class ExpressServer {
                     resolve(`server listen on http://${cfg.binding}:${cfg.port}/`);
                 });
             }
-            
+
             this._server.on('error', reject);
             if (cfg.useWebsocket) {
                 this._registerWebsocket();
@@ -349,7 +351,7 @@ export class ExpressServer {
 
     /**
      * clear the exist Configurations
-     * 
+     *
      * @memberof ExpressServer
      */
     clearConfiguration(): void {
@@ -360,7 +362,7 @@ export class ExpressServer {
 
     /**
      * stop a running Server
-     * 
+     *
      * @memberof ExpressServer
      */
     stop(): void {

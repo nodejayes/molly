@@ -1,10 +1,10 @@
-import { Routes } from '..';
-import { RequestModel } from '../../models';
-import { IRouteInvoker } from '../../interfaces';
+import { Routes }                     from '..';
+import { RequestModel }               from '../../models';
+import {IRequestModel, IRouteInvoker} from '../../interfaces';
 
 /**
  * invoke the Standard CRUD and Operation Routes
- * 
+ *
  * @export
  * @class RouteInvoker
  * @implements {IRouteInvoker}
@@ -12,10 +12,10 @@ import { IRouteInvoker } from '../../interfaces';
 export class RouteInvoker implements IRouteInvoker {
     /**
      * invoke Create
-     * 
-     * @param {string} model 
-     * @param {*} params 
-     * @returns {Promise<Object[]>} 
+     *
+     * @param {string} model
+     * @param {*} params
+     * @returns {Promise<Object[]>}
      * @memberof RouteInvoker
      */
     async create(model: string, params: any): Promise<Object[]> {
@@ -33,11 +33,11 @@ export class RouteInvoker implements IRouteInvoker {
 
     /**
      * invoke Read
-     * 
-     * @param {string} model 
-     * @param {*} params 
-     * @param {*} [props] 
-     * @returns {Promise<Object[]>} 
+     *
+     * @param {string} model
+     * @param {*} params
+     * @param {*} [props]
+     * @returns {Promise<Object[]>}
      * @memberof RouteInvoker
      */
     async read(model: string, params: any, props?: any): Promise<Object[]> {
@@ -55,10 +55,10 @@ export class RouteInvoker implements IRouteInvoker {
 
     /**
      * invoke Update
-     * 
-     * @param {string} model 
-     * @param {*} params 
-     * @returns {Promise<boolean>} 
+     *
+     * @param {string} model
+     * @param {*} params
+     * @returns {Promise<boolean>}
      * @memberof RouteInvoker
      */
     async update(model: string, params: any): Promise<boolean> {
@@ -76,10 +76,10 @@ export class RouteInvoker implements IRouteInvoker {
 
     /**
      * invoke Delete
-     * 
-     * @param {string} model 
-     * @param {*} params 
-     * @returns {Promise<boolean>} 
+     *
+     * @param {string} model
+     * @param {*} params
+     * @returns {Promise<boolean>}
      * @memberof RouteInvoker
      */
     async delete(model: string, params: any): Promise<boolean> {
@@ -94,13 +94,13 @@ export class RouteInvoker implements IRouteInvoker {
         }
         return res.data;
     }
-    
+
     /**
      * invoke Operation
-     * 
-     * @param {string} model 
-     * @param {*} params 
-     * @returns {Promise<any>} 
+     *
+     * @param {string} model
+     * @param {*} params
+     * @returns {Promise<any>}
      * @memberof RouteInvoker
      */
     async operation(model: string, params: any): Promise<any> {
@@ -110,6 +110,18 @@ export class RouteInvoker implements IRouteInvoker {
             Parameter: params,
             Properties: undefined
         });
+        if (res.errors) {
+            throw new Error(res.errors);
+        }
+        return res.data;
+    }
+
+    /**
+     * invoke the transaction Route
+     * @param data
+     */
+    async transaction(data: IRequestModel): Promise<boolean> {
+        let res = await Routes.transaction(data);
         if (res.errors) {
             throw new Error(res.errors);
         }
