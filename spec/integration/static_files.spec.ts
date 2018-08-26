@@ -1,9 +1,10 @@
 import {
     ExpressServer
-} from '../../src';
-import {assert} from 'chai';
+}                    from '../../src';
+import {assert}      from 'chai';
 import 'mocha';
-import {join} from 'path';
+import {join}        from 'path';
+import {MONGODB_URL} from '../config';
 
 const request = require('request-promise');
 
@@ -14,7 +15,7 @@ describe('Static Files Spec', () => {
         let msg = await server.start({
             binding: 'localhost',
             port: 8086,
-            mongoUrl: 'mongodb://localhost:27017',
+            mongoUrl: MONGODB_URL,
             mongoDatabase: 'test_molly',
             staticFiles: join(__dirname, '..', 'public')
         });
@@ -26,7 +27,7 @@ describe('Static Files Spec', () => {
             method: 'GET',
             uri: `http://localhost:8086/`
         });
-        assert.equal(index, '<h1>HelloWorld!</h1>');   
+        assert.equal(index, '<h1>HelloWorld!</h1>');
     });
 
     it('can get index.html with name', async () => {
@@ -34,7 +35,7 @@ describe('Static Files Spec', () => {
             method: 'GET',
             uri: `http://localhost:8086/index.html`
         });
-        assert.equal(index, '<h1>HelloWorld!</h1>');   
+        assert.equal(index, '<h1>HelloWorld!</h1>');
     });
 
     it('stop server', () => {
@@ -45,7 +46,7 @@ describe('Static Files Spec', () => {
         let msg = await server.start({
             binding: 'localhost',
             port: 8086,
-            mongoUrl: 'mongodb://localhost:27017',
+            mongoUrl: MONGODB_URL,
             mongoDatabase: 'test_molly',
             staticFiles: 'spec/public'
         });
@@ -57,7 +58,7 @@ describe('Static Files Spec', () => {
             method: 'GET',
             uri: `http://localhost:8086/`
         });
-        assert.equal(index, '<h1>HelloWorld!</h1>');   
+        assert.equal(index, '<h1>HelloWorld!</h1>');
     });
 
     it('can get index.html with name', async () => {
@@ -65,7 +66,7 @@ describe('Static Files Spec', () => {
             method: 'GET',
             uri: `http://localhost:8086/index.html`
         });
-        assert.equal(index, '<h1>HelloWorld!</h1>');   
+        assert.equal(index, '<h1>HelloWorld!</h1>');
     });
 
     it('stop server', () => {
@@ -76,7 +77,7 @@ describe('Static Files Spec', () => {
         let msg = await server.start({
             binding: 'localhost',
             port: 8086,
-            mongoUrl: 'mongodb://localhost:27017',
+            mongoUrl: MONGODB_URL,
             mongoDatabase: 'test_molly',
             staticFiles: join(__dirname, 'nothing')
         });

@@ -5,9 +5,10 @@ import {
     JoinType,
     MongoLookup,
     collection, operation, validation
-} from '../../src';
-import {assert} from 'chai';
+}                    from '../../src';
+import {assert}      from 'chai';
 import 'mocha';
+import {MONGODB_URL} from '../config';
 
 const request = require('request-promise');
 
@@ -26,7 +27,7 @@ describe('Molly Server Spec', () => {
             let msg = await server.start({
                 binding: 'localhost',
                 port: 8086,
-                mongoUrl: 'mongodb://localhost:27017/',
+                mongoUrl: MONGODB_URL,
                 mongoDatabase: 'test_molly',
                 clear: true
             });
@@ -50,7 +51,7 @@ describe('Molly Server Spec', () => {
             await server.start({
                 binding: 'localhost',
                 port: 8086,
-                mongoUrl: 'mongodb://localhost:27017/',
+                mongoUrl: MONGODB_URL,
                 mongoDatabase: 'test_molly',
                 clear: true
             });
@@ -68,7 +69,7 @@ describe('Molly Server Spec', () => {
                 });
                 assert.fail('no error thrown');
             } catch (err) {
-                assert.equal(err.message, '500 - {"data":null,"errors":"no validation found for model NoValidation"}');   
+                assert.equal(err.message, '500 - {"data":null,"errors":"no validation found for model NoValidation"}');
             }
         });
 
@@ -126,7 +127,7 @@ describe('Molly Server Spec', () => {
                 assert.equal(err.message, '500 - {"data":null,"errors":"no validation found for model NoValidation"}');
             }
         });
-        
+
         it('catch no validation schema', async () => {
             try {
                 await request({
@@ -240,7 +241,7 @@ describe('Molly Server Spec', () => {
             await server.start({
                 binding: 'localhost',
                 port: 8086,
-                mongoUrl: 'mongodb://localhost:27017/',
+                mongoUrl: MONGODB_URL,
                 mongoDatabase: 'test_molly',
                 clear: true,
                 authentication: (req) => {
@@ -279,7 +280,7 @@ describe('Molly Server Spec', () => {
             await server.start({
                 binding: 'localhost',
                 port: 8086,
-                mongoUrl: 'mongodb://localhost:27017/',
+                mongoUrl: MONGODB_URL,
                 mongoDatabase: 'test_molly',
                 clear: true,
                 authentication: (req) => {

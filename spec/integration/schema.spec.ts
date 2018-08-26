@@ -5,9 +5,10 @@ import {
     JoinType,
     MongoLookup,
     collection, operation, validation
-} from '../../src';
-import {assert} from 'chai';
+}                    from '../../src';
+import {assert}      from 'chai';
 import 'mocha';
+import {MONGODB_URL} from '../config';
 
 const req = require('request-promise');
 
@@ -38,7 +39,7 @@ describe('schema Spec', () => {
         await server.start({
             binding: 'localhost',
             port: 8086,
-            mongoUrl: 'mongodb://localhost:27017/',
+            mongoUrl: MONGODB_URL,
             mongoDatabase: 'test_molly',
             clear: true
         });
