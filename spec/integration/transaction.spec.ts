@@ -1,12 +1,16 @@
 import {assert}                 from 'chai';
 import 'mocha';
-import {ExpressServer}          from '../../src/modules';
-import {collection, validation} from '../../src/decorators';
-import {BaseTypes}              from '../../src/basic';
-import {IRequestModel}          from '../../src/interfaces';
+import {IRequestModel, BaseTypes, ExpressServer, collection, validation}          from '../../src';
 import {MONGODB_URL}            from '../config';
 
 const request = require('request-promise');
+
+/**
+ * Attention when we do Transactions in parallel maybe the Transaction Lock wait time is not enough
+ * when this wait time is exceed than the Transaction was aborted and this Test can fail.
+ *
+ * a Time of 200ms is enough for this Test
+ */
 
 describe('transaction tests', () => {
   let server = new ExpressServer();
@@ -274,4 +278,98 @@ describe('transaction tests', () => {
     assert.isNull(ru.errors);
   });
 
+  it('do parallel transactions', async () => {
+    @collection({allow: 'CUD'})
+    class Book {
+      @validation({type: BaseTypes.mongoDbObjectId})
+      _id: string;
+      @validation({type: BaseTypes.stringDefaultLength})
+      isbn: string;
+      @validation({type: BaseTypes.stringDefaultLength})
+      title: string;
+    }
+
+    new Book();
+
+    await server.start({
+      binding: 'localhost',
+      port: 8086,
+      mongoUrl: MONGODB_URL,
+      mongoDatabase: 'test_molly',
+      clear: true
+    });
+
+    let req = request({
+      method: 'POST',
+      uri: 'http://localhost:8086/transaction',
+      body: {
+        params: [
+          <IRequestModel>{
+            Action: 'create',
+            Model: 'Book',
+            Parameter: <Book>{
+              isbn: '1235647890',
+              title: 'Ein Buchtitel'
+            },
+            Properties: null
+          },
+          <IRequestModel>{
+            Action: 'create',
+            Model: 'Book',
+            Parameter: <Book>{
+              isbn: '1235647890',
+              title: 'Ein Buchtitel'
+            },
+            Properties: null
+          },
+          <IRequestModel>{
+            Action: 'create',
+            Model: 'Book',
+            Parameter: <Book>{
+              isbn: '1235647890',
+              title: 'Ein Buchtitel'
+            },
+            Properties: null
+          },
+          <IRequestModel>{
+            Action: 'create',
+            Model: 'Book',
+            Parameter: <Book>{
+              isbn: '1235647890',
+              title: 'Ein Buchtitel'
+            },
+            Properties: null
+          },
+          <IRequestModel>{
+            Action: 'create',
+            Model: 'Book',
+            Parameter: <Book>{
+              isbn: '1235647890',
+              title: 'Ein Buchtitel'
+            },
+            Properties: null
+          },
+          <IRequestModel>{
+            Action: 'create',
+            Model: 'Book',
+            Parameter: <Book>{
+              isbn: '1235647890',
+              title: 'Ein Buchtitel'
+            },
+            Properties: null
+          }
+        ]
+      },
+      json: true,
+    });
+    let ru = await Promise.all([
+      req, req, req, req, req, req, req, req, req, req,
+      req, req, req, req, req, req, req, req, req, req
+    ]);
+    for (let i = 0; i < ru.length; i++) {
+      assert.isNull(ru[i].errors);
+      assert.isNotNull(ru[i].data);
+      assert.equal(ru[i].data, true);
+    }
+  });
 });
