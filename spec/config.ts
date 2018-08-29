@@ -1,3 +1,1 @@
-import {IServerConfiguration} from '../src/interfaces';
-
-export const MONGODB_URL = 'mongodb://192.168.0.110:27018/';
+export const MONGODB_URL = 'mongodb://192.168.0.103:27017/';
