@@ -10,7 +10,7 @@ import {readFileSync, unlinkSync, writeFileSync} from 'fs';
 import {join}                                    from 'path';
 import {assert}                                  from 'chai';
 import 'mocha';
-import {MONGODB_URL}                             from '../config';
+import {MONGODB_DB, MONGODB_URL}                 from '../config';
 
 const EMPTY_PKG_FOLDER = join(__dirname, '..', 'assets');
 const EMPTY_PKG = join(EMPTY_PKG_FOLDER, 'package.json');
@@ -103,8 +103,8 @@ describe('Swagger Generator Spec', () => {
         }
     });
 
-    after(() => {
-        server.stop();
+    after(async () => {
+        await server.stop();
     });
 
     it('generate File', async () => {
@@ -113,11 +113,11 @@ describe('Swagger Generator Spec', () => {
             port: 8086,
             documentationPort: 8087,
             mongoUrl: MONGODB_URL,
-            mongoDatabase: 'test_molly'
+            mongoDatabase: MONGODB_DB
         });
         let rs = await req('http://localhost:8087/');
         assert.equal(rs.indexOf('<title>Swagger UI</title>') > -1, true);
-        server.stop();
+        await server.stop();
     });
 
     it('use https', async () => {
@@ -126,13 +126,13 @@ describe('Swagger Generator Spec', () => {
             port: 8086,
             documentationPort: 8087,
             mongoUrl: MONGODB_URL,
-            mongoDatabase: 'test_molly',
+            mongoDatabase: MONGODB_DB,
             certFile: join(__dirname, '..', 'assets', 'server-crt.pem'),
             keyFile: join(__dirname, '..', 'assets', 'server-key.pem'),
             caFile: join(__dirname, '..', 'assets', 'ca-crt.pem'),
         });
         assert.equal(msg, 'server listen on https://localhost:8086/');
-        server.stop();
+        await server.stop();
     });
 
     it('load empty package', async () => {
@@ -143,14 +143,14 @@ describe('Swagger Generator Spec', () => {
             port: 8086,
             documentationPort: 8087,
             mongoUrl: MONGODB_URL,
-            mongoDatabase: 'test_molly',
+            mongoDatabase: MONGODB_DB,
             certFile: join(__dirname, '..', 'assets', 'server-crt.pem'),
             keyFile: join(__dirname, '..', 'assets', 'server-key.pem'),
             caFile: join(__dirname, '..', 'assets', 'ca-crt.pem'),
             packageFolder: EMPTY_PKG_FOLDER
         });
         assert.equal(msg, 'server listen on https://localhost:8086/');
-        server.stop();
+        await server.stop();
     });
 
     it('load empty package author', async () => {
@@ -166,13 +166,13 @@ describe('Swagger Generator Spec', () => {
             port: 8086,
             documentationPort: 8087,
             mongoUrl: MONGODB_URL,
-            mongoDatabase: 'test_molly',
+            mongoDatabase: MONGODB_DB,
             certFile: join(__dirname, '..', 'assets', 'server-crt.pem'),
             keyFile: join(__dirname, '..', 'assets', 'server-key.pem'),
             caFile: join(__dirname, '..', 'assets', 'ca-crt.pem'),
             packageFolder: EMPTY_PKG_FOLDER
         });
         assert.equal(msg, 'server listen on https://localhost:8086/');
-        server.stop();
+        await server.stop();
     });
 });

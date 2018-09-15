@@ -6,7 +6,7 @@ import 'mocha'
 
 describe('MongoDb Spec', () => {
     it('dont fire close when not initiate', async () => {
-        MongoDb.close();
-        MongoDb.close();
+        await MongoDb.close();
+        await MongoDb.close();
     });
 });

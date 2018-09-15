@@ -1,7 +1,7 @@
 import {BaseTypes, collection, ExpressServer, JoinType, MongoLookup, validation} from '../../src';
 import 'mocha';
 import {assert}                                                                  from 'chai';
-import {MONGODB_URL}                                                             from '../config';
+import {MONGODB_DB, MONGODB_URL, REPLICA_SET}                                    from '../config';
 
 const request = require('request-promise');
 
@@ -12,8 +12,8 @@ describe('recursive lookups', () => {
     server.clearConfiguration();
   });
 
-  afterEach(() => {
-    server.stop();
+  afterEach(async () => {
+    await server.stop();
   });
 
   it('can declare recursive lookup with one one', async () => {
@@ -53,7 +53,8 @@ describe('recursive lookups', () => {
       binding: 'localhost',
       port: 8086,
       mongoUrl: MONGODB_URL,
-      mongoDatabase: 'test_molly',
+      mongoReplicaSet: REPLICA_SET,
+      mongoDatabase: MONGODB_DB,
       clear: true
     });
 
@@ -171,7 +172,8 @@ describe('recursive lookups', () => {
       binding: 'localhost',
       port: 8086,
       mongoUrl: MONGODB_URL,
-      mongoDatabase: 'test_molly',
+      mongoDatabase: MONGODB_DB,
+      mongoReplicaSet: REPLICA_SET,
       clear: true
     });
 

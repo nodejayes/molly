@@ -5,10 +5,10 @@ import {
     JoinType,
     MongoLookup,
     collection, operation, validation
-}                    from '../../src';
-import {assert}      from 'chai';
+}                                             from '../../src';
+import {assert}                               from 'chai';
 import 'mocha';
-import {MONGODB_URL} from '../config';
+import {MONGODB_DB, MONGODB_URL, REPLICA_SET} from '../config';
 
 const req = require('request-promise');
 
@@ -40,13 +40,14 @@ describe('schema Spec', () => {
             binding: 'localhost',
             port: 8086,
             mongoUrl: MONGODB_URL,
-            mongoDatabase: 'test_molly',
+            mongoDatabase: MONGODB_DB,
+            mongoReplicaSet: REPLICA_SET,
             clear: true
         });
     });
 
-    after(() => {
-        server.stop();
+    after(async () => {
+        await server.stop();
     });
 
     it('get create Schema', async () => {

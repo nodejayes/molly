@@ -1,6 +1,6 @@
 /**
  * Server Configuration Data
- * 
+ *
  * @export
  * @interface IServerConfiguration
  */
@@ -9,6 +9,7 @@ export interface IServerConfiguration {
     port: number;
     mongoUrl: string;
     mongoDatabase: string;
+    mongoReplicaSet: string;
     clear?: boolean;
     useWebsocket?: boolean;
     certFile?: string;

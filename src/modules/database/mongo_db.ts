@@ -49,7 +49,7 @@ export class MongoDb {
      * @static
      * @memberof MongoDb
      */
-    private static _existCollections = new Array<Collection<any>>();
+    private static _existCollections = [];
 
     /**
      * Collection List as CollectionStore Element
@@ -130,7 +130,7 @@ export class MongoDb {
      * @memberof MongoDb
      */
     static async createCollections(clear: boolean): Promise<void> {
-        this._collectionList = new Array<CollectionStore>();
+        this._collectionList = [];
         this._existCollections = await this._client.db(this._db).collections();
         for (let i = 0; i < Logic.Configuration.collectionInfos.length; i++) {
             let ci = Logic.Configuration.collectionInfos[i];
@@ -170,7 +170,6 @@ export class MongoDb {
      *
      * @static
      * @param {any} url
-     * @param {any} database
      * @returns {Promise<void>}
      * @memberof MongoDb
      */
@@ -190,9 +189,9 @@ export class MongoDb {
      * @static
      * @memberof MongoDb
      */
-    static close(): void {
+    static async close(): Promise<void> {
         if (this._client !== null) {
-            this._client.close();
+            await this._client.close();
             this._client = null;
         }
     }

@@ -1,7 +1,7 @@
-import {ExpressServer} from '../../../src';
-import {assert}        from 'chai';
+import {ExpressServer}                        from '../../../src';
+import {assert}                               from 'chai';
 import 'mocha'
-import {MONGODB_URL}   from '../../config';
+import {MONGODB_DB, MONGODB_URL, REPLICA_SET} from '../../config';
 
 const request = require('request-promise');
 
@@ -13,7 +13,8 @@ describe('Server Spec', () => {
             binding: 'localhost',
             port: 8086,
             mongoUrl: MONGODB_URL,
-            mongoDatabase: 'test_molly',
+            mongoDatabase: MONGODB_DB,
+            mongoReplicaSet: REPLICA_SET,
             clear: true
         });
         assert.equal(msg, 'server listen on http://localhost:8086/', 'invalid return message');
@@ -95,7 +96,7 @@ describe('Server Spec', () => {
         }
     });
 
-    it('stop server', () => {
-        server.stop();
+    it('stop server', async () => {
+        await server.stop();
     });
 });
