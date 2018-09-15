@@ -14,7 +14,8 @@
         "typeRoots": [
             "node_modules/@types/**"
         ],
-        "moduleResolution": "node"
+        "moduleResolution": "node",
+        "types": ["node"]
     },
     "include": [
         "src/**/*"
