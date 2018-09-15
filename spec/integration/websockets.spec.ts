@@ -7,11 +7,11 @@ import {
     IRequestModel,
     IWebsocketMessage,
     operation, collection, validation
-}                     from '../../src';
-import {assert}       from 'chai';
+}                                             from '../../src';
+import {assert}                               from 'chai';
 import 'mocha';
-import * as Websocket from 'ws';
-import {MONGODB_URL}  from '../config';
+import * as Websocket                         from 'ws';
+import {MONGODB_DB, MONGODB_URL, REPLICA_SET} from '../config';
 
 describe('Websocket Spec', () => {
     let server = new ExpressServer();
@@ -121,7 +121,8 @@ describe('Websocket Spec', () => {
                 binding: 'localhost',
                 port: 8087,
                 mongoUrl: MONGODB_URL,
-                mongoDatabase: 'test_molly',
+                mongoDatabase: MONGODB_DB,
+                mongoReplicaSet: REPLICA_SET,
                 clear: true,
                 useWebsocket: true
             });
@@ -198,8 +199,7 @@ describe('Websocket Spec', () => {
                         } else {
                             assert.equal(d.data, 'Unexpected token i in JSON at position 0');
                         }
-                        server.stop();
-                        done();
+                        server.stop().then(done);
                         break;
                 }
             });

@@ -1,10 +1,10 @@
 import {
     ExpressServer
-}                    from '../../src';
-import {assert}      from 'chai';
+}                                             from '../../src';
+import {assert}                               from 'chai';
 import 'mocha';
-import {join}        from 'path';
-import {MONGODB_URL} from '../config';
+import {join}                                 from 'path';
+import {MONGODB_DB, MONGODB_URL, REPLICA_SET} from '../config';
 
 const request = require('request-promise');
 
@@ -16,7 +16,8 @@ describe('Static Files Spec', () => {
             binding: 'localhost',
             port: 8086,
             mongoUrl: MONGODB_URL,
-            mongoDatabase: 'test_molly',
+            mongoDatabase: MONGODB_DB,
+            mongoReplicaSet: REPLICA_SET,
             staticFiles: join(__dirname, '..', 'public')
         });
         assert.equal(msg, 'server listen on http://localhost:8086/');
@@ -38,8 +39,8 @@ describe('Static Files Spec', () => {
         assert.equal(index, '<h1>HelloWorld!</h1>');
     });
 
-    it('stop server', () => {
-        server.stop();
+    it('stop server', async () => {
+        await server.stop();
     });
 
     it('can start the server', async () => {
@@ -47,7 +48,8 @@ describe('Static Files Spec', () => {
             binding: 'localhost',
             port: 8086,
             mongoUrl: MONGODB_URL,
-            mongoDatabase: 'test_molly',
+            mongoDatabase: MONGODB_DB,
+            mongoReplicaSet: REPLICA_SET,
             staticFiles: 'spec/public'
         });
         assert.equal(msg, 'server listen on http://localhost:8086/');
@@ -69,8 +71,8 @@ describe('Static Files Spec', () => {
         assert.equal(index, '<h1>HelloWorld!</h1>');
     });
 
-    it('stop server', () => {
-        server.stop();
+    it('stop server', async () => {
+        await server.stop();
     });
 
     it('can start the server', async () => {
@@ -78,7 +80,8 @@ describe('Static Files Spec', () => {
             binding: 'localhost',
             port: 8086,
             mongoUrl: MONGODB_URL,
-            mongoDatabase: 'test_molly',
+            mongoReplicaSet: REPLICA_SET,
+            mongoDatabase: MONGODB_DB,
             staticFiles: join(__dirname, 'nothing')
         });
         assert.equal(msg, 'server listen on http://localhost:8086/');
@@ -96,7 +99,7 @@ describe('Static Files Spec', () => {
         }
     });
 
-    it('stop server', () => {
-        server.stop();
+    it('stop server', async () => {
+        await server.stop();
     });
 });

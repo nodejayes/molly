@@ -1,19 +1,17 @@
 import { Server as HttpServer, Server } from 'http';
 import { createServer, Server as HttpsServer, ServerOptions } from 'https';
-import { readFileSync, existsSync, writeFileSync, unlinkSync } from 'fs';
+import { readFileSync, existsSync, writeFileSync } from 'fs';
 import * as express from 'express';
 import { Server as WsServer } from 'ws';
 import * as helmet from 'helmet';
 import * as compress from 'compression';
 import * as bodyParser from 'body-parser';
-import { keys } from 'lodash';
-import { promisify } from 'util';
 import { isAbsolute, join } from 'path';
 
-import { MongoDb, Routes, RouteInvoker, SwaggerGenerator } from '../../modules';
-import { RequestModel, ResponseModel, WebsocketMessage } from '../../models';
-import { IRequestModel, IServerConfiguration } from '../../interfaces';
-import { ValidationRules, Logic } from '../../basic';
+import { MongoDb, Routes, RouteInvoker, SwaggerGenerator } from '..';
+import { RequestModel, ResponseModel, WebsocketMessage }   from '../../models';
+import { IRequestModel, IServerConfiguration }             from '../../interfaces';
+import { ValidationRules, Logic }                          from '../../basic';
 
 /**
  * implement a small Express Server
@@ -29,7 +27,7 @@ export class ExpressServer {
      * @type {Array<string>}
      * @memberof Server
      */
-    private _routeNames: Array<string>;
+    private readonly _routeNames: Array<string>;
 
     /**
      * running Node Server Instance
@@ -107,10 +105,8 @@ export class ExpressServer {
      * @memberof ExpressServer
      */
     private _shouldCompress(req, res): boolean {
-        if (req.headers['x-no-compression']) {
-          return false
-        }
-        return true;
+        return !req.headers['x-no-compression'];
+
     }
 
     /**
@@ -313,14 +309,13 @@ export class ExpressServer {
         cfg.archive = cfg.archive === true;
     }
 
-    /**
-     * start the Express Server
-     *
-     * @param {string} binding
-     * @param {number} port
-     * @returns {Promise<string>}
-     * @memberof Server
-     */
+  /**
+   * start the Express Server
+   *
+   * @returns {Promise<string>}
+   * @memberof Server
+   * @param cfg
+   */
     async start(cfg: IServerConfiguration): Promise<string> {
         this._fixParameter(cfg);
         ValidationRules.registerValidations();
@@ -365,7 +360,7 @@ export class ExpressServer {
      *
      * @memberof ExpressServer
      */
-    stop(): void {
+    async stop(): Promise<void> {
         if (this._server !== null) {
             this._server.close();
             this._server = null;
@@ -378,6 +373,6 @@ export class ExpressServer {
             this._docServer.close();
             this._docServer = null;
         }
-        MongoDb.close();
+        await MongoDb.close();
     }
 }

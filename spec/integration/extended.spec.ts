@@ -2,10 +2,10 @@ import {
     ExpressServer,
     collection, validation,
     BaseTypes
-}                    from '../../src';
-import {assert}      from 'chai';
+}                                             from '../../src';
+import {assert}                               from 'chai';
 import 'mocha';
-import {MONGODB_URL} from '../config';
+import {MONGODB_DB, MONGODB_URL, REPLICA_SET} from '../config';
 
 const req = require('request-promise');
 
@@ -73,7 +73,8 @@ describe('extended Classes Spec', () => {
             port: 8086,
             clear: true,
             mongoUrl: MONGODB_URL,
-            mongoDatabase: 'test_molly'
+            mongoDatabase: MONGODB_DB,
+            mongoReplicaSet: REPLICA_SET,
         });
 
         let res = await req({
@@ -120,6 +121,6 @@ describe('extended Classes Spec', () => {
             assert.notEqual(err.message.indexOf('must be a number of milliseconds or valid date string'), -1);
         }
 
-        server.stop();
+        await server.stop();
     });
 });

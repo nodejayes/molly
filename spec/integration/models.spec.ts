@@ -5,10 +5,10 @@ import {
     JoinType,
     MongoLookup,
     collection, operation, validation
-}                    from '../../src';
-import {assert}      from 'chai';
+}                                             from '../../src';
+import {assert}                               from 'chai';
 import 'mocha';
-import {MONGODB_URL} from '../config';
+import {MONGODB_DB, MONGODB_URL, REPLICA_SET} from '../config';
 
 const request = require('request-promise');
 
@@ -28,14 +28,15 @@ describe('Molly Server Spec', () => {
                 binding: 'localhost',
                 port: 8086,
                 mongoUrl: MONGODB_URL,
-                mongoDatabase: 'test_molly',
+                mongoDatabase: MONGODB_DB,
+                mongoReplicaSet: REPLICA_SET,
                 clear: true
             });
             assert.equal(msg, 'server listen on http://localhost:8086/', 'invalid return message');
         });
 
-        it('stop server', () => {
-            server.stop();
+        it('stop server', async () => {
+            await server.stop();
         });
     });
 
@@ -52,7 +53,8 @@ describe('Molly Server Spec', () => {
                 binding: 'localhost',
                 port: 8086,
                 mongoUrl: MONGODB_URL,
-                mongoDatabase: 'test_molly',
+                mongoDatabase: MONGODB_DB,
+                mongoReplicaSet: REPLICA_SET,
                 clear: true
             });
         });
@@ -146,8 +148,8 @@ describe('Molly Server Spec', () => {
             }
         });
 
-        after(() => {
-            server.stop();
+        after(async () => {
+            await server.stop();
         });
     });
 
@@ -242,7 +244,8 @@ describe('Molly Server Spec', () => {
                 binding: 'localhost',
                 port: 8086,
                 mongoUrl: MONGODB_URL,
-                mongoDatabase: 'test_molly',
+                mongoDatabase: MONGODB_DB,
+                mongoReplicaSet: REPLICA_SET,
                 clear: true,
                 authentication: (req) => {
                     return false;
@@ -266,8 +269,8 @@ describe('Molly Server Spec', () => {
             }
         });
 
-        after(() => {
-            server.stop();
+        after(async () => {
+            await server.stop();
         });
     });
 
@@ -281,7 +284,8 @@ describe('Molly Server Spec', () => {
                 binding: 'localhost',
                 port: 8086,
                 mongoUrl: MONGODB_URL,
-                mongoDatabase: 'test_molly',
+                mongoDatabase: MONGODB_DB,
+                mongoReplicaSet: REPLICA_SET,
                 clear: true,
                 authentication: (req) => {
                     return true;
@@ -289,8 +293,8 @@ describe('Molly Server Spec', () => {
             });
         });
 
-        after(() => {
-            server.stop();
+        after(async () => {
+            await server.stop();
         });
 
         it('create rights', async () => {

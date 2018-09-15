@@ -1,7 +1,7 @@
-import {assert}                 from 'chai';
+import {assert}                                                          from 'chai';
 import 'mocha';
-import {IRequestModel, BaseTypes, ExpressServer, collection, validation}          from '../../src';
-import {MONGODB_URL}            from '../config';
+import {IRequestModel, BaseTypes, ExpressServer, collection, validation} from '../../src';
+import {MONGODB_DB, MONGODB_URL, REPLICA_SET}                            from '../config';
 
 const request = require('request-promise');
 
@@ -19,8 +19,8 @@ describe('transaction tests', () => {
     server.clearConfiguration();
   });
 
-  afterEach(() => {
-    server.stop();
+  afterEach(async () => {
+    await server.stop();
   });
 
   it('fire a transaction', async () => {
@@ -50,7 +50,8 @@ describe('transaction tests', () => {
       binding: 'localhost',
       port: 8086,
       mongoUrl: MONGODB_URL,
-      mongoDatabase: 'test_molly',
+      mongoDatabase: MONGODB_DB,
+      mongoReplicaSet: REPLICA_SET,
       clear: true
     });
 
@@ -147,7 +148,8 @@ describe('transaction tests', () => {
       binding: 'localhost',
       port: 8086,
       mongoUrl: MONGODB_URL,
-      mongoDatabase: 'test_molly',
+      mongoDatabase: MONGODB_DB,
+      mongoReplicaSet: REPLICA_SET,
       clear: true
     });
 
@@ -225,7 +227,8 @@ describe('transaction tests', () => {
       binding: 'localhost',
       port: 8086,
       mongoUrl: MONGODB_URL,
-      mongoDatabase: 'test_molly',
+      mongoDatabase: MONGODB_DB,
+      mongoReplicaSet: REPLICA_SET,
       clear: true
     });
 
@@ -263,7 +266,8 @@ describe('transaction tests', () => {
       binding: 'localhost',
       port: 8086,
       mongoUrl: MONGODB_URL,
-      mongoDatabase: 'test_molly',
+      mongoDatabase: MONGODB_DB,
+      mongoReplicaSet: REPLICA_SET,
       clear: true
     });
 
@@ -295,7 +299,8 @@ describe('transaction tests', () => {
       binding: 'localhost',
       port: 8086,
       mongoUrl: MONGODB_URL,
-      mongoDatabase: 'test_molly',
+      mongoDatabase: MONGODB_DB,
+      mongoReplicaSet: REPLICA_SET,
       clear: true
     });
 
