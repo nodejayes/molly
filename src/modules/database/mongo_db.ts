@@ -169,17 +169,22 @@ export class MongoDb {
      * connect to Database
      *
      * @static
-     * @param {any} url
+     * @param {string} url
+     * @param {string} database
+     * @param {string} replicaSet
+     * @param {string} authDatabase
      * @returns {Promise<void>}
      * @memberof MongoDb
      */
-    static async connect(url, database): Promise<void> {
+    static async connect(url: string, database: string, replicaSet: string, authDatabase: string): Promise<void> {
         this._db = database;
-        this._client = await MongoClient.connect(`${url}${database}`, {
+        this._client = await MongoClient.connect(`${url}`, {
             appname: 'Molly',
             autoReconnect: true,
             poolSize: 25,
             useNewUrlParser: true,
+            replicaSet: replicaSet,
+            authSource: authDatabase
         });
     }
 
