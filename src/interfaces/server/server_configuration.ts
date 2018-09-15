@@ -7,6 +7,7 @@
 export interface IServerConfiguration {
     binding: string;
     port: number;
+    models: any[];
     mongoUrl: string;
     mongoDatabase: string;
     mongoReplicaSet?: string;

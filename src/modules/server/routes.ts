@@ -1,4 +1,4 @@
-import {Collection, CollectionInsertOneOptions, CommonOptions, ObjectId}                                          from 'mongodb';
+import { CollectionInsertOneOptions, CommonOptions, ObjectId}                                                     from 'mongodb';
 import { hasIn, unset, keys, isArray }                                                                            from 'lodash';
 import { IRequestModel }                                                                                          from '../../interfaces';
 import { ResponseModel, ValidationInformation, CollectionStore, OperationInformation, RequestModel, MongoLookup } from '../../models';
@@ -100,7 +100,7 @@ export class Routes {
             restrictions = params['RESTRICTIONS'];
             unset(params, 'RESTRICTIONS');
         }
-        let pipe = new Array<Object>();
+        let pipe = [];
         if (joins) {
             for (let i = 0; i < joins.length; i++) {
                 let j = joins[i];
@@ -189,6 +189,7 @@ export class Routes {
      *
      * @static
      * @param {IRequestModel} data
+     * @param {CommonOptions} opts
      * @returns {ResponseModel}
      * @memberof Routes
      */
@@ -208,6 +209,7 @@ export class Routes {
      *
      * @static
      * @param {IRequestModel} data
+     * @param {CommonOptions} opts
      * @returns {ResponseModel}
      * @memberof Routes
      */
@@ -231,6 +233,7 @@ export class Routes {
      *
      * @static
      * @param {IRequestModel} data
+     * @param {CommonOptions} opts
      * @returns {ResponseModel}
      * @memberof Routes
      */
