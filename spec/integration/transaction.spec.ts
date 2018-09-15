@@ -12,38 +12,31 @@ const request = require('request-promise');
  * a Time of 200ms is enough for this Test
  */
 
+@collection({allow: 'CUD'})
+class Reader {
+  @validation({type: BaseTypes.mongoDbObjectId})
+  _id: string;
+  @validation({type: BaseTypes.stringDefaultLength})
+  name: string;
+  @validation({type: BaseTypes.integer.positive().max(120)})
+  age: number;
+}
+@collection({allow: 'CUD'})
+class Book {
+  @validation({type: BaseTypes.mongoDbObjectId})
+  _id: string;
+  @validation({type: BaseTypes.stringDefaultLength})
+  isbn: string;
+  @validation({type: BaseTypes.stringDefaultLength})
+  title: string;
+}
+
 describe('transaction tests', () => {
   let server = new ExpressServer();
 
-  beforeEach(() => {
+  beforeEach(async () => {
     server.clearConfiguration();
-  });
-
-  afterEach(async () => {
-    await server.stop();
-  });
-
-  it('fire a transaction', async () => {
-    @collection({allow: 'CUD'})
-    class User {
-      @validation({type: BaseTypes.mongoDbObjectId})
-      _id: string;
-      @validation({type: BaseTypes.stringDefaultLength})
-      name: string;
-      @validation({type: BaseTypes.integer.positive().max(120)})
-      age: number;
-    }
-    @collection({allow: 'CUD'})
-    class Book {
-      @validation({type: BaseTypes.mongoDbObjectId})
-      _id: string;
-      @validation({type: BaseTypes.stringDefaultLength})
-      isbn: string;
-      @validation({type: BaseTypes.stringDefaultLength})
-      title: string;
-    }
-
-    new User();
+    new Reader();
     new Book();
 
     await server.start({
@@ -54,7 +47,13 @@ describe('transaction tests', () => {
       mongoReplicaSet: REPLICA_SET,
       clear: true
     });
+  });
 
+  afterEach(async () => {
+    await server.stop();
+  });
+
+  it('fire a transaction', async () => {
     let ru = await request({
       method: 'POST',
       uri: 'http://localhost:8086/transaction',
@@ -62,8 +61,8 @@ describe('transaction tests', () => {
         params: [
           <IRequestModel>{
             Action: 'create',
-            Model: 'User',
-            Parameter: <User>{
+            Model: 'Reader',
+            Parameter: <Reader>{
               name: 'udo',
               age: 50
             },
@@ -71,8 +70,8 @@ describe('transaction tests', () => {
           },
           <IRequestModel>{
             Action: 'create',
-            Model: 'User',
-            Parameter: <User>{
+            Model: 'Reader',
+            Parameter: <Reader>{
               name: 'peter',
               age: 30
             },
@@ -80,8 +79,8 @@ describe('transaction tests', () => {
           },
           <IRequestModel>{
             Action: 'create',
-            Model: 'User',
-            Parameter: <User>{
+            Model: 'Reader',
+            Parameter: <Reader>{
               name: 'klaus',
               age: 18
             },
@@ -106,7 +105,7 @@ describe('transaction tests', () => {
 
     let users = await request({
       method: 'POST',
-      uri: 'http://localhost:8086/read/User',
+      uri: 'http://localhost:8086/read/Reader',
       body: {
         params: {}
       },
@@ -132,8 +131,9 @@ describe('transaction tests', () => {
   });
 
   it('do not commit on error', async () => {
+    /*
     @collection({allow: 'CUD'})
-    class User {
+    class Reader {
       @validation({type: BaseTypes.mongoDbObjectId})
       _id: string;
       @validation({type: BaseTypes.stringDefaultLength})
@@ -142,7 +142,7 @@ describe('transaction tests', () => {
       age: number;
     }
 
-    new User();
+    new Reader();
 
     await server.start({
       binding: 'localhost',
@@ -152,6 +152,7 @@ describe('transaction tests', () => {
       mongoReplicaSet: REPLICA_SET,
       clear: true
     });
+    */
 
     let ru = null;
     try {
@@ -163,7 +164,7 @@ describe('transaction tests', () => {
             <IRequestModel>{
               Action: 'create',
               Model: 'User',
-              Parameter: <User>{
+              Parameter: <Reader>{
                 name: 'udo',
                 age: 40
               },
@@ -172,7 +173,7 @@ describe('transaction tests', () => {
             <IRequestModel>{
               Action: 'create',
               Model: 'User',
-              Parameter: <User>{
+              Parameter: <Reader>{
                 name: 'peter',
                 age: 200
               },
@@ -181,7 +182,7 @@ describe('transaction tests', () => {
             <IRequestModel>{
               Action: 'create',
               Model: 'User',
-              Parameter: <User>{
+              Parameter: <Reader>{
                 name: 'klaus',
                 age: 18
               },
@@ -211,8 +212,9 @@ describe('transaction tests', () => {
   });
 
   it('throw error when parameter no array', async () => {
+    /*
     @collection({allow: 'CUD'})
-    class User {
+    class Reader {
       @validation({type: BaseTypes.mongoDbObjectId})
       _id: string;
       @validation({type: BaseTypes.stringDefaultLength})
@@ -221,7 +223,7 @@ describe('transaction tests', () => {
       age: number;
     }
 
-    new User();
+    new Reader();
 
     await server.start({
       binding: 'localhost',
@@ -231,6 +233,7 @@ describe('transaction tests', () => {
       mongoReplicaSet: REPLICA_SET,
       clear: true
     });
+    */
 
     let ru = null;
     try {
@@ -250,8 +253,9 @@ describe('transaction tests', () => {
   });
 
   it('do nothing on empty parameter array', async () => {
+    /*
     @collection({allow: 'CUD'})
-    class User {
+    class Reader {
       @validation({type: BaseTypes.mongoDbObjectId})
       _id: string;
       @validation({type: BaseTypes.stringDefaultLength})
@@ -260,7 +264,7 @@ describe('transaction tests', () => {
       age: number;
     }
 
-    new User();
+    new Reader();
 
     await server.start({
       binding: 'localhost',
@@ -270,6 +274,7 @@ describe('transaction tests', () => {
       mongoReplicaSet: REPLICA_SET,
       clear: true
     });
+    */
 
     let ru = await request({
       method: 'POST',
@@ -283,6 +288,7 @@ describe('transaction tests', () => {
   });
 
   it('do parallel transactions', async () => {
+    /*
     @collection({allow: 'CUD'})
     class Book {
       @validation({type: BaseTypes.mongoDbObjectId})
@@ -303,6 +309,7 @@ describe('transaction tests', () => {
       mongoReplicaSet: REPLICA_SET,
       clear: true
     });
+    */
 
     let req = request({
       method: 'POST',
