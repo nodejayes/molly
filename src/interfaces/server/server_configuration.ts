@@ -9,7 +9,8 @@ export interface IServerConfiguration {
     port: number;
     mongoUrl: string;
     mongoDatabase: string;
-    mongoReplicaSet: string;
+    mongoReplicaSet?: string;
+    mongoAuthDatabase?: string;
     clear?: boolean;
     useWebsocket?: boolean;
     certFile?: string;
