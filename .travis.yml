@@ -4,14 +4,14 @@ node_js:
 notifications:
   email: markusgilg@outlook.de
 services:
-  - mongodb
+- mongodb
 # make mongodb a replica set
 before_script:
-  - echo "replSet = rs0" | sudo tee -a /etc/mongodb.conf
-  - sudo service mongod restart
-  - sleep 20
-  - mongo --eval 'rs.initiate()'
-  - sleep 15
+- echo "replSet = rs0" | sudo tee -a /etc/mongodb.conf
+- sudo service mongod restart
+- sleep 30
+- mongo --eval 'rs.initiate()'
+- sleep 30
 jobs:
   include:
   - stage: build
