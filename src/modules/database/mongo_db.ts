@@ -78,6 +78,7 @@ export class MongoDb {
    * @memberof MongoDb
    */
   static get Archive() {
+    // TODO: implement Acrchiving Feature
     return this._archiveCollections;
   }
 
@@ -187,6 +188,7 @@ export class MongoDb {
     });
     if (names.length < 1 || clear) {
       let db = this._client.db(this._db);
+      // TODO: Why Line not Coverd ?????
       if (clear && names.length > 0) {
         await db.dropCollection(info.Name);
       }
