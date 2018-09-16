@@ -1,117 +1,14 @@
-import {
-  BaseTypes,
-  collection,
-  ExpressServer,
-  IRequestModel,
-  IRouteInvoker,
-  IWebsocketMessage,
-  JoinType,
-  MongoLookup,
-  operation,
-  validation
-}                                             from '../../src';
-import {assert}                               from 'chai';
+import {ExpressServer, IRequestModel, IWebsocketMessage} from '../../src';
+import {assert}                                          from 'chai';
 import 'mocha';
-import * as Websocket                         from 'ws';
-import {MONGODB_DB, MONGODB_URL, REPLICA_SET} from '../config';
+import * as Websocket                                    from 'ws';
+import {MONGODB_DB, MONGODB_URL, REPLICA_SET}            from '../config';
+import {Book}                                            from '../models/book';
 
 describe('Websocket Spec', () => {
   let server = new ExpressServer();
   let user = {};
   let socket = null;
-
-  describe('Define Schema', () => {
-    it('setup user schema', async () => {
-      @collection({
-        lookup: [
-          new MongoLookup('Group', 'group', '_id', JoinType.ONEONE),
-          new MongoLookup('Right', 'group.rights', '_id', JoinType.ONEMANY)
-        ],
-        index: async (col) => {
-          await col.createIndex({
-            username: 1,
-          }, {
-            sparse: true,
-            unique: true,
-            background: true,
-          });
-        },
-        allow: 'CUD'
-      })
-      class User {
-        @validation({type: BaseTypes.mongoDbObjectId})
-        _id: string;
-
-        @validation({type: BaseTypes.stringDefaultLength})
-        username: string;
-
-        @validation({type: BaseTypes.stringDefaultLength})
-        password: string;
-
-        @validation({type: BaseTypes.stringDefaultLength})
-        email: string;
-
-        group: Group;
-      }
-
-      @collection({
-        lookup: [
-          new MongoLookup('Right', 'rights', '_id', JoinType.ONEMANY)
-        ],
-        index: async (col) => {
-          await col.createIndex({
-            name: 1,
-          }, {
-            sparse: true,
-            unique: true,
-            background: true,
-          });
-        },
-        allow: 'CUD'
-      })
-      class Group {
-        @validation({type: BaseTypes.mongoDbObjectId})
-        _id: string;
-
-        @validation({type: BaseTypes.stringDefaultLength})
-        name: string;
-
-        rights: Right[];
-      }
-
-      @collection({
-        lookup: null,
-        index: async (col) => {
-          await col.createIndex({
-            key: 1,
-          }, {
-            sparse: true,
-            unique: true,
-            background: true,
-          });
-        },
-        allow: 'C'
-      })
-      class Right {
-        @validation({type: BaseTypes.mongoDbObjectId})
-        _id: string;
-
-        @validation({type: BaseTypes.stringDefaultLength})
-        key: string;
-
-        @validation({type: BaseTypes.bool})
-        active: boolean;
-      }
-
-      class Ops {
-        @operation({})
-        async countUser(inv: IRouteInvoker, params: any) {
-          let u = await inv.read('User', {}, {_id: true});
-          return u.length;
-        }
-      }
-    });
-  });
 
   describe('main server functionallity', () => {
     before(async () => {
@@ -188,6 +85,23 @@ describe('Websocket Spec', () => {
             break;
           case 'delete_User':
             assert.equal(d.data, true);
+            socket.send(JSON.stringify(<IRequestModel>{
+              Action: 'transaction',
+              Model: 'unique',
+              Parameter: [
+                <IRequestModel>{
+                  Action: 'create',
+                  Model: 'Book',
+                  Parameter: <Book>{
+                    isbn: '123456789',
+                    title: 'Websocket with Molly Transactions'
+                  }
+                }
+              ]
+            }));
+            break;
+          case 'transaction_unique':
+            assert.equal(d.data, true);
             expectError = true;
             socket.send('invalid');
             break;
@@ -197,7 +111,12 @@ describe('Websocket Spec', () => {
             } else {
               assert.equal(d.data, 'Unexpected token i in JSON at position 0');
             }
-            server.stop().then(done);
+            server.stop()
+              .then(() => {
+                done();
+              }).catch(err => {
+              assert.fail(err.message);
+            });
             break;
         }
       });

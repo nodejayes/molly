@@ -168,6 +168,50 @@ describe('transaction tests', () => {
     assert.equal(users.data.length, 0);
   });
 
+  it('check error on update', async () => {
+    try {
+      await request({
+        method: 'POST',
+        uri: 'http://localhost:8086/transaction',
+        body: {
+          params: [
+            <IRequestModel>{
+              Action: 'update',
+              Model: 'Reader',
+              Parameter: {},
+              Properties: null
+            }
+          ]
+        },
+        json: true,
+      });
+    } catch (err) {
+      assert.equal(err.message, '500 - {"data":null,"errors":"error on transaction child \\"id\\" fails because [\\"id\\" is required]"}');
+    }
+  });
+
+  it('check error on delete', async () => {
+    try {
+      await request({
+        method: 'POST',
+        uri: 'http://localhost:8086/transaction',
+        body: {
+          params: [
+            <IRequestModel>{
+              Action: 'delete',
+              Model: 'Reader',
+              Parameter: {},
+              Properties: null
+            }
+          ]
+        },
+        json: true,
+      });
+    } catch (err) {
+      assert.equal(err.message, '500 - {"data":null,"errors":"error on transaction child \\"id\\" fails because [\\"id\\" is required]"}');
+    }
+  });
+
   it('throw error when parameter no array', async () => {
     let ru = null;
     try {
@@ -271,5 +315,85 @@ describe('transaction tests', () => {
       assert.isNotNull(ru[i].data);
       assert.equal(ru[i].data, true);
     }
+  });
+
+  it('mixing create update and delete in one transaction', async () => {
+    const BooksToInsert = [
+      <Book>{
+        isbn: '12345',
+        title: 'Buch1'
+      },
+      <Book>{
+        isbn: '123456',
+        title: 'Buch2'
+      }
+    ];
+    const insertBooks = [];
+
+    for (let i = 0; i < BooksToInsert.length; i++) {
+      insertBooks.push(await request({
+        method: 'POST',
+        uri: 'http://localhost:8086/create/Book',
+        body: {
+          params: BooksToInsert[i]
+        },
+        json: true,
+      }));
+      assert.isNull(insertBooks[i].errors);
+      assert.isObject(insertBooks[i].data);
+    }
+
+    const transactionResult = await request({
+      method: 'POST',
+      uri: 'http://localhost:8086/transaction',
+      body: {
+        params: [
+          <IRequestModel>{
+            Action: 'delete',
+            Model: 'Book',
+            Parameter: {
+              id: insertBooks[0].data._id,
+            },
+            Properties: null
+          },
+          <IRequestModel>{
+            Action: 'update',
+            Model: 'Book',
+            Parameter: {
+              id: insertBooks[1].data._id,
+              updateSet: {
+                isbn: 'update with transaction'
+              }
+            },
+            Properties: null
+          },
+        ]
+      },
+      json: true,
+    });
+    assert.isNull(transactionResult.errors);
+    assert.isBoolean(transactionResult.data);
+    assert.equal(transactionResult.data, true);
+
+    const assertResult = await request({
+      method: 'POST',
+      uri: 'http://localhost:8086/read/Book',
+      body: {
+        params: {
+          _id: {
+            $in: [
+              insertBooks[0].data._id,
+              insertBooks[1].data._id
+            ]
+          }
+        }
+      },
+      json: true
+    });
+
+    assert.isNull(assertResult.errors);
+    assert.isArray(assertResult.data);
+    assert.equal(assertResult.data.length, 1);
+    assert.equal(assertResult.data[0].isbn, 'update with transaction');
   });
 });
