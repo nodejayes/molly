@@ -1,9 +1,9 @@
-import { CollectionInformation, ValidationInformation, OperationInformation } from '..';
-import { IMollyConfiguration } from '../../interfaces';
+import {CollectionInformation, OperationInformation, ValidationInformation} from '..';
+import {IMollyConfiguration}                                                from '../../interfaces';
 
 /**
  * Configuration Object
- * 
+ *
  * @export
  * @class MollyConfiguration
  * @prop address the Server Address where the Server listen
@@ -12,38 +12,38 @@ import { IMollyConfiguration } from '../../interfaces';
  * @property validationInfo a Array of Validations for Types
  */
 export class MollyConfiguration implements IMollyConfiguration {
-    /**
-     * List of Collection Informations
-     * 
-     * @type {CollectionInformation[]}
-     * @memberof MollyConfiguration
-     */
-    collectionInfos: CollectionInformation[];
+  /**
+   * List of Collection Informations
+   *
+   * @type {CollectionInformation[]}
+   * @memberof MollyConfiguration
+   */
+  collectionInfos: CollectionInformation[];
 
-    /**
-     * List of Validation Informations
-     * 
-     * @type {ValidationInformation[]}
-     * @memberof MollyConfiguration
-     */
-    validationInfos: ValidationInformation[];
+  /**
+   * List of Validation Informations
+   *
+   * @type {ValidationInformation[]}
+   * @memberof MollyConfiguration
+   */
+  validationInfos: ValidationInformation[];
 
-    /**
-     * List of Operation Informations
-     * 
-     * @type {OperationInformation[]}
-     * @memberof MollyConfiguration
-     */
-    operationInfos: OperationInformation[];
+  /**
+   * List of Operation Informations
+   *
+   * @type {OperationInformation[]}
+   * @memberof MollyConfiguration
+   */
+  operationInfos: OperationInformation[];
 
 
-    /**
-     * Creates an instance of MollyConfiguration.
-     * @memberof MollyConfiguration
-     */
-    constructor() {
-        this.collectionInfos = new Array<CollectionInformation>();
-        this.validationInfos = new Array<ValidationInformation>();
-        this.operationInfos = new Array<OperationInformation>();
-    }
+  /**
+   * Creates an instance of MollyConfiguration.
+   * @memberof MollyConfiguration
+   */
+  constructor() {
+    this.collectionInfos = [];
+    this.validationInfos = [];
+    this.operationInfos = [];
+  }
 }
