@@ -46,10 +46,6 @@ export class RouteInvoker implements IRouteInvoker {
       Parameter: params,
       Properties: props
     });
-    if (res.errors) {
-      // TODO: test if needed?
-      throw new Error(res.errors);
-    }
     return res.data;
   }
 
@@ -68,10 +64,6 @@ export class RouteInvoker implements IRouteInvoker {
       Parameter: params,
       Properties: undefined
     });
-    if (res.errors) {
-      // TODO: test if needed?
-      throw new Error(res.errors);
-    }
     return res.data;
   }
 
@@ -90,10 +82,6 @@ export class RouteInvoker implements IRouteInvoker {
       Parameter: params,
       Properties: undefined
     });
-    if (res.errors) {
-      // TODO: test if needed?
-      throw new Error(res.errors);
-    }
     return res.data;
   }
 
@@ -112,10 +100,6 @@ export class RouteInvoker implements IRouteInvoker {
       Parameter: params,
       Properties: undefined
     });
-    if (res.errors) {
-      // TODO: test if needed?
-      throw new Error(res.errors);
-    }
     return res.data;
   }
 
@@ -125,9 +109,6 @@ export class RouteInvoker implements IRouteInvoker {
    */
   async transaction(data: IRequestModel): Promise<boolean> {
     let res = await Routes.transaction(data);
-    if (res.errors) {
-      throw new Error(res.errors);
-    }
     return res.data;
   }
 }
