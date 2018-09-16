@@ -177,6 +177,7 @@ export class Routes {
       throw new Error(`transaction params must be an array`);
     }
     if (data.Parameter.length < 0) {
+      // TODO: make Test that send a empty Parameter Array
       return new ResponseModel(true, false);
     }
     const session = MongoDb.beginTransaction();
@@ -188,9 +189,11 @@ export class Routes {
             await this.create(d, {session});
             break;
           case 'update':
+            // TODO: create Test that do Transaction with Update
             await this.update(d, {session});
             break;
           case 'delete':
+            // TODO: create Test that do Transaction with Delete
             await this.delete(d, {session});
             break;
         }

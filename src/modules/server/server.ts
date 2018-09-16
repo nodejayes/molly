@@ -11,7 +11,7 @@ import {isAbsolute, join}                                   from 'path';
 import {MongoDb, RouteInvoker, Routes, SwaggerGenerator} from '..';
 import {RequestModel, ResponseModel, WebsocketMessage}   from '../../models';
 import {IRequestModel, IServerConfiguration}             from '../../interfaces';
-import {Logic, ValidationRules}                          from '../../basic';
+import {ValidationRules}                                 from '../../basic';
 
 /**
  * implement a small Express Server
@@ -125,17 +125,6 @@ export class ExpressServer {
   }
 
   /**
-   * clear the exist Configurations
-   * @deprecated
-   * @memberof ExpressServer
-   */
-  clearConfiguration(): void {
-    Logic.Configuration.collectionInfos = [];
-    Logic.Configuration.operationInfos = [];
-    Logic.Configuration.validationInfos = [];
-  }
-
-  /**
    * stop a running Server
    *
    * @memberof ExpressServer
@@ -238,6 +227,7 @@ export class ExpressServer {
               tmp = await this._invoker.operation(data.Model, data.Parameter);
               break;
             case 'transaction':
+              // TODO: Websocket Test for Transaction
               tmp = await this._invoker.transaction(data);
           }
           result = new WebsocketMessage(`${data.Action}_${data.Model}`, tmp);
@@ -364,6 +354,7 @@ export class ExpressServer {
    */
   private _fixParameter(cfg: IServerConfiguration): void {
     if (cfg.mongoUrl[cfg.mongoUrl.length - 1] !== '/') {
+      // TODO: add Test for fix MongoUrl
       cfg.mongoUrl += '/';
     }
     cfg.archive = cfg.archive === true;

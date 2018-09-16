@@ -47,6 +47,7 @@ export class RouteInvoker implements IRouteInvoker {
       Properties: props
     });
     if (res.errors) {
+      // TODO: test if needed?
       throw new Error(res.errors);
     }
     return res.data;
@@ -68,6 +69,7 @@ export class RouteInvoker implements IRouteInvoker {
       Properties: undefined
     });
     if (res.errors) {
+      // TODO: test if needed?
       throw new Error(res.errors);
     }
     return res.data;
@@ -89,6 +91,7 @@ export class RouteInvoker implements IRouteInvoker {
       Properties: undefined
     });
     if (res.errors) {
+      // TODO: test if needed?
       throw new Error(res.errors);
     }
     return res.data;
@@ -110,6 +113,7 @@ export class RouteInvoker implements IRouteInvoker {
       Properties: undefined
     });
     if (res.errors) {
+      // TODO: test if needed?
       throw new Error(res.errors);
     }
     return res.data;
