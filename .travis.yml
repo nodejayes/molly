@@ -7,7 +7,6 @@ services:
 - mongodb
 # make mongodb a replica set
 before_script:
-- cat /etc/mongodb.conf
 - echo "replSet = rs0" | sudo tee -a /etc/mongodb.conf
 - cat /etc/mongodb.conf
 - sudo service mongod restart
