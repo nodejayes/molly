@@ -2,6 +2,7 @@ import {collection, validation} from '../../src/decorators';
 import {JoinType, MongoLookup}  from '../../src/models';
 import {BaseTypes}              from '../../src/basic';
 import {Group}                  from './group';
+import {Bank1, Bank2}           from './bank';
 
 @collection({
   lookup: [
@@ -33,4 +34,34 @@ export class User {
   email: string;
 
   group: Group;
+}
+
+@collection({
+  allow: 'CUD', lookup: [
+    new MongoLookup('Bank1', 'bank', '_id', JoinType.ONEONE)
+  ]
+})
+export class User1 {
+  @validation({type: BaseTypes.mongoDbObjectId})
+  _id: string;
+  @validation({type: BaseTypes.stringDefaultLength})
+  name: string;
+  @validation({type: BaseTypes.integer.positive().max(120)})
+  age: number;
+  bank: Bank1;
+}
+
+@collection({
+  allow: 'CUD', lookup: [
+    new MongoLookup('Bank2', 'bank', '_id', JoinType.ONEONE)
+  ]
+})
+export class User2 {
+  @validation({type: BaseTypes.mongoDbObjectId})
+  _id: string;
+  @validation({type: BaseTypes.stringDefaultLength})
+  name: string;
+  @validation({type: BaseTypes.integer.positive().max(120)})
+  age: number;
+  bank: Bank2;
 }

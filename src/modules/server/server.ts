@@ -7,7 +7,6 @@ import * as helmet                                          from 'helmet';
 import * as compress                                        from 'compression';
 import * as bodyParser                                      from 'body-parser';
 import {isAbsolute, join}                                   from 'path';
-import * as _                                               from 'lodash';
 
 import {MongoDb, RouteInvoker, Routes, SwaggerGenerator} from '..';
 import {RequestModel, ResponseModel, WebsocketMessage}   from '../../models';
@@ -98,7 +97,6 @@ export class ExpressServer {
    * @param cfg
    */
   async start(cfg: IServerConfiguration): Promise<string> {
-    // this._registerModels(cfg.models || []);
     this._fixParameter(cfg);
     ValidationRules.registerValidations();
     this._authenticate = cfg.authentication;
@@ -128,7 +126,7 @@ export class ExpressServer {
 
   /**
    * clear the exist Configurations
-   *
+   * @deprecated
    * @memberof ExpressServer
    */
   clearConfiguration(): void {
@@ -169,11 +167,6 @@ export class ExpressServer {
    */
   private _shouldCompress(req, res): boolean {
     return !req.headers['x-no-compression'];
-  }
-
-  private _registerModels(models: any[]) {
-    this.clearConfiguration();
-    _.each(models, m => new m());
   }
 
   /**
