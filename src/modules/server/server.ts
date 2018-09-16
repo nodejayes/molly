@@ -227,7 +227,6 @@ export class ExpressServer {
               tmp = await this._invoker.operation(data.Model, data.Parameter);
               break;
             case 'transaction':
-              // TODO: Websocket Test for Transaction
               tmp = await this._invoker.transaction(data);
           }
           result = new WebsocketMessage(`${data.Action}_${data.Model}`, tmp);
@@ -353,10 +352,6 @@ export class ExpressServer {
    * @memberof ExpressServer
    */
   private _fixParameter(cfg: IServerConfiguration): void {
-    if (cfg.mongoUrl[cfg.mongoUrl.length - 1] !== '/') {
-      // TODO: add Test for fix MongoUrl
-      cfg.mongoUrl += '/';
-    }
     cfg.archive = cfg.archive === true;
   }
 }

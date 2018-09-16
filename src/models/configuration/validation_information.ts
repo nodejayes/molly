@@ -140,7 +140,8 @@ export class ValidationInformation implements IValidationInformation {
   checkRead(input: any): any {
     let tmp = validate(input, BaseTypes.typeArray(this.ReadSchema));
     if (tmp.error) {
-      // TODO: create test that throws an validation error on read
+      // when objects saved with molly maybe the errors never happend
+      // but otherwise we must check for errors
       throw tmp.error;
     }
     return tmp.value;
@@ -156,7 +157,6 @@ export class ValidationInformation implements IValidationInformation {
   checkUpdate(input: any): any {
     let tmp = validate(input, this.UpdateSchema);
     if (tmp.error) {
-      // TODO: create test that throws an validation error on update
       throw tmp.error;
     }
     return tmp.value;
@@ -172,7 +172,6 @@ export class ValidationInformation implements IValidationInformation {
   checkDelete(input: any): any {
     let tmp = validate(input, this.DeleteSchema);
     if (tmp.error) {
-      // TODO: create test that throws an validation error on delete
       throw tmp.error;
     }
     return tmp.value;
