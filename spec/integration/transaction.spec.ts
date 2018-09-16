@@ -120,7 +120,7 @@ describe('transaction tests', () => {
           params: [
             <IRequestModel>{
               Action: 'create',
-              Model: 'User',
+              Model: 'Reader',
               Parameter: <Reader>{
                 name: 'udo',
                 age: 40
@@ -129,7 +129,7 @@ describe('transaction tests', () => {
             },
             <IRequestModel>{
               Action: 'create',
-              Model: 'User',
+              Model: 'Reader',
               Parameter: <Reader>{
                 name: 'peter',
                 age: 200
@@ -138,7 +138,7 @@ describe('transaction tests', () => {
             },
             <IRequestModel>{
               Action: 'create',
-              Model: 'User',
+              Model: 'Reader',
               Parameter: <Reader>{
                 name: 'klaus',
                 age: 18
@@ -156,7 +156,7 @@ describe('transaction tests', () => {
 
     let users = await request({
       method: 'POST',
-      uri: 'http://localhost:8086/read/User',
+      uri: 'http://localhost:8086/read/Reader',
       body: {
         params: {}
       },
