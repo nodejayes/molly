@@ -34,6 +34,10 @@ The goal of Molly is to create services that are as flexible and easy to configu
 https://github.com/nodejayes/molly/wiki
 
 ## Release Notes
+1.6.1
+
+* add CORS Options in configuration
+
 1.6.0
 
 * support of transactions (MongoDb 4.0 and ReplicaSets only)
