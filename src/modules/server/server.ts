@@ -36,6 +36,14 @@ export class ExpressServer {
    */
   private readonly _routeNames: Array<string>;
   /**
+   * the Server uses HTTPs
+   *
+   * @private
+   * @type {boolean}
+   * @memberof Server
+   */
+  private _isSecure: boolean;
+  /**
    * running Node Server Instance
    *
    * @private
@@ -108,10 +116,12 @@ export class ExpressServer {
     return new Promise<string>((resolve, reject) => {
       this._registerRoutes(cfg);
       if (existsSync(cfg.certFile) && existsSync(cfg.keyFile)) {
+        this._isSecure = true;
         this._server = createServer(options, this.App).listen(cfg.port, cfg.binding, () => {
           resolve(`server listen on https://${cfg.binding}:${cfg.port}/`);
         });
       } else {
+        this._isSecure = false;
         this._server = this.App.listen(cfg.port, cfg.binding, () => {
           resolve(`server listen on http://${cfg.binding}:${cfg.port}/`);
         });
@@ -180,7 +190,7 @@ export class ExpressServer {
     }
     this.App.use(bodyParser.json());
     this.App.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
-      this._filterRequest.bind(this)(req, res, next);
+      this._filterRequest.bind(this)(req, res, next, cfg);
     });
   }
 
@@ -248,11 +258,21 @@ export class ExpressServer {
    * @param {express.Request} req
    * @param {express.Response} res
    * @param {express.NextFunction} next
+   * @param {IServerConfiguration} cfg
    * @returns {void}
    * @memberof Server
    */
-  private async _filterRequest(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
+  private async _filterRequest(req: express.Request, res: express.Response, next: express.NextFunction, cfg: IServerConfiguration): Promise<void> {
     if (req.method !== 'POST') {
+      if (req.method === 'OPTIONS') {
+        res.status(200);
+        res.setHeader('Access-Control-Allow-Origin', cfg.corsOrigin || `${this._isSecure ? 'https' : 'http'}://${cfg.binding}:${cfg.port}`);
+        res.setHeader('Access-Control-Allow-Methods', 'POST');
+        res.setHeader('Access-Control-Allow-Headers', cfg.corsHeaders || '');
+        res.setHeader('Access-Control-Allow-Credentials', cfg.corsCredentials || 'false');
+        res.send(``);
+        return;
+      }
       res.status(405);
       res.send(new ResponseModel(
         `not supported method ${req.method}`,

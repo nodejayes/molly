@@ -25,6 +25,10 @@ describe('Websocket Spec', () => {
       socket = new Websocket('ws://localhost:8087');
     });
 
+    after(async () => {
+      await server.stop();
+    });
+
     it('cascade with one socket', (done) => {
       let expectError = false;
       socket.on('message', (inc: string) => {

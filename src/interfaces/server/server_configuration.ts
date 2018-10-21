@@ -22,4 +22,7 @@ export interface IServerConfiguration {
   packageFolder?: string;
   authentication?: Function;
   archive?: boolean;
+  corsOrigin?: string;
+  corsHeaders?: string;
+  corsCredentials?: string;
 }
