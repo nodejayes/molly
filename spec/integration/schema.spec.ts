@@ -98,6 +98,7 @@ describe('schema Spec', () => {
       patterns: [],
       properties: {
         id: {
+          enum: [null],
           type: [
             'array',
             'boolean',
@@ -143,6 +144,7 @@ describe('schema Spec', () => {
       patterns: [],
       properties: {
         id: {
+          enum: [null],
           type: [
             'array',
             'boolean',
