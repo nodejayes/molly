@@ -34,6 +34,19 @@ The goal of Molly is to create services that are as flexible and easy to configu
 https://github.com/nodejayes/molly/wiki
 
 ## Release Notes
+1.6.4
+
+* add more node versions to test
+
+1.6.3
+
+* change npm api token
+
+1.6.2
+
+* update Dependencies
+* fix Tests
+
 1.6.1
 
 * add CORS Options in configuration
