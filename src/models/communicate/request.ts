@@ -2,6 +2,7 @@ import {ObjectId}                  from 'mongodb';
 import {Request}                   from 'express';
 import {hasIn, isObject, isString} from 'lodash';
 import {IRequestModel}             from '../../interfaces';
+import {CollectionStore} from "..";
 
 /**
  * holds the Request Parameter
@@ -69,16 +70,15 @@ export class RequestModel implements IRequestModel {
     }
   }
 
-  static performCreate(source: any): any {
-    source['createdAt'] = new Date();
-    source['version'] = 0;
-    return source;
-  }
-
-  static performUpdate(source: any): any {
-    source['modifiedAt'] = new Date();
-    source['version'] = (source['version'] || 0) + 1;
-    return source;
+  static async performUpdate(input: any, col: CollectionStore): Promise<any> {
+    const obj = await col.collection.findOne({_id: new ObjectId(input.id)});
+    const oldVersion = parseInt(obj.version);
+    if (isNaN(oldVersion)) {
+      input.updateSet.version = 0;
+    } else {
+      input.updateSet.version = oldVersion + 1;
+    }
+    return input;
   }
 
   /**

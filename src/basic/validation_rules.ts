@@ -43,28 +43,10 @@ export class ValidationRules {
     for (let i = 0; i < this.rules.length; i++) {
       let rule = this.rules[i];
       let schema = this._buildValidation(rule.model, rule.allow);
-      let schemas = this._addBaseModelValidations(schema.createSchema, schema.updateSchema);
       Logic.Configuration.validationInfos.push(
-        new ValidationInformation(rule.model, schemas[0], schemas[1], schema.updateSchema, schema.deleteSchema)
+        new ValidationInformation(rule.model, schema.createSchema, schema.readSchema, schema.updateSchema, schema.deleteSchema)
       );
     }
-  }
-
-  private static _addBaseModelValidations(createSchema: ObjectSchema, updateSchema: ObjectSchema): ObjectSchema[] {
-    return [
-        createSchema ? createSchema.append({
-          _id: BaseTypes.mongoDbObjectId.allow(null).default(null),
-          createdAt: BaseTypes.date.default(new Date()),
-          modifiedAt: BaseTypes.date.allow(null).default(null),
-          version: BaseTypes.integer.greater(-1).default(0)
-        }) : null,
-        updateSchema ? updateSchema.append({
-          _id: BaseTypes.mongoDbObjectId,
-          createdAt: BaseTypes.date,
-          modifiedAt: BaseTypes.date.allow(null).default(new Date()),
-          version: BaseTypes.integer.greater(-1)
-        }) : null
-    ];
   }
 
   /**
@@ -110,6 +92,10 @@ export class ValidationRules {
         }
       }
     }
+    tmp['_id'] = BaseTypes.mongoDbObjectId.allow(null);
+    tmp['createdAt'] = BaseTypes.date;
+    tmp['modifiedAt'] = BaseTypes.date.allow(null);
+    tmp['version'] = BaseTypes.integer.greater(-1);
     schema = BaseTypes.type(tmp);
     return schema;
   }
@@ -145,6 +131,10 @@ export class ValidationRules {
         }
       }
     }
+    tmp['_id'] = BaseTypes.mongoDbObjectId.allow(null).default(null);
+    tmp['createdAt'] = BaseTypes.date.default(new Date());
+    tmp['modifiedAt'] = BaseTypes.date.allow(null).default(null);
+    tmp['version'] = BaseTypes.integer.greater(-1).default(0);
     schema = BaseTypes.type(tmp);
     return schema;
   }
@@ -182,6 +172,10 @@ export class ValidationRules {
         }
       }
     }
+
+    // set BaseModel Validations
+    tmp.updateSet['modifiedAt'] = BaseTypes.date.default(new Date());
+    tmp.updateSet['version'] = BaseTypes.integer.greater(-1).optional();
     schema = BaseTypes.type(tmp);
     return schema;
   }
