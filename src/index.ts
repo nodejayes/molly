@@ -9,3 +9,4 @@ export * from './interfaces/communication/websocket_message';
 export * from './interfaces/basic/collection_properties';
 export * from './interfaces/basic/validation_properties';
 export * from './decorators/index';
+export * from './definitions/base_model';

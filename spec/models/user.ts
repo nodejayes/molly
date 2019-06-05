@@ -3,6 +3,7 @@ import {JoinType, MongoLookup}  from '../../src/models';
 import {BaseTypes}              from '../../src/basic';
 import {Group}                  from './group';
 import {Bank1, Bank2}           from './bank';
+import {BaseModel} from "../../src";
 
 @collection({
   lookup: [
@@ -20,10 +21,7 @@ import {Bank1, Bank2}           from './bank';
   },
   allow: 'CUD'
 })
-export class User {
-  @validation({type: BaseTypes.mongoDbObjectId})
-  _id: string;
-
+export class User extends BaseModel {
   @validation({type: BaseTypes.stringDefaultLength})
   username: string;
 
@@ -41,7 +39,7 @@ export class User {
     new MongoLookup('Bank1', 'bank', '_id', JoinType.ONEONE)
   ]
 })
-export class User1 {
+export class User1 extends BaseModel {
   @validation({type: BaseTypes.mongoDbObjectId})
   _id: string;
   @validation({type: BaseTypes.stringDefaultLength})
@@ -56,7 +54,7 @@ export class User1 {
     new MongoLookup('Bank2', 'bank', '_id', JoinType.ONEONE)
   ]
 })
-export class User2 {
+export class User2 extends BaseModel {
   @validation({type: BaseTypes.mongoDbObjectId})
   _id: string;
   @validation({type: BaseTypes.stringDefaultLength})

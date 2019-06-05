@@ -69,6 +69,18 @@ export class RequestModel implements IRequestModel {
     }
   }
 
+  static performCreate(source: any): any {
+    source['createdAt'] = new Date();
+    source['version'] = 0;
+    return source;
+  }
+
+  static performUpdate(source: any): any {
+    source['modifiedAt'] = new Date();
+    source['version'] = (source['version'] || 0) + 1;
+    return source;
+  }
+
   /**
    * replace the String MongoDb Object ids with ObjectId
    *

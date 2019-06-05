@@ -11,8 +11,6 @@ export interface IField {
   allow: 'CUD',
 })
 export class Field extends BaseProperties implements IField {
-  @validation({type: BaseTypes.mongoDbObjectId})
-  _id: string;
   @validation({type: BaseTypes.postgresDbId})
   id: number;
   @validation({type: BaseTypes.string})
