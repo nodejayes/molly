@@ -2,6 +2,7 @@ import {collection, validation} from '../../src/decorators';
 import {JoinType, MongoLookup}  from '../../src/models';
 import {BaseTypes}              from '../../src/basic';
 import {User1, User2}           from './user';
+import {BaseModel} from "../../src";
 
 @collection({
   allow: 'CUD',
@@ -9,9 +10,7 @@ import {User1, User2}           from './user';
     new MongoLookup('User1', 'user', '_id', JoinType.ONEONE)
   ]
 })
-export class Bank1 {
-  @validation({type: BaseTypes.mongoDbObjectId})
-  _id: string;
+export class Bank1 extends BaseModel {
   @validation({type: BaseTypes.stringDefaultLength})
   name: string;
   user: User1;
@@ -23,9 +22,7 @@ export class Bank1 {
     new MongoLookup('User2', 'users', '_id', JoinType.ONEMANY)
   ]
 })
-export class Bank2 {
-  @validation({type: BaseTypes.mongoDbObjectId})
-  _id: string;
+export class Bank2 extends BaseModel {
   @validation({type: BaseTypes.stringDefaultLength})
   name: string;
   users: User2[];

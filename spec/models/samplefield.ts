@@ -13,8 +13,6 @@ export interface ISampleField {
   allow: 'CUD',
 })
 export class SampleField extends Field implements ISampleField {
-  @validation({type: BaseTypes.mongoDbObjectId})
-  _id: string;
   @validation({type: BaseTypes.double})
   p: number;
   @validation({type: BaseTypes.double})

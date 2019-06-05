@@ -2,6 +2,7 @@ import {collection, validation} from '../../src/decorators';
 import {JoinType, MongoLookup}  from '../../src/models';
 import {BaseTypes}              from '../../src/basic';
 import {Right}                  from './right';
+import {BaseModel} from "../../src";
 
 @collection({
   lookup: [
@@ -18,10 +19,7 @@ import {Right}                  from './right';
   },
   allow: 'CUD'
 })
-export class Group {
-  @validation({type: BaseTypes.mongoDbObjectId})
-  _id: string;
-
+export class Group extends BaseModel {
   @validation({type: BaseTypes.stringDefaultLength})
   name: string;
 

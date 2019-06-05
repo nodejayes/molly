@@ -101,6 +101,7 @@ export class Routes {
     }
     let col = Routes._getCollection(data.Model);
     let input = RequestModel.replaceStringIds(validation.checkCreate(data.Parameter));
+    input = RequestModel.performCreate(input);
     let tmp = await col.collection.insertOne(input, opts);
     return new ResponseModel(tmp.ops[0], false);
   }
@@ -121,6 +122,7 @@ export class Routes {
     }
     let col = Routes._getCollection(data.Model);
     let input = RequestModel.replaceStringIds(validation.checkUpdate(data.Parameter));
+    input = RequestModel.performUpdate(input);
     await col.collection.updateMany({
       _id: new ObjectId(input.id)
     }, {

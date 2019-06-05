@@ -1,5 +1,6 @@
 import {collection, validation} from '../../src/decorators';
 import {BaseTypes}              from '../../src/basic';
+import {BaseModel} from "../../src";
 
 @collection({
   lookup: null,
@@ -14,10 +15,7 @@ import {BaseTypes}              from '../../src/basic';
   },
   allow: 'C'
 })
-export class Right {
-  @validation({type: BaseTypes.mongoDbObjectId})
-  _id: string;
-
+export class Right extends BaseModel {
   @validation({type: BaseTypes.stringDefaultLength})
   key: string;
 
