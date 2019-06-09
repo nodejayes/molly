@@ -4,11 +4,14 @@
  * @export
  * @interface IServerConfiguration
  */
+import {IClientInfo} from "./client_info";
+
 export interface IServerConfiguration {
   binding: string;
   port: number;
   mongoUrl: string;
   mongoDatabase: string;
+  client?: IClientInfo;
   mongoReplicaSet?: string;
   mongoAuthDatabase?: string;
   models?: any[];

@@ -1,17 +1,18 @@
-import {Server as HttpServer, Server}                       from 'http';
+import {Server as HttpServer, Server} from 'http';
 import {createServer, Server as HttpsServer, ServerOptions} from 'https';
-import {existsSync, readFileSync, writeFileSync}            from 'fs';
-import * as express                                         from 'express';
-import {Server as WsServer}                                 from 'ws';
-import * as helmet                                          from 'helmet';
-import * as compress                                        from 'compression';
-import * as bodyParser                                      from 'body-parser';
-import {isAbsolute, join}                                   from 'path';
+import {existsSync, readFileSync, writeFileSync} from 'fs';
+import * as express from 'express';
+import {Server as WsServer} from 'ws';
+import * as helmet from 'helmet';
+import * as compress from 'compression';
+import * as bodyParser from 'body-parser';
+import {isAbsolute, join} from 'path';
 
 import {MongoDb, RouteInvoker, Routes, SwaggerGenerator} from '..';
-import {RequestModel, ResponseModel, WebsocketMessage}   from '../../models';
-import {IRequestModel, IServerConfiguration}             from '../../interfaces';
-import {ValidationRules}                                 from '../../basic';
+import {RequestModel, ResponseModel, WebsocketMessage} from '../../models';
+import {IRequestModel, IServerConfiguration} from '../../interfaces';
+import {ValidationRules} from '../../basic';
+import {ClientTypes} from "../../interfaces/server/client_types";
 
 /**
  * implement a small Express Server
@@ -119,11 +120,13 @@ export class ExpressServer {
         this._isSecure = true;
         this._server = createServer(options, this.App).listen(cfg.port, cfg.binding, () => {
           resolve(`server listen on https://${cfg.binding}:${cfg.port}/`);
+          this._generateClient(cfg);
         });
       } else {
         this._isSecure = false;
         this._server = this.App.listen(cfg.port, cfg.binding, () => {
           resolve(`server listen on http://${cfg.binding}:${cfg.port}/`);
+          this._generateClient(cfg);
         });
       }
 
@@ -373,5 +376,20 @@ export class ExpressServer {
    */
   private _fixParameter(cfg: IServerConfiguration): void {
     cfg.archive = cfg.archive === true;
+  }
+
+  private _generateClient(cfg: IServerConfiguration): void {
+    if (!cfg.client) {
+      return;
+    }
+    switch (cfg.client.type) {
+      case ClientTypes.ANGULAR:
+        this._generateAngularClient(cfg.client.interfacePath);
+        break;
+    }
+  }
+
+  private _generateAngularClient(target: string): void {
+    // TODO: implement Interface generation for Client
   }
 }
