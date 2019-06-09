@@ -37,20 +37,37 @@ describe('schema Spec', () => {
       },
       json: true
     });
-    assert.deepEqual(schema.data, {
-      additionalProperties: false,
-      patterns: [],
-      properties: {
-        id: {
-          maximum: 2147483647,
-          minimum: 1,
-          type: 'integer'
+    assert.deepEqual(schema.data.properties._id, {
+      "anyOf": [
+        {
+          "enum": [
+            null
+          ],
+          "type": "string"
         },
-        name: {
-          type: 'string'
+        {
+          "maxLength": 24,
+          "minLength": 24,
+          "type": "string"
         }
-      },
-      type: 'object'
+      ]
+    });
+    assert.deepEqual(schema.data.properties.createdAt.format, "date-time");
+    assert.deepEqual(schema.data.properties.createdAt.type, "string");
+    assert.deepEqual(schema.data.properties.id, {
+      "maximum": 2147483647,
+      "minimum": 1,
+      "type": "integer"
+    });
+    assert.deepEqual(schema.data.properties.name, {
+      "type": "string"
+    });
+    assert.deepEqual(schema.data.properties.version, {
+      "default": 0,
+      "exclusiveMinimum": true,
+      "maximum": 2147483647,
+      "minimum": -1,
+      "type": "integer"
     });
   });
 
@@ -66,19 +83,58 @@ describe('schema Spec', () => {
       json: true
     });
     assert.deepEqual(schema.data, {
-      additionalProperties: false,
-      patterns: [],
-      properties: {
-        id: {
-          maximum: 2147483647,
-          minimum: 1,
-          type: 'integer'
+      "additionalProperties": false,
+      "patterns": [],
+      "properties": {
+        "_id": {
+          "anyOf": [
+            {
+              "enum": [
+                null
+              ],
+              "type": "string"
+            },
+            {
+              "maxLength": 24,
+              "minLength": 24,
+              "type": "string"
+            }
+          ]
         },
-        name: {
-          type: 'string'
+        "createdAt": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "id": {
+          "maximum": 2147483647,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "modifiedAt": {
+          "anyOf": [
+            {
+              "enum": [
+                null
+              ],
+              "type": "date"
+            },
+            {
+              "format": "date-time",
+              "type": "string"
+            }
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "exclusiveMinimum": true,
+          "maximum": 2147483647,
+          "minimum": -1,
+          "type": "integer"
         }
       },
-      type: 'object'
+      "type": "object"
     });
   });
 
@@ -93,38 +149,26 @@ describe('schema Spec', () => {
       },
       json: true
     });
-    assert.deepEqual(schema.data, {
-      additionalProperties: false,
-      patterns: [],
-      properties: {
-        id: {
-          enum: [null],
-          type: [
-            'array',
-            'boolean',
-            'number',
-            'object',
-            'string',
-            'null'
-          ]
-        },
-        updateSet: {
-          additionalProperties: false,
-          patterns: [],
-          properties: {
-            id: {
-              maximum: 2147483647,
-              minimum: 1,
-              type: 'integer'
-            },
-            name: {
-              type: 'string'
-            }
-          },
-          type: 'object'
-        }
-      },
-      type: 'object'
+    assert.deepEqual(schema.data.properties.id, {
+      "maxLength": 24,
+      "minLength": 24,
+      "type": "string"
+    });
+    assert.deepEqual(schema.data.properties.updateSet.properties.id, {
+      "maximum": 2147483647,
+      "minimum": 1,
+      "type": "integer"
+    });
+    assert.deepEqual(schema.data.properties.updateSet.properties.modifiedAt.format, "date-time");
+    assert.deepEqual(schema.data.properties.updateSet.properties.modifiedAt.type, "string");
+    assert.deepEqual(schema.data.properties.updateSet.properties.name, {
+      "type": "string"
+    });
+    assert.deepEqual(schema.data.properties.updateSet.properties.version, {
+      "exclusiveMinimum": true,
+      "maximum": 2147483647,
+      "minimum": -1,
+      "type": "integer"
     });
   });
 
@@ -140,22 +184,19 @@ describe('schema Spec', () => {
       json: true
     });
     assert.deepEqual(schema.data, {
-      additionalProperties: false,
-      patterns: [],
-      properties: {
-        id: {
-          enum: [null],
-          type: [
-            'array',
-            'boolean',
-            'number',
-            'object',
-            'string',
-            'null'
-          ]
+      "additionalProperties": false,
+      "patterns": [],
+      "properties": {
+        "id": {
+          "maxLength": 24,
+          "minLength": 24,
+          "type": "string"
         }
       },
-      type: 'object'
+      "required": [
+        "id"
+      ],
+      "type": "object"
     });
   });
 

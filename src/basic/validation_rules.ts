@@ -151,15 +151,13 @@ export class ValidationRules {
   private static _buildUpdate(model: string): ObjectSchema {
     let schema: ObjectSchema;
     let tmp = {
-      id: null,
+      id: BaseTypes.mongoDbObjectId.required(),
       updateSet: {}
     };
     let props = this._getValidations(model);
     for (let i = 0; i < props.length; i++) {
       let p = props[i];
-      if (p.name === '_id') {
-        tmp.id = p.type.required();
-      } else if (p.type) {
+      if (p.type && p.name !== '_id') {
         tmp.updateSet[p.name] = p.type.optional();
       } else if (p.existType) {
         switch (p.join) {
@@ -192,15 +190,8 @@ export class ValidationRules {
   private static _buildDelete(model: string): ObjectSchema {
     let schema: ObjectSchema;
     let tmp = {
-      id: null
+      id: BaseTypes.mongoDbObjectId.required()
     };
-    let props = this._getValidations(model);
-    for (let i = 0; i < props.length; i++) {
-      let p = props[i];
-      if (p.name === '_id') {
-        tmp.id = p.type.required();
-      }
-    }
     schema = BaseTypes.type(tmp);
     return schema;
   }
