@@ -121,7 +121,7 @@ export class Routes {
     }
     let col = Routes._getCollection(data.Model);
     let input = RequestModel.replaceStringIds(validation.checkUpdate(data.Parameter));
-    input = RequestModel.performUpdate(input, col);
+    input = await RequestModel.performUpdate(input, col);
     await col.collection.updateMany({
       _id: new ObjectId(input.id)
     }, {
