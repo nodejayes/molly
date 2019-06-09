@@ -144,10 +144,11 @@ export class MongoDb {
    * @param {string} database
    * @param {string} replicaSet
    * @param {string} authDatabase
+   * @param transactionLockTimeout
    * @returns {Promise<void>}
    * @memberof MongoDb
    */
-  static async connect(url: string, database: string, replicaSet: string, authDatabase: string): Promise<void> {
+  static async connect(url: string, database: string, replicaSet: string, authDatabase: string, transactionLockTimeout: number): Promise<void> {
     this._db = database;
     try {
       this._client = await MongoClient.connect(`${url}`, {
@@ -158,6 +159,8 @@ export class MongoDb {
         replicaSet: replicaSet,
         authSource: authDatabase
       });
+      await this._client.db(database)
+          .executeDbAdminCommand({setParameter: 1, maxTransactionLockRequestTimeoutMillis: transactionLockTimeout})
     } catch (err) {
       throw err;
     }
