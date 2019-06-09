@@ -34,6 +34,16 @@ The goal of Molly is to create services that are as flexible and easy to configu
 https://github.com/nodejayes/molly/wiki
 
 ## Release Notes
+1.6.6
+
+* implement base properties (_id, createdAt, modifiedAt, version) on every model
+* variable Transaction Lock Timeout on Configuration
+* update mongodb dependency
+
+1.6.5
+
+* change travis CI and update packages
+
 1.6.4
 
 * add more node versions to test

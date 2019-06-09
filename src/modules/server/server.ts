@@ -111,7 +111,7 @@ export class ExpressServer {
     MongoDb.Archive = cfg.archive === true;
     let options: ServerOptions = this._readCertificateInfo(cfg.certFile, cfg.keyFile, cfg.caFile);
     await this._buildDocumentation(options, cfg);
-    await MongoDb.connect(`${cfg.mongoUrl}`, cfg.mongoDatabase, cfg.mongoReplicaSet || 'rs0', cfg.mongoAuthDatabase || 'admin');
+    await MongoDb.connect(`${cfg.mongoUrl}`, cfg.mongoDatabase, cfg.mongoReplicaSet || 'rs0', cfg.mongoAuthDatabase || 'admin', cfg.transactionLockTimeout || 200);
     await this._buildSchema(cfg.clear);
     return new Promise<string>((resolve, reject) => {
       this._registerRoutes(cfg);

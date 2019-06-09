@@ -25,4 +25,5 @@ export interface IServerConfiguration {
   corsOrigin?: string;
   corsHeaders?: string;
   corsCredentials?: string;
+  transactionLockTimeout?: number;
 }
