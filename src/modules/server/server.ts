@@ -12,7 +12,8 @@ import {MongoDb, RouteInvoker, Routes, SwaggerGenerator} from '..';
 import {RequestModel, ResponseModel, WebsocketMessage} from '../../models';
 import {IRequestModel, IServerConfiguration} from '../../interfaces';
 import {ValidationRules} from '../../basic';
-import {ClientTypes} from "../../interfaces/server/client_types";
+import {ClientTypes} from '../../interfaces/server/client_types';
+import * as uuid from "uuid/v4";
 
 /**
  * implement a small Express Server
@@ -283,6 +284,7 @@ export class ExpressServer {
       return;
     }
     try {
+      req.headers['mollyId'] = uuid();
       if (this._authenticate instanceof Function && this._authenticate(req) !== true) {
         res.status(403);
         res.end();

@@ -13,6 +13,13 @@ import {CollectionStore} from "..";
  */
 export class RequestModel implements IRequestModel {
   /**
+   * the generated unique Id for a Request
+   *
+   * @type {string}
+   * @memberof RequestModel
+   */
+  Id: string;
+  /**
    * the Action of the Request
    *
    * @type {string}
@@ -51,6 +58,7 @@ export class RequestModel implements IRequestModel {
    * @memberof RequestModel
    */
   constructor(req: Request, routeNames: string[]) {
+    this.Id = req.headers['mollyId'].toString();
     let tmp = req.path.split('/').filter((e) => {
       return e.length > 0;
     });
