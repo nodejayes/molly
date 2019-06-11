@@ -209,6 +209,7 @@ export class ExpressServer {
       this._WsServer = new WsServer({
         server: this._server,
         verifyClient: (info) => {
+          info.req.headers['mollyId'] = uuid();
           return this._authenticate(info);
         }
       });
