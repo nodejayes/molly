@@ -1,4 +1,4 @@
-import {Collection, MongoClient}                from 'mongodb';
+import {Collection, MongoClient, MongoClientOptions} from 'mongodb';
 import {Logic}                                  from '../../basic';
 import {CollectionInformation, CollectionStore} from '../../models';
 
@@ -142,23 +142,15 @@ export class MongoDb {
    * @static
    * @param {string} url
    * @param {string} database
-   * @param {string} replicaSet
-   * @param {string} authDatabase
+   * @param opts
    * @param transactionLockTimeout
    * @returns {Promise<void>}
    * @memberof MongoDb
    */
-  static async connect(url: string, database: string, replicaSet: string, authDatabase: string, transactionLockTimeout: number): Promise<void> {
+  static async connect(url: string, database: string, opts: MongoClientOptions, transactionLockTimeout: number): Promise<void> {
     this._db = database;
     try {
-      this._client = await MongoClient.connect(`${url}`, {
-        appname: 'Molly',
-        autoReconnect: true,
-        poolSize: 25,
-        useNewUrlParser: true,
-        replicaSet: replicaSet,
-        authSource: authDatabase
-      });
+      this._client = await MongoClient.connect(`${url}`, opts);
       await this._client.db(database)
           .executeDbAdminCommand({setParameter: 1, maxTransactionLockRequestTimeoutMillis: transactionLockTimeout})
     } catch (err) {

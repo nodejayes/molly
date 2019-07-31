@@ -4,13 +4,14 @@
  * @export
  * @interface IServerConfiguration
  */
+import {MongoClientOptions} from "mongodb";
+
 export interface IServerConfiguration {
   binding: string;
   port: number;
   mongoUrl: string;
   mongoDatabase: string;
-  mongoReplicaSet?: string;
-  mongoAuthDatabase?: string;
+  mongoOptions?: MongoClientOptions;
   models?: any[];
   clear?: boolean;
   useWebsocket?: boolean;

@@ -1,10 +1,8 @@
-import {
-    ExpressServer
-}                                             from '../../src';
-import {assert}                               from 'chai';
+import {ExpressServer} from '../../src';
+import {assert} from 'chai';
 import 'mocha';
-import {join}                                 from 'path';
-import {MONGODB_DB, MONGODB_URL, REPLICA_SET} from '../config';
+import {join} from 'path';
+import {MONGODB_DB, MONGODB_URL} from '../config';
 
 const request = require('request-promise');
 
@@ -17,7 +15,6 @@ describe('Static Files Spec', () => {
             port: 8086,
             mongoUrl: MONGODB_URL,
             mongoDatabase: MONGODB_DB,
-            mongoReplicaSet: REPLICA_SET,
             staticFiles: join(__dirname, '..', 'public')
         });
         assert.equal(msg, 'server listen on http://localhost:8086/');
